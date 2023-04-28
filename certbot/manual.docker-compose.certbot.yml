@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      -  ./.data/www/:/var/www/certbot/:rw
+      -  ./.data/conf/:/etc/letsencrypt/:rw
+    networks:
+      - nginx-network
+
+networks:
+  nginx-network:
+    name: nginx-network
+    external: true

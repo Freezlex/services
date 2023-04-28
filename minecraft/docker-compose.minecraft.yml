@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  minecraft:
+    image: itzg/minecraft-server:latest
+    environment:
+      EULA: "TRUE"
+      TYPE: "PAPER"
+      MEMORY: "8G"
+    ports:
+      - '25565:25565/udp'
+    volumes:
+      - ./minecraft/.data:/data
+    networks:
+      - nginx-network

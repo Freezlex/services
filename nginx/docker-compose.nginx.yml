@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:latest
+    ports:
+      - 80:80
+      - 443:443
+    restart: unless-stopped
+    volumes:
+      - ./nginx/.data/:/etc/nginx/:rw
+      - ./nginx/.config/:/etc/nginx/conf.d/:rw
+      - ./certbot/.data/www/:/var/www/certbot/:ro
+      - ./certbot/.data/conf/:/etc/nginx/ssl/:ro
+    networks:
+      - nginx-network
