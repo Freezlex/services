@@ -4,3 +4,6 @@ networks:
   nginx-network:
     name: nginx-network
     driver: bridge
+  gitea-network:
+    name: gitea-network
+    driver: bridge
