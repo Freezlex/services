@@ -8,6 +8,9 @@ services:
       EULA: "TRUE"
       TYPE: "PAPER"
       MEMORY: "12G"
+    expose:
+      - 25565
+      - 8123
     volumes:
       - ./minecraft/.data:/data/:rw
     networks:
