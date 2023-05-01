@@ -4,11 +4,11 @@ services:
   nginx:
     image: nginx:latest
     container_name: nginx
+    restart: unless-stopped
     ports:
       - 80:80
       - 443:443
       - "25565:25565/tcp"
-    restart: unless-stopped
     volumes:
       - ./nginx/.data/:/etc/nginx/:rw
       - ./nginx/.config/:/etc/nginx/conf.d/:rw

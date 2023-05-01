@@ -5,11 +5,12 @@ services:
     image: postgres:14
     restart: always
     container_name: postgres
-    environment:
-      - POSTGRES_USER=gitea
-      - POSTGRES_PASSWORD=gitea
-      - POSTGRES_DB=gitea
+    env_file:
+      - ./postgres/.config/postgres.env
+    ports:
+      - 5432:5432
     networks:
       - gitea-network
     volumes:
-      - ./postgres/.data/:/var/lib/postgresql/data
+      - ./postgres/.data/:/var/lib/postgresql/data:rw
+      - ./postgres/.init/:/docker-entrypoint-initdb.d/:rw

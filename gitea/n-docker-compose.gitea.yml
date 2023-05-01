@@ -4,15 +4,8 @@ services:
   gitea:
     image: gitea/gitea:latest
     container_name: gitea
-    environment:
-      - USER=gitea
-      - USER_UID=1000
-      - USER_GID=1000
-      - GITEA__database__DB_TYPE=postgres
-      - GITEA__database__HOST=postgres_db:5432
-      - GITEA__database__NAME=gitea
-      - GITEA__database__USER=gitea
-      - GITEA__database__PASSWD=gitea
+    env_file:
+      - gitea/.config/gitea.env
     restart: always
     networks:
       - gitea-network
@@ -21,7 +14,6 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     expose:
-      - "3000"
-      - "222:22"
+      - 3000
     depends_on:
       - postgres_db
