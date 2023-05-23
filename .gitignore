@@ -1,5 +1,6 @@
-*.data
-.data
+*/.data/*
 *.env
+!template.env
 !*.template.env
 .init/
+!*/.data/.gitkeep

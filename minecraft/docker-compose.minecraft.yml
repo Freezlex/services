@@ -8,10 +8,16 @@ services:
       EULA: "TRUE"
       TYPE: "PAPER"
       MEMORY: "12G"
-    expose:
-      - 25565
-      - 8123
     volumes:
       - ./minecraft/.data:/data/:rw
+      - ./minecraft/.logs:/data/logs
+    restart: unless-stopped
+    labels:
+      traefik.enable: true
+      traefik.http.routers.minecraft.rule: 'Host(`mc.${SITE:-localhost}`)'
+      traefik.http.services.minecraft.loadbalancer.server.port: 8123
+      traefik.tcp.routers.minecraft.rule: HostSNI(`*`)
+      traefik.tcp.routers.vanilla.entrypoints: minecraft
+
     networks:
       - nginx-network

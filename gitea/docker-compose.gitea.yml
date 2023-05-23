@@ -1,4 +1,4 @@
-version: "3.8"
+version: '3.8'
 
 services:
   gitea:
@@ -8,12 +8,15 @@ services:
       - ./gitea/.config/gitea.env
     restart: always
     networks:
+      - proxy-network
       - gitea-network
     volumes:
       - ./gitea/.data/:/data:rw
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-    expose:
-      - 3000
+    labels:
+      traefik.enable: true
+      traefik.http.routers.gitea.rule: 'Host(`git.${SITE:-localhost}`)'
+      traefik.http.services.gitea.loadbalancer.server.port: 3000
     depends_on:
       - postgres_db

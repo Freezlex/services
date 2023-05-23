@@ -1,9 +1,12 @@
 version: '3.8'
 
 networks:
-  nginx-network:
-    name: nginx-network
-    driver: bridge
+  proxy-network:
+    name: proxy-network
+    driver: internal
   gitea-network:
     name: gitea-network
-    driver: bridge
+    driver: internal
+  # matrix-network:
+  #   name: matrix-network
+  #   driver: internal

@@ -1,8 +1,9 @@
-version: '3.9'
+version: '3.8'
 
 services:
   traefik:
-    image: 'traefik:${TRAEFIK_IMAGE_VERSION:-v2.10}'
+    container_name: traefik
+    image: 'traefik:${TRAEFIK_IMAGE_VERSION:-latest}'
     command:
       # Provider
       - '--providers.docker'
@@ -12,11 +13,12 @@ services:
       - '--entrypoints.web.address=:${TRAEFIK_WEB_ENTRYPOINT:-80}'
       - '--entrypoints.web.http.redirections.entrypoint.to=websecure'
       - '--entrypoints.websecure.address=:${TRAEFIK_WEBSECURE_ENTRYPOINT:-443}'
+      - '--entrypoints.minecraft.address=:${TRAEFIK_MC_ENTRYPOINT:-25565}'
       # Let's Encrypt
-      - '--certificatesresolvers.myresolver.acme.email=${ROOT_EMAIL:-changeme@changeme.org}'
-      - '--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web'
-      - '--certificatesresolvers.myresolver.acme.httpchallenge=true'
-      - '--entrypoints.websecure.http.tls.certresolver=myresolver'
+      - '--certificatesresolvers.freezlex.acme.email=${ROOT_EMAIL:-changeme@changeme.org}'
+      - '--certificatesresolvers.freezlex.acme.httpchallenge.entrypoint=web'
+      - '--certificatesresolvers.freezlex.acme.httpchallenge=true'
+      - '--entrypoints.websecure.http.tls.certresolver=freezlex'
       # HTTP/3
       - '--experimental.http3=true'
       - '--entrypoints.websecure.http3'
@@ -30,13 +32,13 @@ services:
       # Misc
       - '--api.dashboard'
       - '--entrypoints.websecure.http.middlewares=compress@file,headers@file${TRAEFIK_PLUGINS:-}'
-      - '--experimental.plugins.fail2ban.modulename=github.com/tommoulard/fail2ban'
-      - '--experimental.plugins.fail2ban.version=v0.6.0'
-      - '--global.checknewversion=${TRAEFIK_CHECK_NEW_VERSION:-false}'
+      - '--global.checknewversion=${TRAEFIK_CHECK_NEW_VERSION:-true}'
       - '--global.sendanonymoususage=${TRAEFIK_SEND_ANONYMOUS_USAGE:-false}'
       - '--ping'
       - '--providers.file.directory=/dynamic_conf/'
       - '--providers.file.watch=true'
+      # - "--log.level=DEBUG"
+      # - "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
     environment:
       - 'TZ=${TZ:-Europe/Paris}'
     healthcheck:
@@ -47,7 +49,6 @@ services:
       traefik.http.middlewares.basic_auth.basicauth.removeHeader: true
       traefik.http.middlewares.basic_auth.basicauth.users: '${USERS}'
       traefik.http.routers.traefik.middlewares: 'basic_auth@docker'
-
       traefik.http.routers.traefik.rule: 'Host(`traefik.${SITE:-localhost}`)'
       traefik.http.routers.traefik.service: 'api@internal'
     networks:
@@ -55,8 +56,18 @@ services:
     ports:
       - '${TRAEFIK_WEB_ENTRYPOINT:-80}:${TRAEFIK_WEB_ENTRYPOINT:-80}'
       - '${TRAEFIK_WEBSECURE_ENTRYPOINT:-443}:${TRAEFIK_WEBSECURE_ENTRYPOINT:-443}'
-    restart: 'always'
+      - '${TRAEFIK_MC_ENTRYPOINT:-25565}:${TRAEFIK_MC_ENTRYPOINT:-25565}/tcp'
+    restart: unless-stopped
     volumes:
-      - '/var/run/docker.sock:/var/run/docker.sock'
+      - '/var/run/docker.sock:/var/run/docker.sock:ro'
       - './traefik/logs:/logs'
-      - './traefik/.conf:/dynamic_conf'
+      - './traefik/.config:/dynamic_conf'
+      - './traefik/.data/letsencrypt:/letsencrypt'
+  whoami:
+    image: traefik/whoami
+    container_name: "traefik-whoami"
+    labels:
+      traefik.enable: true
+      traefik.http.routers.whoami.rule: Host(`whoami.${SITE:-localhost}`)
+      traefik.http.routers.whoami.entrypoints: websecure
+      traefik.http.routers.whoami.tls.certresolver: myresolver
