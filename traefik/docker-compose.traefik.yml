@@ -65,7 +65,6 @@ services:
       - './traefik/.data/letsencrypt:/letsencrypt'
     depends_on:
       - gitea
-      - minecraft
       - whoami
   whoami:
     image: traefik/whoami
