@@ -52,7 +52,7 @@ services:
       traefik.http.routers.traefik.rule: 'Host(`traefik.${SITE:-localhost}`)'
       traefik.http.routers.traefik.service: 'api@internal'
     networks:
-      - 'srv'
+      - proxy-network
     ports:
       - '${TRAEFIK_WEB_ENTRYPOINT:-80}:${TRAEFIK_WEB_ENTRYPOINT:-80}'
       - '${TRAEFIK_WEBSECURE_ENTRYPOINT:-443}:${TRAEFIK_WEBSECURE_ENTRYPOINT:-443}'
@@ -63,6 +63,10 @@ services:
       - './traefik/logs:/logs'
       - './traefik/.config:/dynamic_conf'
       - './traefik/.data/letsencrypt:/letsencrypt'
+    depends_on:
+      - gitea
+      - minecraft
+      - whoami
   whoami:
     image: traefik/whoami
     container_name: "traefik-whoami"

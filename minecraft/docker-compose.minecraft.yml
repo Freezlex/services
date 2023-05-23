@@ -18,6 +18,5 @@ services:
       traefik.http.services.minecraft.loadbalancer.server.port: 8123
       traefik.tcp.routers.minecraft.rule: HostSNI(`*`)
       traefik.tcp.routers.vanilla.entrypoints: minecraft
-
     networks:
-      - nginx-network
+      - proxy-network
