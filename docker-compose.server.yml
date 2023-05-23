@@ -3,10 +3,10 @@ version: '3.8'
 networks:
   proxy-network:
     name: proxy-network
-    driver: internal
+    driver: bridge
   gitea-network:
     name: gitea-network
-    driver: internal
+    driver: bridge
   # matrix-network:
   #   name: matrix-network
   #   driver: internal
