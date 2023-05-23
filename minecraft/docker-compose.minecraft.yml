@@ -14,9 +14,10 @@ services:
     restart: unless-stopped
     labels:
       traefik.enable: true
-      traefik.http.routers.minecraft.rule: 'Host(`mc.${SITE:-localhost}`)'
+      traefik.http.routers.minecraft.rule: 'Host(`mc.${DOMAIN_NAME:-localhost}`)'
       traefik.http.services.minecraft.loadbalancer.server.port: 8123
-      traefik.tcp.routers.minecraft.rule: HostSNI(`*`)
-      traefik.tcp.routers.vanilla.entrypoints: minecraft
+      traefik.tcp.routers.minecraft.rule: 'HostSNI(`*`)'
+      traefik.tcp.routers.minecraft.entrypoints: minecraft
+      traefik.tcp.services.minecraft.loadbalancer.server.port: 25565
     networks:
       - proxy-network

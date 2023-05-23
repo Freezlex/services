@@ -16,7 +16,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
     labels:
       traefik.enable: true
-      traefik.http.routers.gitea.rule: 'Host(`git.${SITE:-localhost}`)'
+      traefik.http.routers.gitea.rule: 'Host(`git.${DOMAIN_NAME:-localhost}`)'
       traefik.http.services.gitea.loadbalancer.server.port: 3000
     depends_on:
       - postgres_db

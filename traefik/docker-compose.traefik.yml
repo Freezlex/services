@@ -19,6 +19,7 @@ services:
       - '--certificatesresolvers.freezlex.acme.httpchallenge.entrypoint=web'
       - '--certificatesresolvers.freezlex.acme.httpchallenge=true'
       - '--entrypoints.websecure.http.tls.certresolver=freezlex'
+      # - '--certificatesresolvers.freezlex.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory'
       # HTTP/3
       - '--experimental.http3=true'
       - '--entrypoints.websecure.http3'
@@ -37,8 +38,6 @@ services:
       - '--ping'
       - '--providers.file.directory=/dynamic_conf/'
       - '--providers.file.watch=true'
-      # - "--log.level=DEBUG"
-      # - "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
     environment:
       - 'TZ=${TZ:-Europe/Paris}'
     healthcheck:
@@ -49,7 +48,7 @@ services:
       traefik.http.middlewares.basic_auth.basicauth.removeHeader: true
       traefik.http.middlewares.basic_auth.basicauth.users: '${USERS}'
       traefik.http.routers.traefik.middlewares: 'basic_auth@docker'
-      traefik.http.routers.traefik.rule: 'Host(`traefik.${SITE:-localhost}`)'
+      traefik.http.routers.traefik.rule: 'Host(`traefik.${DOMAIN_NAME:-localhost}`)'
       traefik.http.routers.traefik.service: 'api@internal'
     networks:
       - proxy-network
@@ -60,17 +59,18 @@ services:
     restart: unless-stopped
     volumes:
       - '/var/run/docker.sock:/var/run/docker.sock:ro'
-      - './traefik/logs:/logs'
+      - './traefik/.logs:/logs'
       - './traefik/.config:/dynamic_conf'
       - './traefik/.data/letsencrypt:/letsencrypt'
     depends_on:
       - gitea
+      - minecraft
       - whoami
   whoami:
     image: traefik/whoami
     container_name: "traefik-whoami"
     labels:
       traefik.enable: true
-      traefik.http.routers.whoami.rule: Host(`whoami.${SITE:-localhost}`)
+      traefik.http.routers.whoami.rule: Host(`whoami.${DOMAIN_NAME:-localhost}`)
       traefik.http.routers.whoami.entrypoints: websecure
       traefik.http.routers.whoami.tls.certresolver: freezlex

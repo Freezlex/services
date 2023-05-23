@@ -4,3 +4,4 @@
 !*.template.env
 .init/
 !*/.data/.gitkeep
+*/.logs/*
