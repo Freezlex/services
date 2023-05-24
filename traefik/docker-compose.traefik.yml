@@ -50,7 +50,7 @@ services:
       # Basic Auth Middleware definitions
       traefik.http.middlewares.basic_auth.basicauth.removeHeader: true
       traefik.http.middlewares.basic_auth.basicauth.users: ${USERS}
-      traefik.http.routers.traefik.middlewares: traefik-auth
+      traefik.http.routers.traefik.middlewares: basic_auth@docker
       traefik.http.routers.traefik.rule: Host(`traefik.${DOMAIN_NAME:-localhost}`)
       traefik.http.routers.traefik.service: api@internal
     networks:
