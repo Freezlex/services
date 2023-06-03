@@ -7,6 +7,6 @@ networks:
   gitea-network:
     name: gitea-network
     driver: bridge
-  # matrix-network:
-  #   name: matrix-network
-  #   driver: internal
+  matrix-network:
+    name: matrix-network
+    driver: bridge

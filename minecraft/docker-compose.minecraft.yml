@@ -6,18 +6,22 @@ services:
     container_name: minecraft
     environment:
       EULA: "TRUE"
-      TYPE: "PAPER"
-      MEMORY: "12G"
+      TYPE: "FABRIC"
+      VERSION: "1.19.2"
+      MEMORY: "10G"
+      MOTD: "\u00a7e-\u00a76\u2022\u00a7e-\u00a76\u2022\u00a7e-\u00a76\u2022\u00a7e-\u00a76 Freezlex's Bathtub\u00a7e -\u00a76\u2022\u00a7e-\u00a76\u2022\u00a7e-\u00a76\u2022\u00a7e-\u00a7r\n\u00a79\u00a7l|\u00a7c Fabric\u00a79\u00a7l |\u00a7c mc.freezlex.dev\u00a79\u00a7l |\u00a7c 1.19.2\u00a79\u00a7l |"
+      # Auto-pause server when no one is connected
+      ENABLE_AUTOPAUSE: "TRUE"
+      MODRINTH_DOWNLOAD_OPTIONAL_DEPENDENCIES: "TRUE"
+      MODRINTH_PROJECTS: "create-fabric:EkeMb3jA,simple-voice-chat:I92gJvt9"
     volumes:
       - ./minecraft/.data:/data/:rw
       - ./minecraft/.logs:/data/logs
     restart: unless-stopped
     labels:
       traefik.enable: true
-      traefik.http.routers.minecraft.rule: 'Host(`mc.${DOMAIN_NAME:-localhost}`)'
-      traefik.http.services.minecraft.loadbalancer.server.port: 8123
       # TCP Pass through
-      traefik.tcp.routers.minecraft.rule: 'HostSNI(`*`)'
+      traefik.tcp.routers.minecraft.rule: 'HostSNI(`mc.${DOMAIN_NAME:-localhost}`)'
       traefik.tcp.routers.minecraft.entrypoints: minecraft
       traefik.tcp.services.minecraft.loadbalancer.server.port: 25565
     networks:
