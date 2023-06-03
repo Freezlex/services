@@ -13,6 +13,7 @@ services:
       - '--entrypoints.web.address=:${TRAEFIK_WEB_ENTRYPOINT:-80}'
       - '--entrypoints.websecure.address=:${TRAEFIK_WEBSECURE_ENTRYPOINT:-443}'
       - '--entrypoints.minecraft.address=:${TRAEFIK_MC_ENTRYPOINT:-25565}'
+      - '--entrypoints.minecraft-udp.address=:${TRAEFIK_MC_ENTRYPOINT_UDP:-24454}'
       # Let's Encrypt
       - '--certificatesresolvers.letsencryptresolver.acme.email=${ROOT_EMAIL:-changeme@changeme.org}'
       - '--certificatesresolvers.letsencryptresolver.acme.httpchallenge.entrypoint=web'
