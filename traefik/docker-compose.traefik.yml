@@ -13,7 +13,8 @@ services:
       - '--entrypoints.web.address=:${TRAEFIK_WEB_ENTRYPOINT:-80}'
       - '--entrypoints.websecure.address=:${TRAEFIK_WEBSECURE_ENTRYPOINT:-443}'
       - '--entrypoints.mc.address=:${TRAEFIK_MC_ENTRYPOINT:-25565}'
-      - '--entrypoints.mc-vc-udp.address=:${TRAEFIK_MC_ENTRYPOINT_UDP:-24454}'
+      - '--entrypoints.mc-udp.address=:${TRAEFIK_MC_ENTRYPOINT:-25565}/udp'
+      - '--entrypoints.mc-vc-udp.address=:${TRAEFIK_MC_ENTRYPOINT:-24454}/udp'
       # Let's Encrypt
       - '--certificatesresolvers.letsencryptresolver.acme.email=${ROOT_EMAIL:-changeme@changeme.org}'
       - '--certificatesresolvers.letsencryptresolver.acme.httpchallenge.entrypoint=web'
