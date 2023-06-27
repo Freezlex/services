@@ -20,7 +20,7 @@ services:
     restart: unless-stopped
     labels:
       traefik.enable: true
-      traefik.http.routers.minecraft.rule: 'Host(`git.${DOMAIN_NAME:-localhost}`)'
+      traefik.http.routers.minecraft.rule: 'Host(`mc.${DOMAIN_NAME:-localhost}`)'
       # TCP Pass through
       traefik.tcp.routers.minecraft.rule: 'HostSNI(`mc.${DOMAIN_NAME:-localhost}`)'
       traefik.tcp.routers.minecraft.entrypoints: mc
