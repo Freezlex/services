@@ -13,17 +13,17 @@ services:
       - '--entrypoints.web.address=:${TRAEFIK_WEB_ENTRYPOINT:-80}'
       - '--entrypoints.websecure.address=:${TRAEFIK_WEBSECURE_ENTRYPOINT:-443}'
       - '--entrypoints.mc.address=:${TRAEFIK_MC_ENTRYPOINT:-25565}'
-      # - '--entrypoints.mc-mod-udp.address=:${TRAEFIK_MC_ENTRYPOINT:-24454}/udp'
+      - '--entrypoints.mc-mod-udp.address=:${TRAEFIK_MC_MOD_ENTRYPOINT:-24454}/udp'
       # Let's Encrypt
       - '--certificatesresolvers.letsencryptresolver.acme.email=${ROOT_EMAIL:-changeme@changeme.org}'
       - '--certificatesresolvers.letsencryptresolver.acme.httpchallenge.entrypoint=web'
       - '--certificatesresolvers.letsencryptresolver.acme.httpchallenge=true'
-      - "--certificatesresolvers.letsencryptresolver.acme.storage=/letsencrypt/acme.json"
+      - '--certificatesresolvers.letsencryptresolver.acme.storage=/letsencrypt/acme.json'
       - '--entrypoints.websecure.http.tls.certresolver=letsencryptresolver'
       - '--certificatesresolvers.letsencryptresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory'
       # HTTP -> HTTPS
       - '--entrypoints.web.http.redirections.entrypoint.to=websecure'
-      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+      - '--entrypoints.web.http.redirections.entryPoint.scheme=https'
       # HTTP/3
       - '--experimental.http3=true'
       - '--entrypoints.websecure.http3'
@@ -60,6 +60,7 @@ services:
       - '${TRAEFIK_WEB_ENTRYPOINT:-80}:${TRAEFIK_WEB_ENTRYPOINT:-80}'
       - '${TRAEFIK_WEBSECURE_ENTRYPOINT:-443}:${TRAEFIK_WEBSECURE_ENTRYPOINT:-443}'
       - '${TRAEFIK_MC_ENTRYPOINT:-25565}:${TRAEFIK_MC_ENTRYPOINT:-25565}/tcp'
+      - '${TRAEFIK_MC_ENTRYPOINT:-24454}:${TRAEFIK_MC_ENTRYPOINT:-24454}/udp'
     restart: unless-stopped
     volumes:
       - '/var/run/docker.sock:/var/run/docker.sock:ro'

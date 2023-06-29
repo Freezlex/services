@@ -9,21 +9,28 @@ services:
       TYPE: "FABRIC"
       VERSION: "1.19.2"
       MEMORY: "10G"
-      MOTD: "\u00a7e-\u00a76\u2022\u00a7e-\u00a76\u2022\u00a7e-\u00a76\u2022\u00a7e-\u00a76 Freezlex's Bathtub\u00a7e -\u00a76\u2022\u00a7e-\u00a76\u2022\u00a7e-\u00a76\u2022\u00a7e-\u00a7r\n\u00a79\u00a7l|\u00a7c Fabric\u00a79\u00a7l |\u00a7c mc.freezlex.dev\u00a79\u00a7l |\u00a7c 1.19.2\u00a79\u00a7l |"
+      SERVER_NAME: "Freezlex's Bathtub"
+      MOTD: "\u00a7e-\u00a76\u2022\u00a7e-\u00a76\u2022\u00a7e-\u00a76\u2022\u00a7e-\u00a76 Freezlex's Bathtub\u00a7e -\u00a76\u2022\u00a7e-\u00a76\u2022\u00a7e-\u00a76\u2022\u00a7e-\u00a7r \n\u00a79\u00a7l|\u00a7c Fabric\u00a79\u00a7l |\u00a7c mc.freezlex.dev\u00a79\u00a7l |\u00a7c 1.19.2\u00a79\u00a7l |"
+      ICON: "https://matrix-client.matrix.org/_matrix/media/r0/download/matrix.org/CRzKauqCVBnrhwRbcJoFvVgT"
       # Auto-pause server when no one is connected
       ENABLE_AUTOPAUSE: "TRUE"
       MODRINTH_DOWNLOAD_OPTIONAL_DEPENDENCIES: "TRUE"
       MODRINTH_PROJECTS: "fabric-api:hfsU4hXq,create-fabric:q6x0xvc1,simple-voice-chat:DB81KuvO,terralith:mLdNNka6"
     volumes:
-      - ./minecraft/.data:/data/:rw
-      - ./minecraft/.logs:/data/logs
+      - ./minecraft/.data/config/:/data/config/:rw
+      - ./minecraft/.data/mods/:/data/mods/:rw
+      - ./minecraft/.data/worlds/world/:/data/world/:rw
+      - ./minecraft/.logs/:/data/logs
     restart: unless-stopped
     labels:
       traefik.enable: true
       traefik.http.routers.minecraft.rule: 'Host(`mc.${DOMAIN_NAME:-localhost}`)'
       # TCP Pass through
-      traefik.tcp.routers.minecraft.rule: 'HostSNI(`*`)'
+      traefik.tcp.routers.minecraft.rule: 'HostSNI(`mc.${DOMAIN_NAME:-localhost}`)'
       traefik.tcp.routers.minecraft.entrypoints: mc
       traefik.tcp.services.minecraft.loadbalancer.server.port: 25565
+      # UDP for mod
+      traefik.udp.routers.minecraft.entrypoint: mc-mod-udp
+      traefik.udp.services.minecraft.loadbalancer.server.port: 24454
     networks:
       - proxy-network
