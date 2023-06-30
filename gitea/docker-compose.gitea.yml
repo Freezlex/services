@@ -9,7 +9,7 @@ services:
     restart: always
     networks:
       - proxy-network
-      - gitea-network
+      - database-network
     volumes:
       - ./gitea/.data/:/data:rw
       - /etc/timezone:/etc/timezone:ro

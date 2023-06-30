@@ -2,20 +2,21 @@ version: '3.8'
 
 services:
   dendrite:
+    hostname: monolith
     container_name: dendrite
     image: matrixdotorg/dendrite-monolith:${DENDRITE_IMAGE_VERSION:-latest}
-    command: [
-      "--tls-cert=server.crt",
-      "--tls-key=server.key"
-    ]
-    ports:
-      - 8008:8008
-      - 8448:8448
     volumes:
       - ./matrix/.config:/etc/dendrite
-      - ./media:/var/dendrite/media
+      - ./matrix/.logs:/etc/dendrite/logs
+      - ./matrix/.data/media/:/var/dendrite/media/
+    labels:
+      - traefik.enable: "TRUE"
+      - traefik.http.routers.dendrite.rule: "Host(`matrix.${DOMAIN_NAME:-localhost}`)"
+      - traefik.http.routers.dendrite.tls: "TRUE"
     depends_on:
       - postgres
+      - traefik
     networks:
-      - matrix-network
+      - proxy-network
+      - database-network
     restart: unless-stopped

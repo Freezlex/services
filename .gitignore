@@ -1,7 +1,7 @@
 */.data/*
 *.env
-!template.env
-!*.env.template
-.init/
-!*/.data/.gitkeep
+*.sql
+dendrite.yaml
 */.logs/*
+!*.template.*
+!*/.data/.gitkeep

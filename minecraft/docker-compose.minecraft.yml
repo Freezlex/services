@@ -15,7 +15,7 @@ services:
       # Auto-pause server when no one is connected
       ENABLE_AUTOPAUSE: "TRUE"
       MODRINTH_DOWNLOAD_OPTIONAL_DEPENDENCIES: "TRUE"
-      MODRINTH_PROJECTS: "fabric-api:hfsU4hXq,create-fabric:q6x0xvc1,simple-voice-chat:DB81KuvO,terralith:mLdNNka6"
+      MODRINTH_PROJECTS: "fabric-api:hfsU4hXq,create-fabric:q6x0xvc1,simple-voice-chat:DB81KuvO,terralith:mLdNNka6,modmenu:gSoPJyVn"
     volumes:
       - ./minecraft/.data/config/:/data/config/:rw
       - ./minecraft/.data/mods/:/data/mods/:rw
