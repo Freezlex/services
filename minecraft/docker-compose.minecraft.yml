@@ -18,7 +18,6 @@ services:
       MODRINTH_PROJECTS: "fabric-api:hfsU4hXq,create-fabric:q6x0xvc1,simple-voice-chat:DB81KuvO,terralith:mLdNNka6,modmenu:gSoPJyVn"
     volumes:
       - ./minecraft/.data/config:/data/config
-      - ./minecraft/.data/mods:/data/mods
       - ./minecraft/.data/world/:/data/world
       - ./minecraft/.logs/:/data/logs
     restart: unless-stopped
