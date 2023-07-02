@@ -24,8 +24,11 @@ services:
       traefik.enable: true
       traefik.http.routers.minecraft.rule: 'Host(`mc.${DOMAIN_NAME:-localhost}`)'
       # TCP Pass through
-      traefik.tcp.routers.minecraft.rule: 'HostSNI(`mc.${DOMAIN_NAME:-localhost}`)'
+      traefik.tcp.routers.minecraft.rule: 'HostSNI(`*`)'
       traefik.tcp.routers.minecraft.entrypoints: mc
       traefik.tcp.services.minecraft.loadbalancer.server.port: 25565
+      # UDP for mod
+      traefik.udp.routers.minecraft.entrypoint: mc-mod-udp
+      traefik.udp.services.minecraft.loadbalancer.server.port: 24454
     networks:
       - proxy-network
