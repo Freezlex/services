@@ -19,7 +19,9 @@ services:
       - '--certificatesresolvers.letsencryptresolver.acme.httpchallenge=true'
       - '--certificatesresolvers.letsencryptresolver.acme.storage=/letsencrypt/acme.json'
       - '--entrypoints.websecure.http.tls.certresolver=letsencryptresolver'
-      - '--certificatesresolvers.letsencryptresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory'
+      # Prod : acme-v02.api.letsencrypt.org
+      # Staging : acme-staging-v02.api.letsencrypt.org
+      - '--certificatesresolvers.letsencryptresolver.acme.caserver=acme-v02.api.letsencrypt.org'
       # HTTP -> HTTPS
       - '--entrypoints.web.http.redirections.entrypoint.to=websecure'
       - '--entrypoints.web.http.redirections.entryPoint.scheme=https'
