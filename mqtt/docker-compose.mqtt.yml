@@ -16,7 +16,7 @@ services:
       - ./mqtt/.config/:/mosquitto/config/
     labels:
       traefik.enable: true
-
+      traefik.http.routers.mqtt.rule: Host(`mqtt.${DOMAIN_NAME:-localhost}`)
       traefik.tcp.services.mqtt.loadbalancer.server.port: 1883
       traefik.tcp.routers.tcpr_mqtt.entrypoints: mqtt
       traefik.tcp.routers.tcpr_mqtt.tls: true
