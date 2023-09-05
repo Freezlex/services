@@ -5,7 +5,7 @@ services:
     container_name: mqtt
     image: eclipse-mosquitto
     networks:
-      - mqtt
+      - proxy-network
     restart: always
     expose:
       - 1883
