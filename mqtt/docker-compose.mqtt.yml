@@ -16,12 +16,14 @@ services:
       - ./mqtt/.config/:/mosquitto/config/:r
     labels:
       traefik.enable: true
-      traefik.docker.network: mqtt
-      traefik.tcp.services.mqtt.loadbalancer.server.port: 1883
-      traefik.tcp.services.mqtt_websocket.loadbalancer.server.port: 9001
-      traefik.tcp.routers.tcpr_mqtt.entrypoints: mqtt
-      traefik.tcp.routers.tcpr_mqtt.rule: HostSNI(`*`)
-      traefik.tcp.routers.tcpr_mqtt.service: mqtt
-      traefik.tcp.routers.tcpr_mqtt_websocket.entrypoints: websocket
-      traefik.tcp.routers.tcpr_mqtt_websocket.rule: HostSNI(`*`)
-      traefik.tcp.routers.tcpr_mqtt_websocket.service: mqtt_websocket
+
+      traefik.http.routers.mqtt.rule: Host(`mqtt.${DOMAIN_NAME:-localhost}`)
+      traefik.http.routers.mqtt.entrypoints: websecure
+
+      traefik.tcp.routers.mqtt.rule: HostSNI(`*`)
+      traefik.tcp.services.mqtt.loadbalancer.server.port: 8883
+      
+      traefik.tcp.routers.mqtt.entrypoints: mqtt
+
+      traefik.http.services.mqtt.loadbalancer.server.port: 9001
+      traefik.docker.network: public_facing
