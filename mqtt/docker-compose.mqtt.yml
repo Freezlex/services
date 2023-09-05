@@ -11,13 +11,11 @@ services:
       - 1883
       - 9001
     volumes:
-      - ./mqtt/.data/:/mosquitto/data/:rw
-      - ./mqtt/.logs/:/mosquitto/log/:rw
-      - ./mqtt/.config/:/mosquitto/config/:r
+      - ./mqtt/.data/:/mosquitto/data/
+      - ./mqtt/.logs/:/mosquitto/log/
+      - ./mqtt/.config/:/mosquitto/config/
     labels:
       traefik.enable: true
-
-      traefik.http.routers.mqtt.rule: Host(`mqtt.${DOMAIN_NAME:-localhost}`)
 
       traefik.tcp.services.mqtt.loadbalancer.server.port: 1883
       traefik.tcp.routers.tcpr_mqtt.entrypoints: mqtt
