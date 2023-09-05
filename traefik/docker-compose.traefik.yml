@@ -14,7 +14,7 @@ services:
       - '--entrypoints.websecure.address=:${TRAEFIK_WEBSECURE_ENTRYPOINT:-443}'
       - '--entrypoints.mc.address=:${TRAEFIK_MC_ENTRYPOINT:-25565}'
       - '--entrypoints.mqtt.address=:${TRAEFIK_MQTT_ENTRYPOINT:-1883}'
-      - '--entrypoints.mqtt_websocket.address=:${TRAEFIK_MQTT_WEBSOCKET_ENTRYPOINT:-9001}'
+      - '--entrypoints.websocket.address=:${TRAEFIK_WEBSOCKET_ENTRYPOINT:-9001}'
       # Let's Encrypt
       - '--certificatesresolvers.letsencryptresolver.acme.email=${ROOT_EMAIL:-changeme@changeme.org}'
       - '--certificatesresolvers.letsencryptresolver.acme.httpchallenge.entrypoint=web'
@@ -65,7 +65,7 @@ services:
       # - '${TRAEFIK_MC_ENTRYPOINT:-25565}:${TRAEFIK_MC_ENTRYPOINT:-25565}/tcp'
       # - '${TRAEFIK_MC_ENTRYPOINT:-24454}:${TRAEFIK_MC_ENTRYPOINT:-24454}/udp'
       - '${TRAEFIK_MQTT_ENTRYPOINT:-1883}:${TRAEFIK_WEBSECURE_ENTRYPOINT:-1883}'
-      - '${TRAEFIK_MQTT_WEBSOCKET_ENTRYPOINT:-9001}:${TRAEFIK_MQTT_WEBSOCKET_ENTRYPOINT:-9001}'
+      - '${TRAEFIK_WEBSOCKET_ENTRYPOINT:-9001}:${TRAEFIK_WEBSOCKET_ENTRYPOINT:-9001}'
     restart: unless-stopped
     volumes:
       - '/var/run/docker.sock:/var/run/docker.sock:ro'
