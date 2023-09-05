@@ -61,7 +61,10 @@ services:
       traefik.http.middlewares.basic_auth.basicauth.removeHeader: true
       traefik.http.middlewares.basic_auth.basicauth.users: ${USERS}
       traefik.http.routers.traefik.middlewares: basic_auth@docker
-      traefik.http.routers.traefik.rule: Host(`traefik.${DOMAIN_NAME:-localhost}`)
+      traefik.http.routers.traefik.rule: Host(`${DOMAIN_NAME:-localhost}`)
+      traefik.http.routers.traefik.tls.certresolver: letsencryptresolver
+      traefik.http.routers.traefik.tls.domains.main: '${DOMAIN_NAME:-localhost}'
+      traefik.http.routers.traefik.tls.domains.sans: '*.${DOMAIN_NAME:-localhost}'
       traefik.http.routers.traefik.service: api@internal
     networks:
       - proxy-network
