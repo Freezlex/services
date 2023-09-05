@@ -17,13 +17,10 @@ services:
     labels:
       traefik.enable: true
 
-      traefik.http.routers.mqtt.rule: Host(`mqtt.${DOMAIN_NAME:-localhost}`)
-      traefik.http.routers.mqtt.entrypoints: websecure
-
-      traefik.tcp.routers.mqtt.rule: HostSNI(`*`)
-      traefik.tcp.services.mqtt.loadbalancer.server.port: 8883
-      
+      traefik.tcp.routers.mqtt.rule: HostSNI(`mqtt.${DOMAIN_NAME:-localhost}`)
+      traefik.tcp.services.mqtt.loadbalancer.server.port: '${TRAEFIK_MQTT_ENTRYPOINT:-1883}'
       traefik.tcp.routers.mqtt.entrypoints: mqtt
 
+      traefik.http.routers.mqtt.rule: Host(`mqtt.${DOMAIN_NAME:-localhost}`)
+      traefik.http.routers.mqtt.entrypoints: websocket
       traefik.http.services.mqtt.loadbalancer.server.port: 9001
-      traefik.docker.network: public_facing

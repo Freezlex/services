@@ -9,11 +9,14 @@ services:
       - '--providers.docker'
       - '--providers.docker.exposedbydefault=${TRAEFIK_EXPOSED_BY_DEFAULT:-false}'
       - '--providers.docker.network=proxy-network'
+
       # Entrypoints
       - '--entrypoints.web.address=:${TRAEFIK_WEB_ENTRYPOINT:-80}'
       - '--entrypoints.websecure.address=:${TRAEFIK_WEBSECURE_ENTRYPOINT:-443}'
-      - '--entrypoints.mc.address=:${TRAEFIK_MC_ENTRYPOINT:-25565}'
-      - '--entrypoints.mqtt.address=:${TRAEFIK_MQTT_ENTRYPOINT:-8883}'
+      - '--entrypoints.mqtt.address=:${TRAEFIK_MQTT_ENTRYPOINT:-1883}'
+      - '--entrypoints.websocket.address=:${TRAEFIK_WEBSOCKET_ENTRYPOINT:-9001}'
+      # - '--entrypoints.mc.address=:${TRAEFIK_MC_ENTRYPOINT:-25565}'
+
       # Let's Encrypt
       - '--certificatesresolvers.letsencryptresolver.acme.email=${ROOT_EMAIL:-changeme@changeme.org}'
       - '--certificatesresolvers.letsencryptresolver.acme.httpchallenge.entrypoint=web'
@@ -22,13 +25,16 @@ services:
       - '--entrypoints.websecure.http.tls.certresolver=letsencryptresolver'
       # Prod : acme-v02.api.letsencrypt.org/directory
       # Staging : acme-staging-v02.api.letsencrypt.org/directory
-      - '--certificatesresolvers.letsencryptresolver.acme.caserver=https://acme-v02.api.letsencrypt.org/directory'
+      - '--certificatesresolvers.letsencryptresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory'
+
       # HTTP -> HTTPS
       - '--entrypoints.web.http.redirections.entrypoint.to=websecure'
       - '--entrypoints.web.http.redirections.entryPoint.scheme=https'
+
       # HTTP/3
       - '--experimental.http3=true'
       - '--entrypoints.websecure.http3'
+
       # Logs
       - '--accesslog.filepath=/logs/access.log'
       - '--accesslog.format=json'
@@ -36,6 +42,7 @@ services:
       - '--log.format=json'
       - '--log.level=${TRAEFIK_LOG_LEVEL:-INFO}'
       - '--metrics.prometheus.addrouterslabels'
+
       # Misc
       - '--api.dashboard=true'
       - '--entrypoints.websecure.http.middlewares=compress@file,headers@file${TRAEFIK_PLUGINS:-}'
@@ -61,9 +68,7 @@ services:
     ports:
       - '${TRAEFIK_WEB_ENTRYPOINT:-80}:${TRAEFIK_WEB_ENTRYPOINT:-80}'
       - '${TRAEFIK_WEBSECURE_ENTRYPOINT:-443}:${TRAEFIK_WEBSECURE_ENTRYPOINT:-443}'
-      # - '${TRAEFIK_MC_ENTRYPOINT:-25565}:${TRAEFIK_MC_ENTRYPOINT:-25565}/tcp'
-      # - '${TRAEFIK_MC_ENTRYPOINT:-24454}:${TRAEFIK_MC_ENTRYPOINT:-24454}/udp'
-      - '${TRAEFIK_MQTT_ENTRYPOINT:-1883}:${TRAEFIK_WEBSECURE_ENTRYPOINT:-1883}'
+      - '${TRAEFIK_MQTT_ENTRYPOINT:-1883}:${TRAEFIK_MQTT_ENTRYPOINT:-1883}'
       - '${TRAEFIK_WEBSOCKET_ENTRYPOINT:-9001}:${TRAEFIK_WEBSOCKET_ENTRYPOINT:-9001}'
     restart: unless-stopped
     volumes:

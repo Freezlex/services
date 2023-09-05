@@ -5,3 +5,4 @@ dendrite.yaml
 */.logs/*
 !*.template.*
 !*/.data/.gitkeep
+*.password
