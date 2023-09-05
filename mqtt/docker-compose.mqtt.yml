@@ -11,7 +11,9 @@ services:
       - 1883
       - 9001
     volumes:
-      - ./mqtt/.data/:/mosquitto/:rw
+      - ./mqtt/.data/:/mosquitto/data/:rw
+      - ./mqtt/.logs/:/mosquitto/log/:rw
+      - ./mqtt/.config/:/mosquitto/config/:rw
     labels:
       traefik.enable: true
       traefik.docker.network: mqtt
