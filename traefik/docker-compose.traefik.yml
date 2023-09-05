@@ -78,7 +78,6 @@ services:
       - './traefik/.data/letsencrypt:/letsencrypt'
     depends_on:
       - gitea
-      - mqtt
       - whoami
 
   whoami:
