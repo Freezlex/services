@@ -13,7 +13,7 @@ services:
       # Entrypoints
       - '--entrypoints.web.address=:${TRAEFIK_WEB_ENTRYPOINT:-80}'
       - '--entrypoints.websecure.address=:${TRAEFIK_WEBSECURE_ENTRYPOINT:-443}'
-      - '--entrypoints.mqtt.address=:${TRAEFIK_MQTT_ENTRYPOINT:-8883}'
+      - '--entrypoints.mqtt.address=:${TRAEFIK_MQTT_ENTRYPOINT:-1883}'
       - '--entrypoints.websocket.address=:${TRAEFIK_WEBSOCKET_ENTRYPOINT:-9001}'
       # - '--entrypoints.mc.address=:${TRAEFIK_MC_ENTRYPOINT:-25565}'
 
@@ -68,7 +68,7 @@ services:
     ports:
       - '${TRAEFIK_WEB_ENTRYPOINT:-80}:${TRAEFIK_WEB_ENTRYPOINT:-80}'
       - '${TRAEFIK_WEBSECURE_ENTRYPOINT:-443}:${TRAEFIK_WEBSECURE_ENTRYPOINT:-443}'
-      - '${TRAEFIK_MQTT_ENTRYPOINT:-8883}:${TRAEFIK_MQTT_ENTRYPOINT:-8883}'
+      - '${TRAEFIK_MQTT_ENTRYPOINT:-1883}:${TRAEFIK_MQTT_ENTRYPOINT:-1883}'
       - '${TRAEFIK_WEBSOCKET_ENTRYPOINT:-9001}:${TRAEFIK_WEBSOCKET_ENTRYPOINT:-9001}'
     restart: unless-stopped
     volumes:
