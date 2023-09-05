@@ -13,7 +13,7 @@ services:
     volumes:
       - ./mqtt/.data/:/mosquitto/data/:rw
       - ./mqtt/.logs/:/mosquitto/log/:rw
-      - ./mqtt/.config/:/mosquitto/config/:rw
+      - ./mqtt/.config/:/mosquitto/config/:r
     labels:
       traefik.enable: true
       traefik.docker.network: mqtt
