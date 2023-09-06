@@ -24,7 +24,7 @@ services:
       - "--certificatesresolvers.letsencryptresolver.acme.storage=/letsencrypt/acme.json"
       # Prod : acme-v02.api.letsencrypt.org/directory
       # Staging : acme-staging-v02.api.letsencrypt.org/directory
-      - '--certificatesresolvers.letsencryptresolver.acme.caserver=https://acme-v02.api.letsencrypt.org/directory'
+      - '--certificatesresolvers.letsencryptresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory'
 
       # HTTP -> HTTPS
       - '--entrypoints.web.http.redirections.entrypoint.to=websecure'
