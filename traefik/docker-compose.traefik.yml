@@ -18,11 +18,10 @@ services:
       # - '--entrypoints.mc.address=:${TRAEFIK_MC_ENTRYPOINT:-25565}'
 
       # Let's Encrypt
-      - '--certificatesresolvers.letsencryptresolver.acme.email=${ROOT_EMAIL:-changeme@changeme.org}'
-      - '--certificatesresolvers.letsencryptresolver.acme.httpchallenge.entrypoint=web'
-      - '--certificatesresolvers.letsencryptresolver.acme.httpchallenge=true'
-      - '--certificatesresolvers.letsencryptresolver.acme.storage=/letsencrypt/acme.json'
-      - '--entrypoints.websecure.http.tls.certresolver=letsencryptresolver'
+      - "--certificatesresolvers.letsencryptresolver.acme.dnschallenge=true"
+      - "--certificatesresolvers.letsencryptresolver.acme.dnschallenge.provider=googledomains"
+      - "--certificatesresolvers.letsencryptresolver.acme.email=${ROOT_EMAIL:-changeme@changeme.org}"
+      - "--certificatesresolvers.letsencryptresolver.acme.storage=/letsencrypt/acme.json"
       # Prod : acme-v02.api.letsencrypt.org/directory
       # Staging : acme-staging-v02.api.letsencrypt.org/directory
       - '--certificatesresolvers.letsencryptresolver.acme.caserver=https://acme-v02.api.letsencrypt.org/directory'
