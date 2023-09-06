@@ -52,6 +52,7 @@ services:
       - '--providers.file.watch=true'
     environment:
       - 'TZ=${TZ:-Europe/Paris}'
+      - 'GOOGLE_DOMAINS_ACCESS_TOKEN=${GOOGLE_DOMAINS_ACCESS_TOKEN:-}'
     healthcheck:
       test: ['CMD', 'traefik', 'healthcheck', '--ping']
     labels:
