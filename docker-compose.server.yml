@@ -1,9 +1,0 @@
-version: '3.8'
-
-networks:
-  proxy-network:
-    name: proxy-network
-    driver: bridge
-  database-network:
-    name: database-network
-    driver: bridge

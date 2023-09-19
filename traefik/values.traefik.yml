@@ -1,0 +1,47 @@
+globalArguments:
+  - --global.sendanonymoususage=false
+  - --global.checknewversion=true
+additionalArguments:
+  - --serversTransport.insecureSkipVerify=true
+  - --log.level=DEBUG
+deployment:
+  enabled: true
+  replicas: 1
+  annotations: {}
+  podAnnotations: {}
+  additionalContainer: []
+  initContainers:
+  - name: volume-permissions
+      image: busybox:1.31.1
+      command: ["sh", "-c", "chmod -Rv 600 /ssl-certs/*"]
+      volumeMounts:
+        - name: ssl-certs
+          mountPath: /ssl-certs
+ingressRoute:
+  dashboard:
+    enabled: false
+ports:
+  web:
+    redirectTo: websecure
+  websecure:
+    tls:
+      enabled: true
+providers:
+  kubernetesCRD:
+    enabled: true
+    ingressClass: traefik-external
+  kubernetesIngress:
+    enabled: true
+    publishedService:
+      enabled: false
+rbac:
+  enabled: true
+service:
+  enabled: true
+  type: LoadBalancer
+  annotation: {}
+  labels: {}
+  spec:
+    loadBalancerIP: 192.168.1.40
+  loadBalancerSourceRanges: []
+  externalIPs: []
