@@ -5,4 +5,4 @@ metadata:
   namespace: traefik
 type: Opaque
 data:
-  users: ${DASHBOARD_USERS:-}
+  users: amlzLmFkbWluOiRhcHIxJGxsY3NqMkdLJEVpeGJRWFRlNFBYMEdLblJ2MkNvNjEKCg==
