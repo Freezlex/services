@@ -6,7 +6,7 @@ metadata:
 spec:
   headers:
     browserXssFilter: true
-    contentTypeNoSniff: true
+    contentTypeNosniff: true
     forceSTSHeader: true
     stsIncludeSubdomains: true
     stsPreload: true

@@ -12,7 +12,7 @@ deployment:
   additionalContainer: []
   initContainers:
   - name: volume-permissions
-      image: busybox:1.31.1
+      image: "busybox:1.31.1"
       command: ["sh", "-c", "chmod -Rv 600 /ssl-certs/*"]
       volumeMounts:
         - name: ssl-certs
