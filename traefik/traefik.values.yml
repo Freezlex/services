@@ -23,7 +23,9 @@ ingressRoute:
 providers:
   kubernetesCRD:
     enabled: true
-    ingressClass: "traefik-external"
+    ingressClass: traefik-external
+    namespaces:
+      - traefik
   kubernetesIngress:
     enabled: true
     publishedService:
