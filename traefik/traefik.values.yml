@@ -33,7 +33,6 @@ additionalArguments:
 #  - --certificatesresolvers.generic.acme.storage=/ssl-certs/acme-generic.json
   - --global.sendanonymoususage=false
   - --global.checknewversion=true
-additionalArguments:
   - --serversTransport.insecureSkipVerify=true
 logs:
 # Configure log settings here...
@@ -87,7 +86,9 @@ deployment:
   enabled: true
   replicas: 1
   annotations: {}
-  podAnnotations: {}
+  podAnnotations:
+    # Add an annotation to specify the desired IngressClass
+    traefik.ingress.kubernetes.io/ingress-class: traefik
   additionalContainer: []
   initContainers:
     # The "volume-permissions" init container is required if you run into permission issues.
@@ -100,6 +101,7 @@ deployment:
           mountPath: /ssl-certs
 rbac:
   enabled: true
+
 # Set Traefik as your default Ingress Controller, according to Kubernetes 1.19+ changes.
 ingressClass:
   enabled: true
