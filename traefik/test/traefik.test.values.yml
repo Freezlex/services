@@ -1,0 +1,132 @@
+# NAMESPACE
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: traefik-system
+---
+#SERVICE-ACCOUNT
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: traefik
+  namespace: traefik-system
+---
+#DEPLOYMENT
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: traefik
+  namespace: traefik-system
+  labels:
+    app: traefik
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: traefik
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 50%
+  template:
+    metadata:
+      labels:
+        app: traefik
+    spec:
+      serviceAccountName: traefik
+      containers:
+      - image: traefik:2.4.5
+        imagePullPolicy: IfNotPresent
+        name: traefik
+        readinessProbe:
+          httpGet:
+            path: /ping
+            port: 80
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 2
+        livenessProbe:
+          httpGet:
+            path: /ping
+            port: 80
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 2
+        ports:
+        - name: http
+          containerPort: 80
+        - name: https
+          containerPort: 443
+        resources:
+          requests:
+            memory: 50Mi
+            cpu: 100m
+          limits:
+            memory: 50Mi
+            cpu: 500m
+        securityContext:
+          capabilities:
+            add:
+            - NET_BIND_SERVICE
+            drop:
+            - ALL
+---
+# SERVICE
+apiVersion: v1
+kind: Service
+metadata:
+  name: traefik
+  namespace: traefik-system
+spec:
+  externalTrafficPolicy: Local
+  selector:
+    app: traefik
+  ports:
+    - port: 80
+      protocol: TCP
+      name: http
+    - port: 443
+      protocol: TCP
+      name: https
+  type: LoadBalancer
+  loadBalancerIP: 192.168.1.40
+---
+#CONFIG MAP
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: traefik-static
+  namespace: traefik-system
+  labels:
+    app: traefik
+data:
+  traefik.yml: |
+    global:
+      checkNewVersion: false
+      sendAnonymousUsage: true
+    entryPoints:
+      http:
+        address: :80
+        http:
+          redirections:
+            entryPoint:
+              to: https
+              scheme: https
+              permanent: false
+              priority: 1
+      https:
+        address: :443
+        http:
+          tls: {}
+    providers:
+      kubernetesCRD: {}
+    api:
+      dashboard: true
+    ping:
+      entryPoint: http
+    log:
+      level: INFO
