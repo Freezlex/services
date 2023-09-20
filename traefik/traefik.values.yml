@@ -10,26 +10,20 @@ deployment:
   annotations: {}
   podAnnotations: {}
   additionalContainer: []
-  initContainers:
-    - name: volume-permissions
-      image: "busybox:1.31.1"
-      command: ["sh", "-c", "chmod -Rv 600 /ssl-certs/*"]
-      volumeMounts:
-        - name: ssl-certs
-          mountPath: /ssl-certs
-ingressRoute:
-  dashboard:
-    enabled: false
+  initContainers: []
 ports:
   web:
     redirectTo: websecure
   websecure:
     tls:
       enabled: true
+ingressRoute:
+  dashboard:
+    enabled: false
 providers:
   kubernetesCRD:
     enabled: true
-    ingressClass: traefik-external
+    ingressClass: "traefik-external"
   kubernetesIngress:
     enabled: true
     publishedService:
