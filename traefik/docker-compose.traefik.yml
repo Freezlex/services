@@ -25,6 +25,8 @@ services:
       # Prod : acme-v02.api.letsencrypt.org/directory
       # Staging : acme-staging-v02.api.letsencrypt.org/directory
       - '--certificatesresolvers.letsencryptresolver.acme.caserver=https://acme-v02.api.letsencrypt.org/directory'
+      - '--entrypoints.websecure.http.tls.certresolver=letsencryptresolver'
+      - '--entrypoints.mqtt.http.tls.certresolver=letsencryptresolver'
 
       # HTTP -> HTTPS
       - '--entrypoints.web.http.redirections.entrypoint.to=websecure'
