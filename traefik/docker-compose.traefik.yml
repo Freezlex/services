@@ -71,8 +71,7 @@ services:
     ports:
       - '${TRAEFIK_WEB_ENTRYPOINT:-80}:${TRAEFIK_WEB_ENTRYPOINT:-80}'
       - '${TRAEFIK_WEBSECURE_ENTRYPOINT:-443}:${TRAEFIK_WEBSECURE_ENTRYPOINT:-443}'
-      - '${TRAEFIK_MQTT_ENTRYPOINT:-1883}:${TRAEFIK_MQTT_ENTRYPOINT:-1883}'
-      - '${TRAEFIK_WEBSOCKET_ENTRYPOINT:-9001}:${TRAEFIK_WEBSOCKET_ENTRYPOINT:-9001}'
+      - '${TRAEFIK_MC_ENTRYPOINT:-25565}:${TRAEFIK_MC_ENTRYPOINT:-9001}'
     restart: unless-stopped
     volumes:
       - '/var/run/docker.sock:/var/run/docker.sock:ro'
