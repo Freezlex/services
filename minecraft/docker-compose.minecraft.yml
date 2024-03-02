@@ -6,7 +6,7 @@ services:
     container_name: minecraft
     environment:
       EULA: "TRUE"
-      TYPE: "FABRIC"
+      TYPE: "PAPER"
       VERSION: "1.20.4"
       MEMORY: "10G"
       SERVER_NAME: "Freezlex's Bathtub"
@@ -37,9 +37,6 @@ services:
       ICON: "https://matrix-client.matrix.org/_matrix/media/r0/download/matrix.org/fOlSCTKsGbDEAEPLAwSmXpro"
       # Auto-pause server when no one is connected
       ENABLE_AUTOPAUSE: "TRUE"
-      MODRINTH_DOWNLOAD_OPTIONAL_DEPENDENCIES: "TRUE"
-      MODRINTH_PROJECTS: "fabric-api:hfsU4hXq,create-fabric:q6x0xvc1,terralith:mLdNNka6,luckperms:Ws97yOyp"
-      VANILLATWEAKS_SHARECODE: "xArMJ4"
     volumes:
       - ./minecraft/.data:/data:rw
       - ./minecraft/.logs/:/data/logs
