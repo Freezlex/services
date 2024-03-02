@@ -7,15 +7,38 @@ services:
     environment:
       EULA: "TRUE"
       TYPE: "FABRIC"
-      VERSION: "1.19.2"
+      VERSION: "1.20.4"
       MEMORY: "10G"
       SERVER_NAME: "Freezlex's Bathtub"
+      # World Type
+      LEVEL_TYPE: FLAT
+      GENERATOR_SETTINGS: >-4
+          {
+              "layers": [
+                  {
+                      "block": "minecraft:bedrock",
+                      "height": 1
+                  },
+                  {
+                      "block": "minecraft:stone",
+                      "height": 25
+                  },
+                  {
+                      "block": "minecraft:dirt",
+                      "height": 15
+                  },
+                  {
+                      "block": "minecraft:grass",
+                      "height": 1
+                  }
+              ]
+          }
       MOTD: "\u00a76\u2500\u00a7e\u2b1d\u00a76\u2500\u00a7e\u2b1d\u00a76\u2500\u00a7e\u2b1d\u00a76\u2500 \u00a7cFreezlex's Bathtub\u00a76 \u2500\u00a7e\u2b1d\u00a76\u2500\u00a7e\u2b1d\u00a76\u2500\u00a7e\u2b1d\u00a76\u2500\\n  \u00a79fabric\u00a76 | \u00a7emc.freezlex.dev\u00a76 | \u00a791.19.2"
-      ICON: "https://matrix-client.matrix.org/_matrix/media/r0/download/matrix.org/CRzKauqCVBnrhwRbcJoFvVgT"
+      ICON: "https://matrix-client.matrix.org/_matrix/media/r0/download/matrix.org/fOlSCTKsGbDEAEPLAwSmXpro"
       # Auto-pause server when no one is connected
       ENABLE_AUTOPAUSE: "TRUE"
       MODRINTH_DOWNLOAD_OPTIONAL_DEPENDENCIES: "TRUE"
-      MODRINTH_PROJECTS: "fabric-api:hfsU4hXq,create-fabric:q6x0xvc1,terralith:mLdNNka6,luckperms:Ws97yOyp,numismatic-overhaul:byjB2dk6,owo-lib:yGLYmVnT"
+      MODRINTH_PROJECTS: "fabric-api:hfsU4hXq,create-fabric:q6x0xvc1,terralith:mLdNNka6,luckperms:Ws97yOyp"
       VANILLATWEAKS_SHARECODE: "xArMJ4"
     volumes:
       - ./minecraft/.data:/data:rw
