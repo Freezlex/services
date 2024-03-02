@@ -6,7 +6,7 @@ services:
     container_name: minecraft
     environment:
       EULA: "TRUE"
-      TYPE: "PAPER"
+      TYPE: "VANILLA"
       VERSION: "1.20.4"
       MEMORY: "10G"
       SERVER_NAME: "Freezlex's Bathtub"
