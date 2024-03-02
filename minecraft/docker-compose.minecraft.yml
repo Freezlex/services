@@ -24,12 +24,8 @@ services:
                       "height": 25
                   },
                   {
-                      "block": "minecraft:dirt",
-                      "height": 15
-                  },
-                  {
                       "block": "minecraft:grass",
-                      "height": 1
+                      "height": 15
                   }
               ],
               "biome": "minecraft:plains"
