@@ -13,9 +13,7 @@ services:
       # Entrypoints
       - '--entrypoints.web.address=:${TRAEFIK_WEB_ENTRYPOINT:-80}'
       - '--entrypoints.websecure.address=:${TRAEFIK_WEBSECURE_ENTRYPOINT:-443}'
-      - '--entrypoints.mqtt.address=:${TRAEFIK_MQTT_ENTRYPOINT:-1883}'
-      - '--entrypoints.websocket.address=:${TRAEFIK_WEBSOCKET_ENTRYPOINT:-9001}'
-      # - '--entrypoints.mc.address=:${TRAEFIK_MC_ENTRYPOINT:-25565}'
+      - '--entrypoints.mc.address=:${TRAEFIK_MC_ENTRYPOINT:-25565}'
 
       # Let's Encrypt
       - "--certificatesresolvers.letsencryptresolver.acme.dnschallenge=true"
