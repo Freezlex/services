@@ -3,7 +3,7 @@ version: '3.8'
 services:
   minecraft:
     image: itzg/minecraft-server:latest
-    container_name: minecraft
+    container_name: mc-vanilla
     environment:
       EULA: "TRUE"
       TYPE: "VANILLA"
@@ -40,13 +40,13 @@ services:
     restart: unless-stopped
     labels:
       traefik.enable: true
-      traefik.http.routers.minecraft.rule: 'Host(`mc.${DOMAIN_NAME:-localhost}`)'
+      traefik.http.routers.mc-vanilla.rule: 'Host(`mc.${DOMAIN_NAME:-localhost}`)'
       # TCP Pass through
-      traefik.tcp.routers.minecraft.rule: 'HostSNI(`*`)'
-      traefik.tcp.routers.minecraft.entrypoints: minecraft
-      traefik.tcp.services.minecraft.loadbalancer.server.port: 25565
+      traefik.tcp.routers.mc-vanilla.rule: 'HostSNI(`*`)'
+      traefik.tcp.routers.mc-vanilla.entrypoints: minecraft
+      traefik.tcp.services.mc-vanilla.loadbalancer.server.port: 25565
       # UDP Pass through
-      traefik.udp.routers.minecraft.entrypoints: minecraft
-      traefik.udp.services.minecraft.loadbalancer.server.port: 25565
+      traefik.udp.routers.mc-vanilla.entrypoints: minecraft
+      traefik.udp.services.mc-vanilla.loadbalancer.server.port: 25565
     networks:
       - proxy-network
