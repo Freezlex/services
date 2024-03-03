@@ -43,7 +43,7 @@ services:
       traefik.http.routers.minecraft.rule: 'Host(`mc.${DOMAIN_NAME:-localhost}`)'
       # TCP Pass through
       traefik.tcp.routers.minecraft.rule: 'HostSNI(`*`)'
-      traefik.tcp.routers.minecraft.entrypoints: mc
+      traefik.tcp.routers.minecraft.entrypoints: minecraft
       traefik.tcp.services.minecraft.loadbalancer.server.port: 25565
     networks:
       - proxy-network
