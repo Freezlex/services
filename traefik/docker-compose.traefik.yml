@@ -13,9 +13,8 @@ services:
       # Entrypoints
       - '--entrypoints.web.address=:${TRAEFIK_WEB_ENTRYPOINT:-80}'
       - '--entrypoints.websecure.address=:${TRAEFIK_WEBSECURE_ENTRYPOINT:-443}'
-      - '--entrypoints.mc-tcp.address=:${TRAEFIK_MINECRAFT_ENTRYPOINT:-25565}'
-      - '--entrypoints.mc-udp.address=:${TRAEFIK_MINECRAFT_ENTRYPOINT:-25565}/udp'
-
+      - '--entrypoints.minecraft.address=:${TRAEFIK_MINECRAFT_ENTRYPOINT:-25565}'
+      - '--entrypoints.minecraft.address=:${TRAEFIK_MINECRAFT_ENTRYPOINT:-25565}/udp'
       # Let's Encrypt
       - "--certificatesresolvers.letsencryptresolver.acme.dnschallenge=true"
       - "--certificatesresolvers.letsencryptresolver.acme.dnschallenge.provider=googledomains"
@@ -25,7 +24,7 @@ services:
       # Staging : acme-staging-v02.api.letsencrypt.org/directory
       - '--certificatesresolvers.letsencryptresolver.acme.caserver=https://acme-v02.api.letsencrypt.org/directory'
       - '--entrypoints.websecure.http.tls.certresolver=letsencryptresolver'
-      - '--entrypoints.mc-tcp.http.tls.certresolver=letsencryptresolver'
+      - '--entrypoints.minecraft.http.tls.certresolver=letsencryptresolver'
 
       # HTTP -> HTTPS
       - '--entrypoints.web.http.redirections.entrypoint.to=websecure'

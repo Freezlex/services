@@ -40,13 +40,14 @@ services:
     restart: unless-stopped
     labels:
       traefik.enable: true
+      traefik.docker.network: proxy-network
       traefik.http.routers.minecraft.rule: 'Host(`mc.${DOMAIN_NAME:-localhost}`)'
       # TCP Pass through
       traefik.tcp.routers.minecraft.rule: 'HostSNI(`*`)'
-      traefik.tcp.routers.minecraft.entrypoints: mc-tcp
+      traefik.tcp.routers.minecraft.entrypoints: minecraft
       traefik.tcp.services.minecraft.loadbalancer.server.port: 25565
       # UDP Pass through
-      traefik.udp.routers.minecraft.entrypoints: mc-ud
+      traefik.udp.routers.minecraft.entrypoints: minecraft
       traefik.udp.routers.minecraft.service: minecraft
       traefik.udp.services.minecraft.loadbalancer.server.port: 25565
     networks:
