@@ -46,8 +46,10 @@ services:
       traefik.tcp.routers.minecraft.rule: 'HostSNI(`*`)'
       traefik.tcp.routers.minecraft.service: minecraft
       traefik.tcp.routers.minecraft.entrypoints: tcp-minecraft
+      traefik.tcp.services.minecraft.loadbalancer.server.port: 25566
       # UDP Pass through
       traefik.udp.routers.minecraft.service: minecraft
       traefik.udp.routers.minecraft.entrypoints: tcp-minecraft
+      traefik.udp.services.minecraft.loadbalancer.server.port: 25566
     networks:
       - proxy-network
