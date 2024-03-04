@@ -41,7 +41,7 @@ services:
     labels:
       traefik.enable: true
       # TCP Pass through
-      traefik.tcp.routers.vanilla.rule: 'HostSNI(`mc.${DOMAIN_NAME:-localhost}`)'
+      traefik.tcp.routers.vanilla.rule: 'Host(`*`)'
       traefik.tcp.routers.vanilla.entrypoints: minecraft-tcp
       traefik.tcp.services.vanilla.loadbalancer.server.port: 25565
     networks:
