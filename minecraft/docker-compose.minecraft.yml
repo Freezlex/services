@@ -25,7 +25,11 @@ services:
                   },
                   {
                       "block": "minecraft:grass",
-                      "height": 15
+                      "height": 3
+                  },
+                  {
+                      "block": "minecraft:air",
+                      "height": 354
                   }
               ],
               "biome": "minecraft:plains"
