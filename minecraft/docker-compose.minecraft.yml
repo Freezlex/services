@@ -43,10 +43,10 @@ services:
       traefik.http.routers.vanilla.rule: 'Host(`mc.${DOMAIN_NAME:-localhost}`)'
       # TCP Pass through
       traefik.tcp.routers.vanilla.rule: 'HostSNI(`*`)'
-      traefik.tcp.routers.vanilla.entrypoints: minecraft
+      traefik.tcp.routers.vanilla.entrypoints: minecraft-tcp
       traefik.tcp.services.vanilla.loadbalancer.server.port: 25565
-    ports:
-      - 25565:25565/udp
-      - 25565:25565/tcp
+      # UDP Pass through
+      traefik.udp.routers.vanilla.entrypoints: minecraft-dup
+      traefik.udp.services.vanilla.loadbalancer.server.port: 25565
     networks:
       - proxy-network
