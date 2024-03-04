@@ -46,5 +46,7 @@ services:
       traefik.tcp.routers.vanilla.service: vanilla
       traefik.tcp.routers.vanilla.entrypoints: minecraft
       traefik.tcp.services.vanilla.loadbalancer.server.port: 25565
+    ports:
+      - 25565:25565/udp
     networks:
       - proxy-network
