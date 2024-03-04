@@ -14,7 +14,6 @@ services:
       - '--entrypoints.web.address=:${TRAEFIK_WEB_ENTRYPOINT:-80}'
       - '--entrypoints.websecure.address=:${TRAEFIK_WEBSECURE_ENTRYPOINT:-443}'
       - '--entrypoints.minecraft-tcp.address=:${TRAEFIK_MINECRAFT_ENTRYPOINT:-25565}/tcp'
-      - '--entrypoints.minecraft-udp.address=:${TRAEFIK_MINECRAFT_ENTRYPOINT:-25565}/udp'
       # Let's Encrypt
       - "--certificatesresolvers.letsencryptresolver.acme.dnschallenge=true"
       - "--certificatesresolvers.letsencryptresolver.acme.dnschallenge.provider=googledomains"
