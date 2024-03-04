@@ -21,14 +21,14 @@ services:
                   },
                   {
                       "block": "minecraft:stone",
-                      "height": 2
+                      "height": 58
                   },
                   {
-                      "block": "minecraft:sandstone",
-                      "height": 15
+                      "block": "minecraft:grass_block",
+                      "height": 5
                   }
               ],
-              "biome": "minecraft:desert"
+              "biome": "minecraft:plains"
           }
       MOTD: "\u00a76\u2500\u00a7e\u2b1d\u00a76\u2500\u00a7e\u2b1d\u00a76\u2500\u00a7e\u2b1d\u00a76\u2500 \u00a7cFreezlex's Bathtub\u00a76 \u2500\u00a7e\u2b1d\u00a76\u2500\u00a7e\u2b1d\u00a76\u2500\u00a7e\u2b1d\u00a76\u2500\n   \u00a79vanilla\u00a76  | \u00a7efreezlex.dev\u00a76  | \u00a791.20.4"
       ICON: "https://matrix-client.matrix.org/_matrix/media/r0/download/matrix.org/fOlSCTKsGbDEAEPLAwSmXpro"
