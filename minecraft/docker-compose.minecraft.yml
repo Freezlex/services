@@ -6,7 +6,7 @@ services:
     container_name: minecraft
     environment:
       EULA: "TRUE"
-      TYPE: "VANILLA"
+      TYPE: "PAPER"
       VERSION: "1.20.4"
       MEMORY: "10G"
       SERVER_NAME: "Freezlex's Bathtub"
@@ -42,7 +42,7 @@ services:
       traefik.enable: true
       # TCP Pass through
       traefik.tcp.routers.minecraft.rule: 'HostSNI(`*`)'
-      traefik.tcp.routers.minecraft.entrypoints: minecraft-tcp
+      traefik.tcp.routers.minecraft.entrypoints: minecraft
       traefik.tcp.services.minecraft.loadbalancer.server.port: 25565
     networks:
       - proxy-network
