@@ -1,9 +1,9 @@
 version: '3.8'
 
 services:
-  minecraft:
+  vanilla:
     image: itzg/minecraft-server:latest
-    container_name: minecraft
+    container_name: vanilla
     environment:
       EULA: "TRUE"
       TYPE: "VANILLA"
@@ -30,7 +30,7 @@ services:
               ],
               "biome": "minecraft:plains"
           }
-      MOTD: "\u00a76\u2500\u00a7e\u2b1d\u00a76\u2500\u00a7e\u2b1d\u00a76\u2500\u00a7e\u2b1d\u00a76\u2500 \u00a7cFreezlex's Bathtub\u00a76 \u2500\u00a7e\u2b1d\u00a76\u2500\u00a7e\u2b1d\u00a76\u2500\u00a7e\u2b1d\u00a76\u2500\\n  \u00a79fabric\u00a76 | \u00a7emc.freezlex.dev\u00a76 | \u00a791.20.4"
+      MOTD: "\u00a76\u2500\u00a7e\u2b1d\u00a76\u2500\u00a7e\u2b1d\u00a76\u2500\u00a7e\u2b1d\u00a76\u2500 \u00a7cFreezlex's Bathtub\u00a76 \u2500\u00a7e\u2b1d\u00a76\u2500\u00a7e\u2b1d\u00a76\u2500\u00a7e\u2b1d\u00a76\u2500\n  \u00a79fabric\u00a76 | \u00a7emc.freezlex.dev\u00a76 | \u00a791.20.4"
       ICON: "https://matrix-client.matrix.org/_matrix/media/r0/download/matrix.org/fOlSCTKsGbDEAEPLAwSmXpro"
       # Auto-pause server when no one is connected
       ENABLE_AUTOPAUSE: "TRUE"
@@ -40,11 +40,11 @@ services:
     restart: unless-stopped
     labels:
       traefik.enable: true
-      traefik.http.routers.minecraft.rule: 'Host(`mc.${DOMAIN_NAME:-localhost}`)'
+      traefik.http.routers.vanilla.rule: 'Host(`mc.${DOMAIN_NAME:-localhost}`)'
       # TCP Pass through
-      traefik.tcp.routers.minecraft.rule: 'HostSNI(`*`)'
-      traefik.tcp.routers.minecraft.service: minecraft
-      traefik.tcp.routers.minecraft.entrypoints: minecraft
-      traefik.tcp.services.minecraft.loadbalancer.server.port: 25565
+      traefik.tcp.routers.vanilla.rule: 'HostSNI(`*`)'
+      traefik.tcp.routers.vanilla.service: vanilla
+      traefik.tcp.routers.vanilla.entrypoints: minecraft
+      traefik.tcp.services.vanilla.loadbalancer.server.port: 25565
     networks:
       - proxy-network

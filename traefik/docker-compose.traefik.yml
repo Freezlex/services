@@ -59,7 +59,7 @@ services:
       traefik.http.middlewares.basic_auth.basicauth.removeHeader: true
       traefik.http.middlewares.basic_auth.basicauth.users: ${USERS}
       traefik.http.routers.traefik.middlewares: basic_auth@docker
-      traefik.http.routers.traefik.rule: Host(`${DOMAIN_NAME:-localhost}`)
+      traefik.http.routers.traefik.rule: Host(`dashboard.${DOMAIN_NAME:-localhost}`)
       traefik.http.routers.traefik.tls.certresolver: letsencryptresolver
       traefik.http.routers.traefik.tls.domains[0].main: '${DOMAIN_NAME:-localhost}'
       traefik.http.routers.traefik.tls.domains[0].sans: '*.${DOMAIN_NAME:-localhost}'
@@ -69,8 +69,7 @@ services:
     ports:
       - '${TRAEFIK_WEB_ENTRYPOINT:-80}:${TRAEFIK_WEB_ENTRYPOINT:-80}'
       - '${TRAEFIK_WEBSECURE_ENTRYPOINT:-443}:${TRAEFIK_WEBSECURE_ENTRYPOINT:-443}'
-      - '${TRAEFIK_MINECRAFT_ENTRYPOINT:-25565}:${TRAEFIK_MINECRAFT_ENTRYPOINT:-25565}'
-      - '${TRAEFIK_MINECRAFT_ENTRYPOINT:-25565}:${TRAEFIK_MINECRAFT_ENTRYPOINT:-25565}/udp'
+      - '${TRAEFIK_MINECRAFT_ENTRYPOINT:-25565}:${TRAEFIK_MINECRAFT_ENTRYPOINT:-25565}/tcp'
     restart: unless-stopped
     volumes:
       - '/var/run/docker.sock:/var/run/docker.sock:ro'
