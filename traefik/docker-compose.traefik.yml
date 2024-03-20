@@ -16,7 +16,7 @@ services:
       - '--entrypoints.minecraft.address=:${TRAEFIK_MINECRAFT_ENTRYPOINT:-25565}/tcp'
       # Let's Encrypt
       - "--certificatesresolvers.letsencryptresolver.acme.dnschallenge=true"
-      - "--certificatesresolvers.letsencryptresolver.acme.dnschallenge.provider=googledomains"
+      - "--certificatesresolvers.letsencryptresolver.acme.dnschallenge.provider=cloudflare"
       - "--certificatesresolvers.letsencryptresolver.acme.email=${ROOT_EMAIL:-changeme@changeme.org}"
       - "--certificatesresolvers.letsencryptresolver.acme.storage=/letsencrypt/acme.json"
       # Prod : acme-v02.api.letsencrypt.org/directory
@@ -50,7 +50,8 @@ services:
       - '--providers.file.watch=true'
     environment:
       - 'TZ=${TZ:-Europe/Paris}'
-      - 'GOOGLE_DOMAINS_ACCESS_TOKEN=${GOOGLE_DOMAINS_ACCESS_TOKEN:-}'
+      - 'CF_API_EMAIL=${CF_API_EMAIL:-}'
+      - 'CF_API_KEY=${CF_API_KEY:-}'
     healthcheck:
       test: ['CMD', 'traefik', 'healthcheck', '--ping']
     labels:
