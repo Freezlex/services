@@ -16,7 +16,7 @@ services:
       WHITELIST: |
         Freezlex,
         MatheoMC
-      MOTD: "\u00a76\u2500\u00a7e\u2b1d\u00a76\u2500\u00a7e\u2b1d\u00a76\u2500\u00a7e\u2b1d\u00a76\u2500 \u00a7cFreezlex's Bathtub\u00a76 \u2500\u00a7e\u2b1d\u00a76\u2500\u00a7e\u2b1d\u00a76\u2500\u00a7e\u2b1d\u00a76\u2500 \n  \u00a79fabric\u00a76 | \u00a7emc.freezlex.dev\u00a76 | \u00a791.20.4"
+      MOTD: "\u00a76\u2500\u00a7e\u2b1d\u00a76\u2500\u00a7e\u2b1d\u00a76\u2500\u00a7e\u2b1d\u00a7c Freezlex's Bathtub\u00a7e \u2b1d\u00a76\u2500\u00a7e\u2b1d\u00a76\u2500\u00a7e\u2b1d\u00a76\u2500\u00a7r\n  \u00a79vanilla\u00a76 |\u00a7e freezlex.dev\u00a76 |\u00a79 1.20.4"
       ICON: "https://matrix-client.matrix.org/_matrix/media/r0/download/matrix.org/fOlSCTKsGbDEAEPLAwSmXpro"
       # Auto-pause server when no one is connected
       ENABLE_AUTOPAUSE: "TRUE"
