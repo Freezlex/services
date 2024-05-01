@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   traefik:
     container_name: traefik
@@ -27,10 +25,6 @@ services:
       # HTTP -> HTTPS
       - '--entrypoints.web.http.redirections.entrypoint.to=websecure'
       - '--entrypoints.web.http.redirections.entryPoint.scheme=https'
-
-      # HTTP/3
-      - '--experimental.http3=true'
-      - '--entrypoints.websecure.http3'
 
       # Logs
       - '--accesslog.filepath=/logs/access.log'
