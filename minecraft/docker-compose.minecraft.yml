@@ -10,6 +10,7 @@ services:
       VERSION: "1.20.4"
       MEMORY: "10G"
       SERVER_NAME: "Freezlex's Bathtub"
+      MAX_TICK_TIME: -1
       OPS: |
         Freezlex,
         MatheoMC
