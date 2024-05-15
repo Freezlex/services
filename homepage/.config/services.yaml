@@ -1,23 +1,23 @@
 ---
 - Services:
     - Gitea:
-      name: Gitea
-      href: https://git.{{DOMAIN_NAME}}/
-      siteMonitor: https://git.{{DOMAIN_NAME}}/
-      container: gitea
-      widget:
-        type: gitea
-        key: { { GITEA_ACESS_TOKEN } }
-        fields: ["notifications", "issues", "pulls"]
+        name: Gitea
+        href: https://git.{{DOMAIN_NAME}}/
+        siteMonitor: https://git.{{DOMAIN_NAME}}/
+        container: gitea
+        widget:
+          type: gitea
+          key: { { GITEA_ACESS_TOKEN } }
+          fields: ["notifications", "issues", "pulls"]
 
     - Minecraft:
-      name: Minecraft
-      href: udp://{{DOMAIN_NAME}}/
-      container: minecraft
-      widget:
-        type: minecraft
-        url: udp://{{DOMAIN_NAME}}/
-        fields: ["players", "version", "status"]
+        name: Minecraft
+        href: udp://{{DOMAIN_NAME}}/
+        container: minecraft
+        widget:
+          type: minecraft
+          url: udp://{{DOMAIN_NAME}}/
+          fields: ["players", "version", "status"]
 
     - Traefik:
         name: Traefik
