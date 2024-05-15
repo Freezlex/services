@@ -1,17 +1,17 @@
 services:
   traefik:
     container_name: traefik
-    image: 'traefik:${TRAEFIK_IMAGE_VERSION:-latest}'
+    image: "traefik:${TRAEFIK_IMAGE_VERSION:-latest}"
     command:
       # Provider
-      - '--providers.docker'
-      - '--providers.docker.exposedbydefault=${TRAEFIK_EXPOSED_BY_DEFAULT:-false}'
-      - '--providers.docker.network=proxy-network'
+      - "--providers.docker"
+      - "--providers.docker.exposedbydefault=${TRAEFIK_EXPOSED_BY_DEFAULT:-false}"
+      - "--providers.docker.network=proxy-network"
 
       # Entrypoints
-      - '--entrypoints.web.address=:${TRAEFIK_WEB_ENTRYPOINT:-80}'
-      - '--entrypoints.websecure.address=:${TRAEFIK_WEBSECURE_ENTRYPOINT:-443}'
-      - '--entrypoints.minecraft.address=:${TRAEFIK_MINECRAFT_ENTRYPOINT:-25565}/tcp'
+      - "--entrypoints.web.address=:${TRAEFIK_WEB_ENTRYPOINT:-80}"
+      - "--entrypoints.websecure.address=:${TRAEFIK_WEBSECURE_ENTRYPOINT:-443}"
+      - "--entrypoints.minecraft.address=:${TRAEFIK_MINECRAFT_ENTRYPOINT:-25565}/tcp"
       # Let's Encrypt
       - "--certificatesresolvers.letsencryptresolver.acme.dnschallenge=true"
       - "--certificatesresolvers.letsencryptresolver.acme.dnschallenge.provider=cloudflare"
@@ -19,35 +19,35 @@ services:
       - "--certificatesresolvers.letsencryptresolver.acme.storage=/letsencrypt/acme.json"
       # Prod : acme-v02.api.letsencrypt.org/directory
       # Staging : acme-staging-v02.api.letsencrypt.org/directory
-      - '--certificatesresolvers.letsencryptresolver.acme.caserver=https://acme-v02.api.letsencrypt.org/directory'
-      - '--entrypoints.websecure.http.tls.certresolver=letsencryptresolver'
+      - "--certificatesresolvers.letsencryptresolver.acme.caserver=https://acme-v02.api.letsencrypt.org/directory"
+      - "--entrypoints.websecure.http.tls.certresolver=letsencryptresolver"
 
       # HTTP -> HTTPS
-      - '--entrypoints.web.http.redirections.entrypoint.to=websecure'
-      - '--entrypoints.web.http.redirections.entryPoint.scheme=https'
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
 
       # Logs
-      - '--accesslog.filepath=/logs/access.log'
-      - '--accesslog.format=json'
-      - '--log.filepath=/logs/traefik.log'
-      - '--log.format=json'
-      - '--log.level=${TRAEFIK_LOG_LEVEL:-INFO}'
-      - '--metrics.prometheus.addrouterslabels'
+      - "--accesslog.filepath=/logs/access.log"
+      - "--accesslog.format=json"
+      - "--log.filepath=/logs/traefik.log"
+      - "--log.format=json"
+      - "--log.level=${TRAEFIK_LOG_LEVEL:-INFO}"
+      - "--metrics.prometheus.addrouterslabels"
 
       # Misc
-      - '--api.dashboard=true'
-      - '--entrypoints.websecure.http.middlewares=compress@file,headers@file${TRAEFIK_PLUGINS:-}'
-      - '--global.checknewversion=${TRAEFIK_CHECK_NEW_VERSION:-true}'
-      - '--global.sendanonymoususage=${TRAEFIK_SEND_ANONYMOUS_USAGE:-false}'
-      - '--ping'
-      - '--providers.file.directory=/dynamic_conf/'
-      - '--providers.file.watch=true'
+      - "--api.dashboard=true"
+      - "--entrypoints.websecure.http.middlewares=compress@file,headers@file${TRAEFIK_PLUGINS:-}"
+      - "--global.checknewversion=${TRAEFIK_CHECK_NEW_VERSION:-true}"
+      - "--global.sendanonymoususage=${TRAEFIK_SEND_ANONYMOUS_USAGE:-false}"
+      - "--ping"
+      - "--providers.file.directory=/dynamic_conf/"
+      - "--providers.file.watch=true"
     environment:
-      - 'TZ=${TZ:-Europe/Paris}'
-      - 'CF_API_EMAIL=${CF_API_EMAIL:-}'
-      - 'CF_API_KEY=${CF_API_KEY:-}'
+      - "TZ=${TZ:-Europe/Paris}"
+      - "CF_API_EMAIL=${CF_API_EMAIL:-}"
+      - "CF_API_KEY=${CF_API_KEY:-}"
     healthcheck:
-      test: ['CMD', 'traefik', 'healthcheck', '--ping']
+      test: ["CMD", "traefik", "healthcheck", "--ping"]
     labels:
       traefik.enable: true
       # Basic Auth Middleware definitions
@@ -56,21 +56,26 @@ services:
       traefik.http.routers.traefik.middlewares: basic_auth@docker
       traefik.http.routers.traefik.rule: Host(`dashboard.${DOMAIN_NAME:-localhost}`)
       traefik.http.routers.traefik.tls.certresolver: letsencryptresolver
-      traefik.http.routers.traefik.tls.domains[0].main: '${DOMAIN_NAME:-localhost}'
-      traefik.http.routers.traefik.tls.domains[0].sans: '*.${DOMAIN_NAME:-localhost}'
+      traefik.http.routers.traefik.tls.domains[0].main: "${DOMAIN_NAME:-localhost}"
+      traefik.http.routers.traefik.tls.domains[0].sans: "*.${DOMAIN_NAME:-localhost}"
       traefik.http.routers.traefik.service: api@internal
+      # Homepage
+      homepage.name: Traefik
+      homepage.href: https://dashboard.${DOMAIN_NAME:-localhost}/
+      homepage.siteMonitor: https://dashboard.{{DOMAIN_NAME}}/
+      homepage.container: traefik
     networks:
       - proxy-network
     ports:
-      - '${TRAEFIK_WEB_ENTRYPOINT:-80}:${TRAEFIK_WEB_ENTRYPOINT:-80}'
-      - '${TRAEFIK_WEBSECURE_ENTRYPOINT:-443}:${TRAEFIK_WEBSECURE_ENTRYPOINT:-443}'
-      - '${TRAEFIK_MINECRAFT_ENTRYPOINT:-25565}:${TRAEFIK_MINECRAFT_ENTRYPOINT:-25565}'
+      - "${TRAEFIK_WEB_ENTRYPOINT:-80}:${TRAEFIK_WEB_ENTRYPOINT:-80}"
+      - "${TRAEFIK_WEBSECURE_ENTRYPOINT:-443}:${TRAEFIK_WEBSECURE_ENTRYPOINT:-443}"
+      - "${TRAEFIK_MINECRAFT_ENTRYPOINT:-25565}:${TRAEFIK_MINECRAFT_ENTRYPOINT:-25565}"
     restart: unless-stopped
     volumes:
-      - '/var/run/docker.sock:/var/run/docker.sock:ro'
-      - './traefik/.logs:/logs'
-      - './traefik/.config:/dynamic_conf'
-      - './traefik/.data/letsencrypt:/letsencrypt'
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./traefik/.logs:/logs"
+      - "./traefik/.config:/dynamic_conf"
+      - "./traefik/.data/letsencrypt:/letsencrypt"
     depends_on:
       - gitea
       - whoami

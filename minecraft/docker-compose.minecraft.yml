@@ -26,8 +26,17 @@ services:
     labels:
       traefik.enable: true
       # TCP Pass through
-      traefik.tcp.routers.minecraft.rule: 'HostSNI(`*`)'
+      traefik.tcp.routers.minecraft.rule: "HostSNI(`*`)"
       traefik.tcp.routers.minecraft.entrypoints: minecraft
       traefik.tcp.services.minecraft.loadbalancer.server.port: 25565
+      # Homepage
+      homepage.name: Minecraft
+      homepage.href: udp://${DOMAIN_NAME:-localhost}/
+      homepage.container: minecraft
+      homepage.widget.type: minecraft
+      homepage.widget.url: udp://${DOMAIN_NAME:-localhost}/
+      homepage.widget.fields[0]: players
+      homepage.widget.fields[1]: version
+      homepage.widget.fields[2]: status
     networks:
       - proxy-network
