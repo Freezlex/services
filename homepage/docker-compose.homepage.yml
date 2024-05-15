@@ -6,8 +6,8 @@ services:
       - ./homepage/.config/:/app/config # Make sure your local config directory exists
     labels:
       traefik.enable: true
-      traefik.http.routers.gitea.rule: "Host(`${DOMAIN_NAME:-localhost}`)"
-      traefik.http.services.gitea.loadbalancer.server.port: 3000
+      traefik.http.routers.homepage.rule: "Host(`${DOMAIN_NAME:-localhost}`)"
+      traefik.http.services.homepage.loadbalancer.server.port: 3000
 
   dockerproxy:
     image: ghcr.io/tecnativa/docker-socket-proxy:latest
