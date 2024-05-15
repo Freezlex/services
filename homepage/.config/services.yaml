@@ -2,25 +2,25 @@
 - Services:
     - Gitea:
         name: Gitea
-        href: https://git.{{DOMAIN_NAME}}/
-        siteMonitor: https://git.{{DOMAIN_NAME}}/
+        href: https://git.freezlex.dev/
+        siteMonitor: https://git.freezlex.dev/
         container: gitea
         widget:
           type: gitea
-          key: { { GITEA_ACESS_TOKEN } }
+          key: {{ GITEA_ACESS_TOKEN }}
           fields: ["notifications", "issues", "pulls"]
 
     - Minecraft:
         name: Minecraft
-        href: udp://{{DOMAIN_NAME}}/
+        href: udp://freezlex.dev/
         container: minecraft
         widget:
           type: minecraft
-          url: udp://{{DOMAIN_NAME}}/
+          url: udp://freezlex.dev/
           fields: ["players", "version", "status"]
 
     - Traefik:
         name: Traefik
-        href: https://dashboard.{{DOMAIN_NAME}}/
-        homepage.siteMonitor: https://dashboard.{{DOMAIN_NAME}}/
+        href: https://dashboard.freezlex.dev/
+        homepage.siteMonitor: https://dashboard.freezlex.dev/
         container: traefik
