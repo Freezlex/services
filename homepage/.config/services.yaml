@@ -6,8 +6,9 @@
         siteMonitor: https://git.freezlex.dev/
         container: gitea
         widget:
+          url: https://git.freezlex.dev
           type: gitea
-          key: {{ GITEA_ACCESS_TOKEN }}
+          key: {{GITEA_ACCESS_TOKEN}}
           fields: ["notifications", "issues", "pulls"]
 
     - Minecraft:
@@ -22,5 +23,5 @@
     - Traefik:
         name: Traefik
         href: https://dashboard.freezlex.dev/
-        homepage.siteMonitor: https://dashboard.freezlex.dev/
+        siteMonitor: https://dashboard.freezlex.dev/
         container: traefik

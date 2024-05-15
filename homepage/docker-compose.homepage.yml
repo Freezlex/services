@@ -11,6 +11,6 @@ services:
       traefik.http.routers.homepage.rule: "Host(`${DOMAIN_NAME:-localhost}`)"
       traefik.http.services.homepage.loadbalancer.server.port: 3000
     environment:
-      GITEA_ACESS_TOKEN: ${GITEA_ACESS_TOKEN}
+      GITEA_ACCESS_TOKEN: ${GITEA_ACCESS_TOKEN}
     networks:
       - proxy-network
