@@ -7,7 +7,7 @@
         container: gitea
         widget:
           type: gitea
-          key: {{ GITEA_ACESS_TOKEN }}
+          key: {{ GITEA_ACCESS_TOKEN }}
           fields: ["notifications", "issues", "pulls"]
 
     - Minecraft:
