@@ -4,6 +4,7 @@ services:
     container_name: homepage
     volumes:
       - ./homepage/.config/:/app/config # Make sure your local config directory exists
+      - ./homepage/.logs/:/app/config/logs
     labels:
       traefik.enable: true
       traefik.http.routers.homepage.rule: "Host(`${DOMAIN_NAME:-localhost}`)"

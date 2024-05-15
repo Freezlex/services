@@ -59,11 +59,6 @@ services:
       traefik.http.routers.traefik.tls.domains[0].main: "${DOMAIN_NAME:-localhost}"
       traefik.http.routers.traefik.tls.domains[0].sans: "*.${DOMAIN_NAME:-localhost}"
       traefik.http.routers.traefik.service: api@internal
-      # Homepage
-      homepage.name: Traefik
-      homepage.href: https://dashboard.${DOMAIN_NAME:-localhost}/
-      homepage.siteMonitor: https://dashboard.{{DOMAIN_NAME}}/
-      homepage.container: traefik
     networks:
       - proxy-network
     ports:

@@ -16,16 +16,5 @@ services:
       traefik.enable: true
       traefik.http.routers.gitea.rule: "Host(`git.${DOMAIN_NAME:-localhost}`)"
       traefik.http.services.gitea.loadbalancer.server.port: 3000
-      # Homepage
-      homepage.name: Gitea
-      homepage.href: https://git.${DOMAIN_NAME:-localhost}/
-      homepage.siteMonitor: https://git.{{DOMAIN_NAME}}/
-      homepage.container: gitea
-      homepage.widget.type: gitea
-      homepage.widget.url: https://git.${DOMAIN_NAME:-localhost}/
-      homepage.widget.key: ${GITEA_ACCESS_TOKEN}
-      homepage.widget.fields[0]: notifications
-      homepage.widget.fields[1]: issues
-      homepage.widget.fields[2]: pulls
     depends_on:
       - postgres_db
