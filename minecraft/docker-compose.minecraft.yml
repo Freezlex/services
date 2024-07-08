@@ -5,7 +5,7 @@ services:
     environment:
       EULA: "TRUE"
       TYPE: "VANILLA"
-      VERSION: "1.20.4"
+      VERSION: "1.21"
       MEMORY: "10G"
       SERVER_NAME: "Freezlex's Bathtub"
       MAX_TICK_TIME: -1
@@ -14,7 +14,8 @@ services:
         MatheoMC
       WHITELIST: |
         Freezlex,
-        MatheoMC
+        MatheoMC,
+        L1mi3
       MOTD: "\u00a76\u2500\u00a7e\u2b1d\u00a76\u2500\u00a7e\u2b1d\u00a76\u2500\u00a7e\u2b1d\u00a7c Freezlex's Bathtub\u00a7e \u2b1d\u00a76\u2500\u00a7e\u2b1d\u00a76\u2500\u00a7e\u2b1d\u00a76\u2500\u00a7r\n  \u00a79vanilla\u00a76 |\u00a7e freezlex.dev\u00a76 |\u00a79 1.20.4"
       ICON: "https://matrix-client.matrix.org/_matrix/media/r0/download/matrix.org/fOlSCTKsGbDEAEPLAwSmXpro"
       # Auto-pause server when no one is connected
