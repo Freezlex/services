@@ -6,9 +6,9 @@
         siteMonitor: https://git.freezlex.dev/
         container: gitea
         widget:
-          url: https://git.freezlex.dev
+          url: http://gitea:3000
           type: gitea
-          key: {{GITEA_ACCESS_TOKEN}}
+          key: {{HOMEPAGE_VAR_GITEA_KEY}}
           fields: ["notifications", "issues", "pulls"]
 
     - Minecraft:
