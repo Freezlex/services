@@ -1,20 +1,23 @@
 services:
-  dendrite:
-    hostname: monolith
-    container_name: dendrite
-    image: matrixdotorg/dendrite-monolith:${DENDRITE_IMAGE_VERSION:-latest}
+  mx-synapse:
+    container_name: mx-synapse
+    image: matrixdotorg/synapse:latest
+    restart: unless-stopped
+    env_file:
+      - ./matrix/.config/mx-synapse.env
+    healthcheck:
+      test: ["CMD", "curl", "-fSs", "http://localhost:8008/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
     volumes:
-      - ./matrix/.config:/etc/dendrite
-      - ./matrix/.logs:/etc/dendrite/logs
-      - ./matrix/.data/media/:/var/dendrite/media/
+      - ./matrix/.data/:/data
     labels:
       - traefik.enable: "TRUE"
-      - traefik.http.routers.dendrite.rule: "Host(`matrix.${DOMAIN_NAME:-localhost}`)"
-      - traefik.http.routers.dendrite.tls: "TRUE"
+      - traefik.http.routers.mx-synapse.rule: "Host(`chat.${DOMAIN_NAME:-localhost}`)"
+      - traefik.http.routers.mx-synapse.tls: "TRUE"
+      - traefik.http.services.gitea.loadbalancer.server.port: 8008
     depends_on:
       - postgres
       - traefik
-    networks:
-      - proxy-network
-      - database-network
-    restart: unless-stopped
