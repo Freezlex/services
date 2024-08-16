@@ -3,6 +3,12 @@ services:
     container_name: mx-synapse
     image: matrixdotorg/synapse:latest
     restart: unless-stopped
+    networks:
+      - proxy-network
+      - database-network
+    depends_on:
+      - postgres-db
+      - traefik
     env_file:
       - ./matrix/.config/mx-synapse.env
     healthcheck:
@@ -18,6 +24,3 @@ services:
       traefik.http.routers.mx-synapse.rule: "Host(`chat.${DOMAIN_NAME:-localhost}`)"
       traefik.http.routers.mx-synapse.tls: true
       traefik.http.services.gitea.loadbalancer.server.port: 8008
-    depends_on:
-      - postgres_db
-      - traefik
