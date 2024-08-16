@@ -19,5 +19,5 @@ services:
       traefik.http.routers.mx-synapse.tls: true
       traefik.http.services.gitea.loadbalancer.server.port: 8008
     depends_on:
-      - postgres
+      - postgres_db
       - traefik
