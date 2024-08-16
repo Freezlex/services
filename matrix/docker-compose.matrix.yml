@@ -24,4 +24,4 @@ services:
       traefik.enable: true
       traefik.http.routers.mx-synapse.rule: "Host(`chat.${DOMAIN_NAME:-localhost}`)"
       traefik.http.routers.mx-synapse.tls: true
-      traefik.http.services.gitea.loadbalancer.server.port: 8008
+      traefik.http.services.mx-synapse.loadbalancer.server.port: 8008
