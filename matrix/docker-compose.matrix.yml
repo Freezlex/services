@@ -11,6 +11,8 @@ services:
       - traefik
     env_file:
       - ./matrix/.config/mx-synapse.env
+    environment:
+      SYNAPSE_SERVER_NAME: chat.${DOMAIN_NAME:-localhost}
     healthcheck:
       test: ["CMD", "curl", "-fSs", "http://localhost:8008/health"]
       interval: 15s
