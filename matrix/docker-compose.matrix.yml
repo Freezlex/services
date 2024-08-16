@@ -14,10 +14,10 @@ services:
     volumes:
       - ./matrix/.data/:/data
     labels:
-      - traefik.enable: "TRUE"
-      - traefik.http.routers.mx-synapse.rule: "Host(`chat.${DOMAIN_NAME:-localhost}`)"
-      - traefik.http.routers.mx-synapse.tls: "TRUE"
-      - traefik.http.services.gitea.loadbalancer.server.port: 8008
+      traefik.enable: true
+      traefik.http.routers.mx-synapse.rule: "Host(`chat.${DOMAIN_NAME:-localhost}`)"
+      traefik.http.routers.mx-synapse.tls: true
+      traefik.http.services.gitea.loadbalancer.server.port: 8008
     depends_on:
       - postgres
       - traefik
