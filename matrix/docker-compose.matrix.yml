@@ -7,7 +7,7 @@ services:
       - proxy-network
       - database-network
     depends_on:
-      - postgres-db
+      - postgres_db
       - traefik
     env_file:
       - ./matrix/.config/mx-synapse.env
