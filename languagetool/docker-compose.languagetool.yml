@@ -1,5 +1,3 @@
-version: "3"
-
 services:
   languagetool:
     image: erikvl87/languagetool
@@ -8,9 +6,9 @@ services:
     networks:
       - proxy-network
     environment:
-      - langtool_languageModel=/ngrams  # OPTIONAL: Using ngrams data
-      - Java_Xms=512m  # OPTIONAL: Setting a minimal Java heap size of 512 mib
-      - Java_Xmx=1g    # OPTIONAL: Setting a maximum Java heap size of 1 Gib
+      - langtool_languageModel=/ngrams # OPTIONAL: Using ngrams data
+      - Java_Xms=512m # OPTIONAL: Setting a minimal Java heap size of 512 mib
+      - Java_Xmx=1g # OPTIONAL: Setting a maximum Java heap size of 1 Gib
     volumes:
       - .languagetool/.data/ngrams:/ngrams
     labels:
