@@ -3,16 +3,15 @@ services:
     container_name: mx-synapse
     image: matrixdotorg/synapse:latest
     restart: unless-stopped
+    environment:
+      SYNAPSE_CONFIG_PATH: /data/homeserver.yaml
+      VIRTUAL_HOST: chat.freezlex.dev
     networks:
       - proxy-network
       - database-network
     depends_on:
       - postgres_db
       - traefik
-    env_file:
-      - ./matrix/.config/mx-synapse.env
-    environment:
-      SYNAPSE_SERVER_NAME: chat.${DOMAIN_NAME:-localhost}
     healthcheck:
       test: ["CMD", "curl", "-fSs", "http://localhost:8008/health"]
       interval: 15s
