@@ -18,7 +18,7 @@ services:
       retries: 3
       start_period: 5s
     volumes:
-      - ./matrix/.data/:/data
+      - ./matrix/.data/:/data:rw
     labels:
       traefik.enable: true
       traefik.http.routers.mx-synapse.rule: "Host(`chat.${DOMAIN_NAME:-localhost}`)"
