@@ -43,6 +43,7 @@ services:
       - "--ping"
       - "--providers.file.directory=/dynamic_conf/"
       - "--providers.file.watch=true"
+      - "--entrypoints.matrix-federation.forwardedHeaders.insecure=true"
     environment:
       - "TZ=${TZ:-Europe/Paris}"
       - "CF_API_EMAIL=${CF_API_EMAIL:-}"
@@ -85,3 +86,5 @@ services:
       traefik.http.routers.whoami.rule: Host(`whoami.${DOMAIN_NAME:-localhost}`)
       traefik.http.routers.whoami.entrypoints: websecure
       traefik.http.routers.whoami.tls.certresolver: letsencryptresolver
+    networks:
+      - proxy-network
