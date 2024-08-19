@@ -24,11 +24,11 @@ services:
       traefik.enable: true
       traefik.http.routers.mx-synapse.rule: "Host(`chat.${DOMAIN_NAME:-localhost}`)"
       traefik.http.routers.mx-synapse.tls: true
-      traefik.http.services.mx-synapse.service: mx-synapse
+      traefik.http.routers.mx-synapse.service: mx-synapse
       traefik.http.services.mx-synapse.loadbalancer.server.port: 8008
       # FEDERATION
       traefik.http.routers.mx-synapse-federation.rule: "Host(`${DOMAIN_NAME:-localhost}`)"
       traefik.http.routers.mx-synapse-federation.entrypoints: matrix
       traefik.http.routers.mx-synapse-federation.tls: true
-      traefik.http.services.mx-synapse-federation.service: mx-synapse
+      traefik.http.routers.mx-synapse-federation.service: mx-synapse
       traefik.http.services.mx-synapse-federation.loadbalancer.server.port: 8008
