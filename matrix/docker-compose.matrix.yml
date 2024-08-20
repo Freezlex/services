@@ -31,4 +31,4 @@ services:
       traefik.http.routers.mx-synapse-federation.entrypoints: matrix-federation
       traefik.http.routers.mx-synapse-federation.tls: true
       traefik.http.routers.mx-synapse-federation.service: mx-synapse
-      traefik.http.services.mx-synapse-federation.loadbalancer.server.port: 8448
+      traefik.http.services.mx-synapse-federation.loadbalancer.server.port: 8008
