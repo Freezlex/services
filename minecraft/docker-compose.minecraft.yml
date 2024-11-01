@@ -13,11 +13,10 @@ services:
       MAX_TICK_TIME: -1
       OPS: |
         Freezlex,
-        MatheoMC,
-        CaptaineOurson
+        MatheoMC
       WHITELIST: |
         Freezlex,
-        CaptaineOurson
+        CapitaineOurson,
         MatheoMC,
         L1mi3
       MODRINTH_DOWNLOAD_DEPENDENCIES: required
