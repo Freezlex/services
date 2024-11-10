@@ -21,7 +21,7 @@ services:
         L1mi3
       MODRINTH_DOWNLOAD_DEPENDENCIES: required
       MODRINTH_ALLOWED_VERSION_TYPE: beta
-      MODRINTH_PROJECTS: gJ5afkVv,ZzjhlDgM,sMvUb4Rb,ZM3tt6p1,FTeXqI9v,r4Knci2k,YlOA6mdQ,2u6LRnMa,lhGA9TYQ,84USeAvk,EO8aSHxh,V5ujR2yw,MyfCcqiE
+      MODRINTH_PROJECTS: gJ5afkVv,ZzjhlDgM,sMvUb4Rb,ZM3tt6p1,FTeXqI9v,r4Knci2k,YlOA6mdQ,2u6LRnMa,lhGA9TYQ,Dq3STxps
       # Auto-pause server when no one is connected
       ENABLE_AUTOPAUSE: TRUE
     volumes:
