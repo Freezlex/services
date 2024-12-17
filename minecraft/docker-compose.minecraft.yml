@@ -21,7 +21,20 @@ services:
         L1mi3
       MODRINTH_DOWNLOAD_DEPENDENCIES: required
       MODRINTH_ALLOWED_VERSION_TYPE: beta
-      MODRINTH_PROJECTS: gJ5afkVv,ZzjhlDgM,sMvUb4Rb,ZM3tt6p1,FTeXqI9v,r4Knci2k,YlOA6mdQ,2u6LRnMa,lhGA9TYQ,Dq3STxps,t6BIRVZn
+      MODRINTH_PROJECTS: |
+        architectury-api:1MKTLiiG,
+        botarium:O7D6FTfW,
+        create:6R069CcK,
+        create-deco:lcpO5tBr,
+        create-railways-navigator:Vb3cssgh,
+        bellsandwhistles:uvnfNUsp,
+        create-diesel-generators:R6vueHQB,
+        interiors:2wGHT9kO,
+        create-new-age:2BEeSV7E,
+        create-steam-n-rails:pklcGSDf,
+        kotlin-for-forge:hmeyC41q,
+        modern-train-parts:ZtrWTdJ1
+        decorative-blocks:nGmyeiug
       # Auto-pause server when no one is connected
       ENABLE_AUTOPAUSE: TRUE
     volumes:
