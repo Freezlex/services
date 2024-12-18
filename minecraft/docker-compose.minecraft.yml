@@ -22,12 +22,12 @@ services:
       MODRINTH_DOWNLOAD_DEPENDENCIES: required
       MODRINTH_ALLOWED_VERSION_TYPE: beta
       MODRINTH_PROJECTS: |
-        architectury-api:1MKTLiiG,
+        bellsandwhistles:uvnfNUsp,
         botarium:O7D6FTfW,
         create:6R069CcK,
+        architectury-api:1MKTLiiG,
         create-deco:lcpO5tBr,
         create-railways-navigator:Vb3cssgh,
-        bellsandwhistles:uvnfNUsp,
         create-diesel-generators:R6vueHQB,
         interiors:2wGHT9kO,
         create-new-age:2BEeSV7E,
