@@ -22,19 +22,19 @@ services:
       MODRINTH_DOWNLOAD_DEPENDENCIES: required
       MODRINTH_ALLOWED_VERSION_TYPE: beta
       MODRINTH_PROJECTS: |
-        bellsandwhistles:uvnfNUsp,
-        botarium:O7D6FTfW,
-        create:6R069CcK,
-        architectury-api:1MKTLiiG,
-        create-deco:lcpO5tBr,
-        create-railways-navigator:Vb3cssgh,
-        create-diesel-generators:R6vueHQB,
-        interiors:2wGHT9kO,
-        create-new-age:2BEeSV7E,
-        create-steam-n-rails:pklcGSDf,
-        kotlin-for-forge:hmeyC41q,
-        modern-train-parts:ZtrWTdJ1
-        decorative-blocks:nGmyeiug
+        gJ5afkVv:uvnfNUsp,
+        2u6LRnMa:O7D6FTfW,
+        LNytGWDc:6R069CcK,
+        lhGA9TYQ:1MKTLiiG,
+        sMvUb4Rb:lcpO5tBr,
+        Dq3STxps:Vb3cssgh,
+        ZM3tt6p1:R6vueHQB,
+        r4Knci2k:2wGHT9kO,
+        FTeXqI9v:2BEeSV7E,
+        ZzjhlDgM:pklcGSDf,
+        ordsPcFz:hmeyC41q,
+        YlOA6mdQ:ZtrWTdJ1
+        t6BIRVZn:nGmyeiug
       # Auto-pause server when no one is connected
       ENABLE_AUTOPAUSE: TRUE
     volumes:
