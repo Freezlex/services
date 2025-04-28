@@ -1,0 +1,14 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: synapse-ingressroute
+spec:
+  entryPoints:
+    - web
+    - websecure
+  routes:
+    - match: Host(`matrix.freezlex.dev`)
+      kind: Rule
+      services:
+        - name: synapse
+          port: 8008

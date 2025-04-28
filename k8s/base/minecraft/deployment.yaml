@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minecraft
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minecraft
+  template:
+    metadata:
+      labels:
+        app: minecraft
+    spec:
+      containers:
+        - name: minecraft
+          image: itzg/minecraft-server:latest
+          env:
+            - name: EULA
+              value: "TRUE"
+            - name: VERSION
+              value: "1.19"
+          ports:
+            - containerPort: 25565
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minecraft
+spec:
+  ports:
+    - port: 25565
+      targetPort: 25565
+  selector:
+    app: minecraft

@@ -1,0 +1,14 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-dashboard
+  namespace: default
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`dashboard.k8s.test`)
+      kind: Rule
+      services:
+        - name: traefik-dashboard-service
+          port: 8080

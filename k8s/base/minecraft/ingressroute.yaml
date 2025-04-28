@@ -1,0 +1,14 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: minecraft-ingressroute
+spec:
+  entryPoints:
+    - web
+    - websecure
+  routes:
+    - match: Host(`mc.freezlex.dev`)
+      kind: Rule
+      services:
+        - name: minecraft
+          port: 25565
