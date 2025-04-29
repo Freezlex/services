@@ -1,12 +1,9 @@
-kind: Deployment
 apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: whoami
-  labels:
-    app: whoami
-
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: whoami
@@ -18,6 +15,3 @@ spec:
       containers:
         - name: whoami
           image: traefik/whoami
-          ports:
-            - name: web
-              containerPort: 80
