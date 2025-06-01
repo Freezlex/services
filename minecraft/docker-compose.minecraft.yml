@@ -4,8 +4,8 @@ services:
     container_name: minecraft
     environment:
       EULA: TRUE
-      TYPE: FORGE
-      VERSION: "1.20.1"
+      TYPE: NEOFORGE
+      VERSION: "1.21.1"
       MEMORY: "12G"
       SERVER_NAME: "Freezlex's Bathtub"
       MOTD: "\u00a76\u2500\u00a7e\u2b1d\u00a76\u2500\u00a7e\u2b1d\u00a76\u2500\u00a7e\u2b1d\u00a7c Freezlex's Bathtub\u00a7e \u2b1d\u00a76\u2500\u00a7e\u2b1d\u00a76\u2500\u00a7e\u2b1d\u00a76\u2500\u00a7r\n   \u00a79forge\u00a76  |\u00a7e freezlex.dev\u00a76 |\u00a79 1.20.1"
