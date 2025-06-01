@@ -13,7 +13,8 @@ services:
       MAX_TICK_TIME: -1
       OPS: |
         Freezlex,
-        MatheoMC
+        MatheoMC,
+        CapitaineOurson
       WHITELIST: |
         Freezlex,
         CapitaineOurson,
