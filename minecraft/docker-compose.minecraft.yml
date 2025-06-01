@@ -38,7 +38,7 @@ services:
         HsdNFinx:cttRekq9,
         8BmcQJ2H:QEqpUJ1G,
         1eAoo2KR:ACDNgCDA,
-        qmCh2PxS:SZm6bDv
+        qmCh2PxS:SZm6bDvf
       # Auto-pause server when no one is connected
       ENABLE_AUTOPAUSE: TRUE
     volumes:
