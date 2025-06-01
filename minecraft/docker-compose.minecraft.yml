@@ -22,19 +22,22 @@ services:
       MODRINTH_DOWNLOAD_DEPENDENCIES: required
       MODRINTH_ALLOWED_VERSION_TYPE: beta
       MODRINTH_PROJECTS: |
-        gJ5afkVv:uvnfNUsp,
-        2u6LRnMa:O7D6FTfW,
-        LNytGWDc:6R069CcK,
-        lhGA9TYQ:1MKTLiiG,
-        sMvUb4Rb:lcpO5tBr,
-        Dq3STxps:62Gvkkdt,
-        ZM3tt6p1:R6vueHQB,
-        r4Knci2k:2wGHT9kO,
-        FTeXqI9v:2BEeSV7E,
-        ZzjhlDgM:pklcGSDf,
-        ordsPcFz:hmeyC41q,
-        YlOA6mdQ:ZtrWTdJ1
-        t6BIRVZn:nGmyeiug
+        LNytGWDc:5LpL274U,
+        6YfOmC9t:g0S9q7zp,
+        L6jvzao4:IJPOCMCt,
+        sc9lpPiU:ZyuSyeuy,
+        rGWEHQrP:6poGZvvr,
+        RgWXq0La:oec4zIe5,
+        T21szC0a:WlTXhPfE,
+        tu54PMAb:x1Blh0Gt,
+        GWFnD2zx:SMSMYsE9,
+        Aqlf1Shp:BOq0raqo,
+        lhGA9TYQ:ZxYGwlk0,
+        9s6osm5g:izKINKFg,
+        HsdNFinx:cttRekq9,
+        8BmcQJ2H:QEqpUJ1G,
+        1eAoo2KR:ACDNgCDA,
+        qmCh2PxS:SZm6bDv
       # Auto-pause server when no one is connected
       ENABLE_AUTOPAUSE: TRUE
     volumes:
