@@ -4,8 +4,8 @@ services:
     container_name: minecraft
     environment:
       EULA: TRUE
-      TYPE: FORGE
-      VERSION: "1.20.1"
+      TYPE: NEOFORGE
+      VERSION: "1.21.1"
       MEMORY: "12G"
       SERVER_NAME: "Freezlex's Bathtub"
       MOTD: "\u00a76\u2500\u00a7e\u2b1d\u00a76\u2500\u00a7e\u2b1d\u00a76\u2500\u00a7e\u2b1d\u00a7c Freezlex's Bathtub\u00a7e \u2b1d\u00a76\u2500\u00a7e\u2b1d\u00a76\u2500\u00a7e\u2b1d\u00a76\u2500\u00a7r\n   \u00a79forge\u00a76  |\u00a7e freezlex.dev\u00a76 |\u00a79 1.20.1"
@@ -13,7 +13,8 @@ services:
       MAX_TICK_TIME: -1
       OPS: |
         Freezlex,
-        MatheoMC
+        MatheoMC,
+        CapitaineOurson
       WHITELIST: |
         Freezlex,
         CapitaineOurson,
@@ -22,19 +23,22 @@ services:
       MODRINTH_DOWNLOAD_DEPENDENCIES: required
       MODRINTH_ALLOWED_VERSION_TYPE: beta
       MODRINTH_PROJECTS: |
-        gJ5afkVv:uvnfNUsp,
-        2u6LRnMa:O7D6FTfW,
-        LNytGWDc:6R069CcK,
-        lhGA9TYQ:1MKTLiiG,
-        sMvUb4Rb:lcpO5tBr,
-        Dq3STxps:62Gvkkdt,
-        ZM3tt6p1:R6vueHQB,
-        r4Knci2k:2wGHT9kO,
-        FTeXqI9v:2BEeSV7E,
-        ZzjhlDgM:pklcGSDf,
-        ordsPcFz:hmeyC41q,
-        YlOA6mdQ:ZtrWTdJ1
-        t6BIRVZn:nGmyeiug
+        LNytGWDc:5LpL274U,
+        6YfOmC9t:g0S9q7zp,
+        L6jvzao4:IJPOCMCt,
+        sc9lpPiU:ZyuSyeuy,
+        rGWEHQrP:6poGZvvr,
+        RgWXq0La:oec4zIe5,
+        T21szC0a:WlTXhPfE,
+        tu54PMAb:x1Blh0Gt,
+        GWFnD2zx:SMSMYsE9,
+        Aqlf1Shp:BOq0raqo,
+        lhGA9TYQ:ZxYGwlk0,
+        9s6osm5g:izKINKFg,
+        HsdNFinx:cttRekq9,
+        8BmcQJ2H:QEqpUJ1G,
+        1eAoo2KR:ACDNgCDA,
+        qmCh2PxS:SZm6bDvf
       # Auto-pause server when no one is connected
       ENABLE_AUTOPAUSE: TRUE
     volumes:
