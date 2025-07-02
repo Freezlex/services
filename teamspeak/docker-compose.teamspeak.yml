@@ -1,0 +1,23 @@
+services:
+  teamspeak:
+    image: teamspeaksystems/teamspeak6-server:latest
+    container_name: teamspeak
+    restart: unless-stopped
+    env_file:
+      - ./teamspeak/.config/teamspeak.env
+    volumes:
+      - ./teamspeak/.data/:/var/tsserver/
+    networks:
+      - proxy-network
+    labels:
+      traefik.enable: true
+      # TCP
+      traefik.tcp.routers.teamspeak-tcp.rule: HostSNI(`teamspeak.${DOMAIN_NAME:-localhost}`)
+      traefik.tcp.routers.teamspeak-tcp.tls.certresolver: letsencryptresolver
+      traefik.tcp.routers.teamspeak-tcp.entrypoints: teamspeak-tcp
+      traefik.tcp.routers.teamspeak-tcp.service: teamspeak-tcp
+      traefik.tcp.services.teamspeak-tcp.loadbalancer.server.port: 30033
+      #UDP
+      traefik.udp.routers.teamspeak-udp.entrypoints: teamspeak-udp
+      traefik.udp.routers.teamspeak-udp.service: teamspeak-udp
+      traefik.udp.services.teamspeak-udp.loadbalancer.server.port: 9987

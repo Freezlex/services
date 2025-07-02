@@ -9,10 +9,11 @@ services:
       - "--providers.docker.network=proxy-network"
 
       # Entrypoints
-      - "--entrypoints.web.address=:${TRAEFIK_WEB_ENTRYPOINT:-80}"
-      - "--entrypoints.websecure.address=:${TRAEFIK_WEBSECURE_ENTRYPOINT:-443}"
-      - "--entrypoints.minecraft.address=:${TRAEFIK_MINECRAFT_ENTRYPOINT:-25565}/tcp"
-      - "--entrypoints.matrix-federation.address=:${TRAEFIK_MATRIX_ENTRYPOINT:-8448}"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.matrix-federation.address=:8448"
+      - "--entrypoints.teamspeak-tcp.address=:30033/tcp"
+      - "--entrypoints.teamspeak-udp.address=:9987/udp"
       # Let's Encrypt
       - "--certificatesresolvers.letsencryptresolver.acme.dnschallenge=true"
       - "--certificatesresolvers.letsencryptresolver.acme.dnschallenge.provider=cloudflare"
@@ -64,10 +65,11 @@ services:
     networks:
       - proxy-network
     ports:
-      - "${TRAEFIK_WEB_ENTRYPOINT:-80}:${TRAEFIK_WEB_ENTRYPOINT:-80}"
-      - "${TRAEFIK_WEBSECURE_ENTRYPOINT:-443}:${TRAEFIK_WEBSECURE_ENTRYPOINT:-443}"
-      - "${TRAEFIK_MINECRAFT_ENTRYPOINT:-25565}:${TRAEFIK_MINECRAFT_ENTRYPOINT:-25565}"
-      - "${TRAEFIK_MATRIX_ENTRYPOINT:-8448}:${TRAEFIK_MATRIX_ENTRYPOINT:-8448}"
+      - 80:80
+      - 443:443
+      - 8448:8448
+      - 30033:30033/tcp
+      - 9987:9987/udp
     restart: unless-stopped
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
