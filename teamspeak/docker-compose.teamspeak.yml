@@ -6,7 +6,7 @@ services:
     env_file:
       - ./teamspeak/.config/teamspeak.env
     volumes:
-      - ./teamspeak/.data/:/var/tsserver/
+      - "./teamspeak/.data/:/var/tsserver/"
     networks:
       - proxy-network
     labels:
