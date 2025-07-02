@@ -6,7 +6,7 @@ services:
     env_file:
       - ./teamspeak/.config/teamspeak.env
     volumes:
-      - tsdata:/var/tsserver
+      - teamspeak-data:/var/tsserver/
     networks:
       - proxy-network
     labels:
@@ -23,9 +23,4 @@ services:
       traefik.udp.services.teamspeak-udp.loadbalancer.server.port: 9987
 
 volumes:
-  tsdata:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: ${PWD}/teamspeak/.data
+  teamspeak-data:
