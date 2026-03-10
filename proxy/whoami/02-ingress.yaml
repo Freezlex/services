@@ -1,14 +1,15 @@
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: traefik-dashboard
+  name: whoami-ingress
+  namespace: reverse-proxy
 spec:
   entryPoints:
     - web
   routes:
     - kind: Rule
-      match: Host(`dashboard.k8s.test`)
+      match: Host(`whoami.k8s.test`)
       services:
         - kind: Service
-          name: traefik-dashboard
-          port: 8080
+          name: whoami-service
+          port: 80

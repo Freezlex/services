@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: synapse-deployment
+  namespace: matrix-dot-org
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: synapse-deployment
+  template:
+    metadata:
+      labels:
+        app: synapse-deployment
+    spec:
+      containers:
+        - name: synapse
+          image: matrixdotorg/synapse:latest # Use specific tag e.g. v1.49.0
+          ports:
+            - containerPort: 8008 # Web interface port (usually internal only)
+              hostPort: 8008
+          env:
+            - name: SYNAPSE_SERVER_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: matrix-configmap
+                  key: server_name # Or hardcode in env for simple deploy
+            - name: SYNAPSE_REPORT_STATS
+              value: "no"
+            - name: POSTGRES_DBNAME
+              value: "matrix_db"
+            - name: POSTGRES_HOST
+              value: "matrix-postgres-svc"
+            - name: POSTGRES_USER
+              value: "postgres"
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: matrix-db-secret
+                  key: postgres-password
+          volumeMounts:
+            - name: config
+              mountPath: /data/homeserver.yaml # Standard path
+              subPath: homeserver.yaml
+              readOnly: true
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+      volumes:
+        - name: config
+          configMap:
+            name: matrix-configmap
+            defaultMode: 420 # Allows write to file inside container if needed (usually not)

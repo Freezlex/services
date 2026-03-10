@@ -1,0 +1,30 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: postgres-pv-storage
+  namespace: matrix-dot-org
+spec:
+  storageClassName: local-pvc-hostpath
+  capacity:
+    storage: 50Gi # Adjust size to your need
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /var/lib/postgresql/host-data
+    type: DirectoryOrCreate # Ensures the folder is created if missing
+  claimRef:
+    namespace: default
+    name: postgres-pvc-claim
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: postgres-pvc-claim
+  namespace: matrix-dot-org
+spec:
+  storageClassName: local-pvc-hostpath
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Gi

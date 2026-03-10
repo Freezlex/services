@@ -1,14 +1,15 @@
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: synapse-ingress
+  name: traefik-dashboard
+  namespace: reverse-proxy
 spec:
   entryPoints:
     - web
   routes:
     - kind: Rule
-      match: Host(`matrix.k8s.test`)
+      match: Host(`dashboard.k8s.test`)
       services:
         - kind: Service
-          name: synapse-service
+          name: traefik-dashboard
           port: 8080

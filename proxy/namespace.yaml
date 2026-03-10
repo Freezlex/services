@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: reverse-proxy
+  labels:
+    name: reverse-proxy
+    team: personal
+    environment: homelab
+    app.kubernetes.io/managed-by: gitops
+    role: reverse-proxy
