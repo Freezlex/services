@@ -1,9 +1,0 @@
-kind: StorageClass
-apiVersion: storage.k8s.io/v1
-metadata:
-  name: local-pvc-hostpath
-  namespace: matrix-dot-org
-provisioner: kubernetes.io/no-provisioner
-reclaimPolicy: Retain # Critical: Keeps data even if PVC is deleted
-volumeBindingMode: WaitForFirstConsumer
-allowVolumeExpansion: true
