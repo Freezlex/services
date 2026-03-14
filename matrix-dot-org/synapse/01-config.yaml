@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: synapse-cfm
+  namespace: matrix-dot-org
+data:
+  homeserver.yaml: |
+    server_name: "freezlex.dev"
+    pid_file: /data/homeserver.pid
+    listeners:
+      - bind_addresses:
+        - ::1
+        - 127.0.0.1
+        port: 8008
+        resources:
+          - names: [client, federation]
+            compress: false
+        tls: false
+        type: http
+        x_forwarded: true
+    database:
+      name: psycopg2
+      args:
+        user: ${DB_USERNAME}
+        password: ${DB_PASSWORD}
+        dbname: ${DB_NAME}
+        host: ${DB_HOST}
+        port: 5432
+        cp_min: 5
+        cp_max: 10
+    log_config: "/data/freezlex.dev.log.config"
+    media_store_path: /data/media_store
+    registration_shared_secret: "${MX_REGISTRATION_SECRET}"
+    report_stats: true
+    macaroon_secret_key: "${MX_MACAROON_SECRET}"
+    form_secret: "${MX_FORM_SECRET}"
+    signing_key_path: "/data/freezlex.dev.signing.key"
+    trusted_key_servers:
+      - server_name: "matrix.org"
+    enable_registration: true
+    registration_requires_token: true

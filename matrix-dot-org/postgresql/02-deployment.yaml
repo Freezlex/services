@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: matrix-postgres
+  name: postgres-dpl
   namespace: matrix-dot-org
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: matrix-postgres
+      app: postgres
   template:
     metadata:
       labels:
-        app: matrix-postgres
+        app: postgres
     spec: # Pod spec
       containers:
         - name: postgres
@@ -22,18 +22,18 @@ spec:
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: matrix-db-secret
-                  key: username
+                  name: matrix-secrets
+                  key: DB_USERNAME
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: matrix-db-secret
-                  key: password
+                  name: matrix-secrets
+                  key: DB_PASSWORD
             - name: POSTGRES_DB
               valueFrom:
                 secretKeyRef:
-                  name: matrix-db-secret
-                  key: database
+                  name: matrix-secrets
+                  key: DB_NAME
           resources:
             requests:
               memory: "256Mi"
@@ -44,21 +44,13 @@ spec:
           livenessProbe:
             exec:
               command:
-                - pg_isready
-                - -U
-                - matrix-test # TODO(freezlex): Change me
-                - -d
-                - matrix-test # TODO(freezlex): Change me
+                ["pg_isready", "-U", "${DB_USERNAME}", "-d", "${DB_NAME}"]
             initialDelaySeconds: 30
             periodSeconds: 10
           readinessProbe:
             exec:
               command:
-                - pg_isready
-                - -U
-                - matrix-test # TODO(freezlex): Change me
-                - -d
-                - matrix-test # TODO(freezlex): Change me
+                ["pg_isready", "-U", "${DB_USERNAME}", "-d", "${DB_NAME}"]
             initialDelaySeconds: 5
             periodSeconds: 5
           volumeMounts:
@@ -67,4 +59,4 @@ spec:
       volumes:
         - name: data
           persistentVolumeClaim:
-            claimName: postgres-pvc-claim
+            claimName: postgres-pvc
