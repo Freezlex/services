@@ -8,16 +8,13 @@ data:
     server_name: "freezlex.dev"
     pid_file: /data/homeserver.pid
     listeners:
-      - bind_addresses:
-        - ::1
-        - 127.0.0.1
-        port: 8008
-        resources:
-          - names: [client, federation]
-            compress: false
+      - port: 8008
         tls: false
         type: http
         x_forwarded: true
+        resources:
+          - names: [client, federation]
+            compress: false
     database:
       name: psycopg2
       args:
