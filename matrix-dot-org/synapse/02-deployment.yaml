@@ -13,22 +13,38 @@ spec:
       labels:
         app: synapse
     spec:
+      initContainers:
+        - name: render-config
+          image: alpine:latest
+          command:
+            - sh
+            - -c
+            - "apk add --no-cache gettext && envsubst < /tmp/template/homeserver.yaml > /tmp/config/homeserver.yaml"
+          envFrom:
+            - secretRef:
+                name: matrix-secrets
+          volumeMounts:
+            - name: synapse-config
+              mountPath: /tmp/template
+            - name: synapse-config-rendered
+              mountPath: /tmp/config
       containers:
         - name: synapse
           image: matrixdotorg/synapse:latest
-          env:
-            - name: SYNAPSE_CONFIG_PATH
-              value: "/data/homeserver.yaml"
-            - name: VIRTUAL_HOST
-              value: "freezlex.dev"
           ports:
             - containerPort: 8008
+          envFrom:
+            - secretRef:
+                name: matrix-secrets
           volumeMounts:
             - name: synapse-data
               mountPath: /data
-            - name: synapse-config
+            - name: synapse-config-rendered
               mountPath: /data/homeserver.yaml
               subPath: homeserver.yaml
+            - name: synapse-config
+              mountPath: /data/freezlex.dev.log.config
+              subPath: freezlex.dev.log.config
       volumes:
         - name: synapse-config
           configMap:
@@ -36,3 +52,5 @@ spec:
         - name: synapse-data
           persistentVolumeClaim:
             claimName: synapse-pvc
+        - name: synapse-config-rendered
+          emptyDir: {}
