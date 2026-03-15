@@ -1,0 +1,22 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: mas-dpl
+  namespace: matrix-dot-org
+  labels:
+    app: mas
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mas
+  template:
+    metadata:
+      labels:
+        app: mas
+    spec:
+      containrs:
+        - name: mas
+          image: ghcr.io/element-hq/matrix-authentication-service:latest
+          ports:
+            - containerPort
