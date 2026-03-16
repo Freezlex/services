@@ -1,10 +1,9 @@
-# k8s/namespaces/matrix-dot-org.yaml
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: matrix-dot-org
+  name: matrix
   labels:
-    name: matrix-dot-org
+    name: matrix
     team: personal
     environment: homelab
     app.kubernetes.io/managed-by: gitops

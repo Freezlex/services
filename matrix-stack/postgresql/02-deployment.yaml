@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: postgres-dpl
-  namespace: matrix-dot-org
+  namespace: matrix
 spec:
   replicas: 1
   selector:
@@ -22,18 +22,13 @@ spec:
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: matrix-secrets
-                  key: DB_USERNAME
+                  name: matrix-db-root
+                  key: DB_ROOT_USERNAME
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: matrix-secrets
+                  name: matrix-db-root
                   key: DB_PASSWORD
-            - name: POSTGRES_DB
-              valueFrom:
-                secretKeyRef:
-                  name: matrix-secrets
-                  key: DB_NAME
             - name: POSTGRES_INITDB_ARGS
               value: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
           resources:
@@ -46,13 +41,13 @@ spec:
           livenessProbe:
             exec:
               command:
-                ["pg_isready", "-U", "${DB_USERNAME}", "-d", "${DB_NAME}"]
+                ["pg_isready", "-U", "${DB_ROOT_USERNAME}", "-d", "default"]
             initialDelaySeconds: 30
             periodSeconds: 10
           readinessProbe:
             exec:
               command:
-                ["pg_isready", "-U", "${DB_USERNAME}", "-d", "${DB_NAME}"]
+                ["pg_isready", "-U", "${DB_ROOT_USERNAME}", "-d", "default"]
             initialDelaySeconds: 5
             periodSeconds: 5
           volumeMounts:

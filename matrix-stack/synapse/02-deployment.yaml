@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: synapse-dpl
-  namespace: matrix-dot-org
+  namespace: matrix
 spec:
   replicas: 1
   selector:

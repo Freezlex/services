@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: synapse-cfm
-  namespace: matrix-dot-org
+  namespace: matrix
 data:
   homeserver.yaml: |
     server_name: "freezlex.dev"

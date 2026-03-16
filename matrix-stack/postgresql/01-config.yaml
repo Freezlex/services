@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-init-script
+data:
+  init.sql: |
+    CREATE DATABASE matrix-synapse;
+    CREATE USER ${MX_DB_USERNAME} WITH PASSWORD '${MX_DB_PASSWORD}';
+    GRANT ALL PRIVILEGES ON DATABASE matrix-synapse TO ${MX_DB_USERNAME};
+    CREATE DATABASE matrix-auth;
+    CREATE USER ${MAS_DB_USERNAME} WITH PASSWORD '${MAX_DB_PASSWORD}';
+    GRANT ALL PRIVILEGES ON DATABASE matrix-auth TO ${MAS_DB_USERNAME};

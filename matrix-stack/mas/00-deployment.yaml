@@ -2,7 +2,7 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: mas-dpl
-  namespace: matrix-dot-org
+  namespace: matrix
   labels:
     app: mas
 spec:
