@@ -12,7 +12,22 @@ spec:
     metadata:
       labels:
         app: postgres
-    spec: # Pod spec
+    spec:
+      initContainers:
+        - name: render-config
+          image: alpine:latest
+          command:
+            - sh
+            - -c
+            - "apk add --no-cache gettext && envsubst < /tmp/template/init.sql > /tmp/final/init.sql"
+          envFrom:
+            - secretRef:
+                name: matrix-secrets
+          volumeMounts:
+            - name: postgres-raw-config
+              mountPath: /tmp/template
+            - name: postgres-config
+              mountPath: /tmp/final
       containers:
         - name: postgres
           image: postgres:latest
@@ -28,7 +43,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: matrix-db-root
-                  key: DB_PASSWORD
+                  key: DB_ROOT_PASSWORD
             - name: POSTGRES_INITDB_ARGS
               value: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
           resources:
@@ -41,19 +56,39 @@ spec:
           livenessProbe:
             exec:
               command:
-                ["pg_isready", "-U", "${DB_ROOT_USERNAME}", "-d", "default"]
+                - sh
+                - -c
+                - pg_isready -U "$POSTGRES_USER"
             initialDelaySeconds: 30
             periodSeconds: 10
           readinessProbe:
             exec:
               command:
-                ["pg_isready", "-U", "${DB_ROOT_USERNAME}", "-d", "default"]
+                - sh
+                - -c
+                - pg_isready -U "$POSTGRES_USER"
             initialDelaySeconds: 5
             periodSeconds: 5
+          startupProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - pg_isready -U "$POSTGRES_USER"
+            failureThreshold: 30
+            periodSeconds: 5
           volumeMounts:
-            - name: data
+            - name: postgres-data
               mountPath: /var/lib/postgresql
+            - name: postgres-config
+              mountPath: /docker-entrypoint-initdb.d/init.sql
+              subPath: init.sql
       volumes:
-        - name: data
+        - name: postgres-raw-config
+          configMap:
+            name: postgres-cfm
+        - name: postgres-data
           persistentVolumeClaim:
             claimName: postgres-pvc
+        - name: postgres-config
+          emptyDir: {}

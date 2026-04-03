@@ -5,7 +5,7 @@ metadata:
   namespace: matrix
 data:
   homeserver.yaml: |
-    server_name: "freezlex.dev"
+    server_name: "k8s.test"
     pid_file: /data/homeserver.pid
     listeners:
       - port: 8008
@@ -18,25 +18,35 @@ data:
     database:
       name: psycopg2
       args:
-        user: ${DB_USERNAME}
-        password: ${DB_PASSWORD}
-        dbname: ${DB_NAME}
-        host: ${DB_HOST}
+        user: ${MX_DB_USERNAME}
+        password: ${MX_DB_PASSWORD}
+        dbname: ${MX_DB_NAME}
+        host: postgres-svc
         port: 5432
         cp_min: 5
         cp_max: 10
-    log_config: "/data/freezlex.dev.log.config"
+    log_config: "/data/k8s.test.log.config"
     media_store_path: /data/media_store
     registration_shared_secret: "${MX_REGISTRATION_SECRET}"
     report_stats: true
     macaroon_secret_key: "${MX_MACAROON_SECRET}"
     form_secret: "${MX_FORM_SECRET}"
-    signing_key_path: "/data/freezlex.dev.signing.key"
+    signing_key_path: "/data/k8s.test.signing.key"
     trusted_key_servers:
       - server_name: "matrix.org"
-    enable_registration: true
-    registration_requires_token: true
-  freezlex.dev.log.config: |
+    password_config:
+      enabled: false
+    serve_server_wellknown: true
+    oidc_providers:
+      - idp_id: mas
+        idp_name: "Freezlex's Matrix auth"
+        issuer: "http://auth.k8s.test/"
+        client_id: "01H..." # ID généré par MAS
+        client_secret: "votre_secret_partage"
+        scopes: ["openid", "profile"]
+        user_mapping_provider:
+          module: "matrix_authentication_service.connector.UserMappingProvider"
+  k8s.test.log.config: |
     version: 1
     formatters:
         precise:

@@ -40,4 +40,6 @@ stringData:
   MAS_DB_USERNAME: ""
   MAS_DB_PASSWORD: ""
   MAS_DB_NAME: ""
+  # Shared secret bewteen MAS and MX
+  MX_MAS_EXCHANGE_TOKEN: ""
 ```

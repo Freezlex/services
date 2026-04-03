@@ -13,3 +13,8 @@ spec:
         - kind: Service
           name: synapse-svc
           port: 8008
+    - kind: Rule
+      match: Host(`k8s.test`) && PathPrefix(`/.well-known/matrix`)
+      services:
+        - name: synapse-svc
+          port: 8008
