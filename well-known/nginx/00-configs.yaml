@@ -6,24 +6,24 @@ metadata:
 data:
   default.conf: |
     server {
-        listen 80;
-        server_name localhost;
-        root /usr/share/nginx/html;
+      listen 443 ssl;
+      server_name localhost;
+      root /usr/share/nginx/html;
 
-        location / {
-            add_header 'Access-Control-Allow-Origin' '*' always;
-            add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS' always;
-            add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range' always;
+      location / {
+          add_header 'Access-Control-Allow-Origin' '*' always;
+          add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS' always;
+          add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range' always;
 
-            default_type application/json;
-        }
+          default_type application/json;
+      }
     }
   matrix-client: |
     {
-      "m.homeserver": { "base_url": "http://k8s.test" },
+      "m.homeserver": { "base_url": "https://matrix.k8s.test" },
       "org.matrix.msc2965.authentication": {
-        "issuer": "http://matrix.k8s.test",
-        "account": "https://matrix.k8s.test/_auth/account"
+        "issuer": "https://k8s.test",
+        "account": "https://auth.k8s.test/"
       }
     }
   matrix-server: |

@@ -5,11 +5,12 @@ metadata:
   namespace: matrix
 spec:
   entryPoints:
-    - web
+    - websecure
   routes:
     - kind: Rule
       match: Host(`matrix.k8s.test`)
+      priority: 50
       services:
-        - kind: Service
-          name: synapse-svc
+        - name: synapse-svc
           port: 8008
+  tls: {}

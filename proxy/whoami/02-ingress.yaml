@@ -5,7 +5,7 @@ metadata:
   namespace: reverse-proxy
 spec:
   entryPoints:
-    - web
+    - websecure
   routes:
     - kind: Rule
       match: Host(`whoami.k8s.test`)
