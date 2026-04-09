@@ -14,7 +14,7 @@ data:
     matrix:
       kind: synapse
       homeserver: "k8s.test"
-      secret: ${MX_MAS_EXCHANGE_TOKEN}
+      secret: "${MX_MAS_EXCHANGE_TOKEN}"
       endpoint: "http://synapse-svc:8008"
     http:
       listeners:

@@ -36,17 +36,11 @@ data:
       - server_name: "matrix.org"
     password_config:
       enabled: false
-    serve_server_wellknown: true
-    oidc_providers:
-      - idp_id: mas
-        idp_name: "Freezlex's Matrix auth"
-        issuer: "http://auth.k8s.test/"
-        client_id: "01H..." # ID généré par MAS
-        client_secret: "votre_secret_partage"
-        scopes: ["openid", "profile"]
-        user_mapping_provider:
-          module: "matrix_authentication_service.connector.UserMappingProvider"
-  k8s.test.log.config: |
+    matrix_authentication_service:
+      enabled: true
+      endpoint: http://mas-svc:8080/
+      secret: "${MX_MAS_EXCHANGE_TOKEN}"
+  logger-config: |
     version: 1
     formatters:
         precise:
@@ -70,7 +64,7 @@ data:
             formatter: precise
     loggers:
         synapse.storage.SQL:
-            level: INFO
+            level: WARN
     root:
         level: INFO
         handlers: [buffer]
