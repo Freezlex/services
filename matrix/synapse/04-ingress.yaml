@@ -1,0 +1,32 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: synapse
+  namespace: matrix
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`matrix.k8s.test`)
+      priority: 50
+      services:
+        - name: synapse
+          port: 8008
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: synapse-overflow
+  namespace: matrix
+spec:
+  entryPoints:
+    - web
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`k8s.test`) && PathPrefix(`/_synapse/`)
+      priority: 110
+      services:
+        - name: synapse
+          port: 8008

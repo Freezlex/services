@@ -21,14 +21,13 @@ data:
         user: ${MX_DB_USERNAME}
         password: ${MX_DB_PASSWORD}
         dbname: ${MX_DB_NAME}
-        host: postgres-svc
+        host: pg
         port: 5432
         cp_min: 5
         cp_max: 10
     log_config: "/data/k8s.test.log.config"
     media_store_path: /data/media_store
     registration_shared_secret: "${MX_REGISTRATION_SECRET}"
-    report_stats: true
     macaroon_secret_key: "${MX_MACAROON_SECRET}"
     form_secret: "${MX_FORM_SECRET}"
     signing_key_path: "/data/k8s.test.signing.key"
@@ -38,34 +37,31 @@ data:
       enabled: false
     matrix_authentication_service:
       enabled: true
-      endpoint: http://mas-svc:8080/
+      endpoint: "http://mas/"
       secret: "${MX_MAS_EXCHANGE_TOKEN}"
-  logger-config: |
+    report_stats: true
+    experimental_features:
+      msc4108_enabled: true
+
+  log.config: |
     version: 1
     formatters:
-        precise:
-            format: '%(asctime)s - %(name)s - %(lineno)d - %(levelname)s - %(request)s - %(message)s'
+      precise:
+        format: '%(asctime)s - %(name)s - %(lineno)d - %(levelname)s - %(request)s - %(message)s'
     handlers:
-        file:
-            class: logging.handlers.TimedRotatingFileHandler
-            formatter: precise
-            filename: /data/homeserver.log
-            when: midnight
-            backupCount: 3
-            encoding: utf8
-        buffer:
-            class: synapse.logging.handlers.PeriodicallyFlushingMemoryHandler
-            target: file
-            capacity: 10
-            flushLevel: 30
-            period: 5
-        console:
-            class: logging.StreamHandler
-            formatter: precise
+      console:
+        class: logging.StreamHandler
+        formatter: precise
+      buffer:
+        class: synapse.logging.handlers.PeriodicallyFlushingMemoryHandler
+        target: console
+        capacity: 10
+        flushLevel: 30
+        period: 5
     loggers:
-        synapse.storage.SQL:
-            level: WARN
+      synapse.storage.SQL:
+        level: WARN
     root:
-        level: INFO
-        handlers: [buffer]
+      level: INFO
+      handlers: [buffer]
     disable_existing_loggers: false

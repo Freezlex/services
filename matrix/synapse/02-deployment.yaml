@@ -1,0 +1,100 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: synapse
+  namespace: matrix
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: synapse
+  template:
+    metadata:
+      labels:
+        app: synapse
+    spec:
+      securityContext:
+        fsGroup: 991
+
+      initContainers:
+        - name: render-config
+          image: alpine@sha256:25109184c71bdad752c8312a8623239686a9a2071e8825f20acb8f2198c3f659
+          securityContext:
+            runAsUser: 0
+          command:
+            - sh
+            - -c
+            - |
+              if [ ! -f /data/homeserver.yaml ]; then
+                echo "homeserver.yaml not found — generating from template..."
+                apk add --no-cache gettext
+                envsubst < /tmp/homeserver.yaml > /data/homeserver.yaml
+                chown -R 991:991 /data
+                echo "homeserver.yaml generated successfully."
+              else
+                echo "homeserver.yaml already exists — skipping generation."
+              fi
+          envFrom:
+            - secretRef:
+                name: matrix-creds
+          volumeMounts:
+            - name: synapse-data
+              mountPath: /data
+            - name: synapse-config
+              mountPath: /tmp
+              readOnly: true
+
+      containers:
+        - name: synapse
+          image: matrixdotorg/synapse:latest
+          securityContext:
+            runAsUser: 991
+            runAsGroup: 991
+            allowPrivilegeEscalation: false
+          ports:
+            - name: http
+              containerPort: 8008
+          envFrom:
+            - secretRef:
+                name: matrix-creds
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "200m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"
+          startupProbe:
+            httpGet:
+              path: /health
+              port: http
+            failureThreshold: 30
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 15
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
+          volumeMounts:
+            - name: synapse-data
+              mountPath: /data
+            - name: synapse-config
+              mountPath: /data/k8s.test.log.config
+              subPath: log.config
+
+      volumes:
+        - name: synapse-data
+          persistentVolumeClaim:
+            claimName: synapse-pvc
+        - name: synapse-config
+          configMap:
+            name: synapse-cfm

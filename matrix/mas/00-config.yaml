@@ -31,14 +31,26 @@ data:
         - 10.0.0.0/8
         - 127.0.0.1/8
     database:
-      uri: postgresql://postgres-svc/mas
+      host: pg
+      port: 5432
+      username: ${MAS_DB_USERNAME}
+      password: ${MAS_DB_PASSWORD}
+      database: ${MAS_DB_NAME}
       max_connections: 10
+    account:
+      password_registration_enabled: true
+      registration_token_required: false
+      password_registration_email_required: false
     passwords:
       enabled: true
       schemes:
         - version: 1
           algorithm: argon2id
+    experimental:
+      access_token_ttl: 300
+      msc4108_enabled: true
     matrix:
       kind: synapse
       homeserver: "k8s.test"
-      endpoint: "http://synapse-svc:8008/"
+      endpoint: "http://synapse:8008/"
+      secret: "${MX_MAS_EXCHANGE_TOKEN}"

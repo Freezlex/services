@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: nginx
+  name: wk
   labels:
-    name: nginx
+    name: wk
     team: personal
     environment: homelab
     app.kubernetes.io/managed-by: gitops

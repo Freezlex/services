@@ -1,8 +1,10 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: postgres-pvl
-  namespace: matrix
+  name: pg-pv
+  labels:
+    app: postgres
+    namespace: matrix
 spec:
   capacity:
     storage: 5Gi
@@ -17,7 +19,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: postgres-pvc
+  name: pg-pvc
   namespace: matrix
 spec:
   accessModes:

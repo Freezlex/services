@@ -1,11 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: postgres-svc
+  name: pg
   namespace: matrix
 spec:
+  type: ClusterIP
   selector:
     app: postgres
   ports:
-    - port: 5432
-  type: ClusterIP
+    - name: postgres
+      port: 5432
+      targetPort: postgres

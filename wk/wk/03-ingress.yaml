@@ -2,7 +2,7 @@ apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: nginx-ing
-  namespace: nginx
+  namespace: wk
 spec:
   entryPoints:
     - web
@@ -12,5 +12,5 @@ spec:
       match: Host(`k8s.test`) && PathPrefix(`/.well-known/`)
       priority: 110
       services:
-        - name: nginx-svc
+        - name: wk
           port: 80

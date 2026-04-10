@@ -1,8 +1,8 @@
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: dashboard-ing
-  namespace: reverse-proxy
+  name: dashboard
+  namespace: proxy
 spec:
   entryPoints:
     - websecure
@@ -10,6 +10,5 @@ spec:
     - kind: Rule
       match: Host(`dashboard.k8s.test`)
       services:
-        - kind: Service
-          name: dashboard-svc
-          port: 8080
+        - kind: TraefikService
+          name: api@internal

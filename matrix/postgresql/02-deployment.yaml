@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: postgres-dpl
+  name: pg
   namespace: matrix
 spec:
   replicas: 1
@@ -13,36 +13,48 @@ spec:
       labels:
         app: postgres
     spec:
+      securityContext:
+        fsGroup: 999
+
       initContainers:
-        - name: render-config
-          image: alpine:latest
+        - name: render-init-sql
+          image: alpine@sha256:25109184c71bdad752c8312a8623239686a9a2071e8825f20acb8f2198c3f659
           command:
             - sh
             - -c
-            - "apk add --no-cache gettext && envsubst < /tmp/template/init.sql > /tmp/final/init.sql"
+            - |
+              apk add --no-cache gettext
+              envsubst < /tmp/template/init.sql > /tmp/rendered/init.sql
+              echo "init.sql rendered successfully"
           envFrom:
             - secretRef:
-                name: matrix-secrets
+                name: matrix-creds
           volumeMounts:
             - name: postgres-raw-config
               mountPath: /tmp/template
-            - name: postgres-config
-              mountPath: /tmp/final
+              readOnly: true
+            - name: postgres-rendered-config
+              mountPath: /tmp/rendered
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: false
+
       containers:
         - name: postgres
-          image: postgres:latest
+          image: postgres@sha256:3e43515057e113ee741fca2f621f15300be34a6d4a8dfcf2e20651288c8272f3
           ports:
-            - containerPort: 5432
+            - name: postgres
+              containerPort: 5432
           env:
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: matrix-db-root
+                  name: pg-creds
                   key: DB_ROOT_USERNAME
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: matrix-db-root
+                  name: pg-creds
                   key: DB_ROOT_PASSWORD
             - name: POSTGRES_INITDB_ARGS
               value: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
@@ -53,22 +65,6 @@ spec:
             limits:
               memory: "512Mi"
               cpu: "500m"
-          livenessProbe:
-            exec:
-              command:
-                - sh
-                - -c
-                - pg_isready -U "$POSTGRES_USER"
-            initialDelaySeconds: 30
-            periodSeconds: 10
-          readinessProbe:
-            exec:
-              command:
-                - sh
-                - -c
-                - pg_isready -U "$POSTGRES_USER"
-            initialDelaySeconds: 5
-            periodSeconds: 5
           startupProbe:
             exec:
               command:
@@ -77,18 +73,39 @@ spec:
                 - pg_isready -U "$POSTGRES_USER"
             failureThreshold: 30
             periodSeconds: 5
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - pg_isready -U "$POSTGRES_USER"
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 5
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - pg_isready -U "$POSTGRES_USER"
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            failureThreshold: 3
           volumeMounts:
             - name: postgres-data
-              mountPath: /var/lib/postgresql
-            - name: postgres-config
+              mountPath: /var/lib/postgresql/data
+              subPath: pgdata
+            - name: postgres-rendered-config
               mountPath: /docker-entrypoint-initdb.d/init.sql
               subPath: init.sql
+          securityContext:
+            allowPrivilegeEscalation: false
       volumes:
         - name: postgres-raw-config
           configMap:
-            name: postgres-cfm
+            name: pg-cfm
         - name: postgres-data
           persistentVolumeClaim:
-            claimName: postgres-pvc
-        - name: postgres-config
+            claimName: pg-pvc
+        - name: postgres-rendered-config
           emptyDir: {}

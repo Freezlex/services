@@ -2,44 +2,21 @@ kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: traefik-role
-  namespace: reverse-proxy
+  namespace: proxy
 rules:
-  - apiGroups:
-      - ""
-    resources:
-      - services
-      - secrets
-      - nodes
-    verbs:
-      - get
-      - list
-      - watch
-  - apiGroups:
-      - discovery.k8s.io
-    resources:
-      - endpointslices
-    verbs:
-      - list
-      - watch
-  - apiGroups:
-      - extensions
-      - networking.k8s.io
-    resources:
-      - ingresses
-      - ingressclasses
-    verbs:
-      - get
-      - list
-      - watch
-  - apiGroups:
-      - extensions
-      - networking.k8s.io
-    resources:
-      - ingresses/status
-    verbs:
-      - update
-  - apiGroups:
-      - traefik.io
+  - apiGroups: [""]
+    resources: [services, secrets, nodes, configmaps, endpoints]
+    verbs: [get, list, watch]
+  - apiGroups: [discovery.k8s.io]
+    resources: [endpointslices]
+    verbs: [list, watch]
+  - apiGroups: [extensions, networking.k8s.io]
+    resources: [ingresses, ingressclasses]
+    verbs: [get, list, watch]
+  - apiGroups: [extensions, networking.k8s.io]
+    resources: [ingresses/status]
+    verbs: [update]
+  - apiGroups: [traefik.io]
     resources:
       - middlewares
       - middlewaretcps
@@ -51,22 +28,19 @@ rules:
       - tlsstores
       - serverstransports
       - serverstransporttcps
-    verbs:
-      - get
-      - list
-      - watch
+    verbs: [get, list, watch]
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: traefik-account
-  namespace: reverse-proxy
+  namespace: proxy
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: traefik-role-binding
-  namespace: reverse-proxy
+  namespace: proxy
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -74,4 +48,4 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: traefik-account
-    namespace: reverse-proxy
+    namespace: proxy

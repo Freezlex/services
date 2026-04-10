@@ -1,12 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: whoami
-  namespace: proxy
+  name: synapse
+  namespace: matrix
 spec:
+  type: ClusterIP
   selector:
-    app: whoami
+    app: synapse
   ports:
     - name: http
-      port: 80
+      port: 8008
       targetPort: http

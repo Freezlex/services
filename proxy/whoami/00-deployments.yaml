@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: whoami
-  namespace: reverse-proxy
+  namespace: proxy
 spec:
   replicas: 1
   selector:
@@ -15,4 +15,16 @@ spec:
     spec:
       containers:
         - name: whoami
-          image: traefik/whoami
+          image: traefik/whoami@sha256:200689790a0a0ea48ca45992e0450bc26ccab5307375b41c84dfc4f2475937ab
+          ports:
+            - name: http
+              containerPort: 80
+          resources:
+            requests:
+              memory: "16Mi"
+              cpu: "10m"
+            limits:
+              memory: "32Mi"
+              cpu: "50m"
+          securityContext:
+            allowPrivilegeEscalation: false
