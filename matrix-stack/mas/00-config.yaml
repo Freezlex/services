@@ -5,48 +5,40 @@ metadata:
   namespace: matrix
 data:
   config.yaml: |
-    database:
-      host: postgres-svc
-      port: 5432
-      username: ${MAS_DB_USERNAME}
-      password: ${MAS_DB_PASSWORD}
-      database: ${MAS_DB_NAME}
-    matrix:
-      kind: synapse
-      homeserver: "k8s.test"
-      secret: "${MX_MAS_EXCHANGE_TOKEN}"
-      endpoint: "http://synapse-svc:8008"
     http:
+      public_base: "https://auth.k8s.test/"
+      issuer: "https://auth.k8s.test/"
       listeners:
-        - resources:
+        - name: web
+          resources:
             - name: discovery
             - name: human
             - name: oauth
             - name: compat
+            - name: graphql
             - name: assets
           binds:
-            - host: 0.0.0.0
-            - port: 8080
-    account:
-      password_registration_enabled: true
-      password_recovery_enabled: true
-      account_deactivation_allowed: true
-      login_with_email_allowed: true
-    rate_limiting:
-      account_recovery:
-        per_ip:
-          burst: 3
-          per_second: 0.0008
-        per_address:
-          burst: 3
-          per_second: 0.0002
-      login:
-        per_ip:
-          burst: 3
-          per_second: 0.05
-        per_account:
-          burst: 1800
-          per_second: 0.5
-      registration:
-        burst: 3
-        per_second: 0.0008
+            - address: "0.0.0.0:8080"
+          proxy_protocol: false
+        - name: internal
+          resources:
+            - name: health
+          binds:
+            - address: "0.0.0.0:8081"
+      trusted_proxies:
+        - 192.168.0.0/16
+        - 172.16.0.0/12
+        - 10.0.0.0/8
+        - 127.0.0.1/8
+    database:
+      uri: postgresql://postgres-svc/mas
+      max_connections: 10
+    passwords:
+      enabled: true
+      schemes:
+        - version: 1
+          algorithm: argon2id
+    matrix:
+      kind: synapse
+      homeserver: "k8s.test"
+      endpoint: "http://synapse-svc:8008/"

@@ -6,7 +6,7 @@ metadata:
 data:
   default.conf: |
     server {
-      listen 443 ssl;
+      listen 80;
       server_name localhost;
       root /usr/share/nginx/html;
 

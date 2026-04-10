@@ -13,4 +13,3 @@ spec:
       services:
         - name: synapse-svc
           port: 8008
-  tls: {}
