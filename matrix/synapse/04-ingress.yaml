@@ -8,7 +8,7 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`matrix.k8s.test`)
+      match: Host(`matrix.julien-ivs.com`)
       priority: 50
       services:
         - name: synapse
@@ -25,7 +25,7 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`k8s.test`) && PathPrefix(`/_synapse/`)
+      match: Host(`julien-ivs.com`) && PathPrefix(`/_synapse/`)
       priority: 110
       services:
         - name: synapse

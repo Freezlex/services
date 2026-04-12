@@ -8,7 +8,7 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`dashboard.k8s.test`)
+      match: Host(`dashboard.julien-ivs.com`)
       services:
         - kind: TraefikService
           name: api@internal

@@ -17,22 +17,27 @@ data:
         default_type application/json;
         try_files $uri $uri/ =404;
       }
-      application/json
     }
   # /.well-known/matrix/client
   matrix-client: |
     {
-      "m.homeserver": { "base_url": "https://matrix.k8s.test" },
+      "m.homeserver": { "base_url": "https://matrix.julien-ivs.com" },
       "org.matrix.msc2965.authentication": {
-        "issuer": "https://auth.k8s.test/",
-        "account": "https://auth.k8s.test/account"
-      }
+        "issuer": "https://auth.julien-ivs.com/",
+        "account": "https://auth.julien-ivs.com/account"
+      },
+      "org.matrix.msc4143.rtc_foci": [
+        {
+          "type": "livekit",
+          "livekit_service_url": "https://rtc.julien-ivs.com/livekit/jwt"
+        }
+      ]
     }
   # /.well-known/matrix/server
   matrix-server: |
-    { "m.server": "matrix.k8s.test:443" }
+    { "m.server": "matrix.julien-ivs.com:443" }
   # /.well-known/security.txt
   security: |
-    Contact: mailto:incidents@k8s.test
+    Contact: mailto:incidents@julien-ivs.com
     Expires: 2027-12-31T23:59:59.000Z
     Preferred-Languages: fr, en, de

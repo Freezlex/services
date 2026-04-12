@@ -88,7 +88,7 @@ spec:
             - name: synapse-data
               mountPath: /data
             - name: synapse-config
-              mountPath: /data/k8s.test.log.config
+              mountPath: /data/julien-ivs.com.log.config
               subPath: log.config
 
       volumes:

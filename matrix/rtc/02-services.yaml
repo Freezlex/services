@@ -1,0 +1,31 @@
+# Service uniquement pour lk-jwt — LiveKit utilise hostNetwork
+# donc ses ports sont directement sur le node, pas besoin de Service pour lui
+apiVersion: v1
+kind: Service
+metadata:
+  name: lk-jwt
+  namespace: matrix
+spec:
+  type: ClusterIP
+  selector:
+    app: lk-jwt
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http
+---
+# Service ClusterIP pour le signalling HTTP/WS de LiveKit
+# Le media UDP passe par hostNetwork directement, pas par ce Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: lk
+  namespace: matrix
+spec:
+  type: ClusterIP
+  selector:
+    app: livekit
+  ports:
+    - name: http
+      port: 7880
+      targetPort: http

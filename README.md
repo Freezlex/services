@@ -1,9 +1,9 @@
 ```
 Internet
   └── Traefik (proxy ns)
-        ├── matrix.k8s.test  ─── /_matrix/client/v3/login|logout|refresh ──► MAS
+        ├── matrix.julien-ivs.com  ─── /_matrix/client/v3/login|logout|refresh ──► MAS
         │                    └── everything else ──────────────────────────► Synapse
-        ├── auth.k8s.test    ──────────────────────────────────────────────► MAS
-        ├── k8s.test/.well-known/ ────────────────────────────────────────► nginx (wk ns)
-        └── dashboard.k8s.test ──────────────────────────────────────────► Traefik dashboard
+        ├── auth.julien-ivs.com    ──────────────────────────────────────────────► MAS
+        ├── julien-ivs.com/.well-known/ ────────────────────────────────────────► nginx (wk ns)
+        └── dashboard.julien-ivs.com ──────────────────────────────────────────► Traefik dashboard
 ```

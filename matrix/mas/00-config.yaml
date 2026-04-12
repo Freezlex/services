@@ -6,8 +6,8 @@ metadata:
 data:
   config.yaml: |
     http:
-      public_base: "https://auth.k8s.test/"
-      issuer: "https://auth.k8s.test/"
+      public_base: "https://auth.julien-ivs.com/"
+      issuer: "https://auth.julien-ivs.com/"
       listeners:
         - name: web
           resources:
@@ -31,7 +31,7 @@ data:
         - 10.0.0.0/8
         - 127.0.0.1/8
     database:
-      host: pg
+      host: pg-svc
       port: 5432
       username: ${MAS_DB_USERNAME}
       password: ${MAS_DB_PASSWORD}
@@ -51,6 +51,6 @@ data:
       msc4108_enabled: true
     matrix:
       kind: synapse
-      homeserver: "k8s.test"
+      homeserver: "julien-ivs.com"
       endpoint: "http://synapse:8008/"
       secret: "${MX_MAS_EXCHANGE_TOKEN}"

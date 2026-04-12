@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: pg
+  name: pg-svc
   namespace: matrix
 spec:
   type: ClusterIP

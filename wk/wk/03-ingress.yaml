@@ -9,7 +9,7 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`k8s.test`) && PathPrefix(`/.well-known/`)
+      match: Host(`julien-ivs.com`) && PathPrefix(`/.well-known/`)
       priority: 110
       services:
         - name: wk

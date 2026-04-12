@@ -7,7 +7,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`matrix.k8s.test`) && (PathPrefix(`/_matrix/client/v3/login`) || PathPrefix(`/_matrix/client/v3/logout`) || PathPrefix(`/_matrix/client/v3/refresh`))
+    - match: Host(`matrix.julien-ivs.com`) && (PathPrefix(`/_matrix/client/v3/login`) || PathPrefix(`/_matrix/client/v3/logout`) || PathPrefix(`/_matrix/client/v3/refresh`))
       kind: Rule
       priority: 100
       services:
@@ -24,7 +24,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`auth.k8s.test`)
+    - match: Host(`auth.julien-ivs.com`)
       kind: Rule
       services:
         - name: mas
