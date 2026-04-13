@@ -26,6 +26,15 @@ spec:
             - |
               apk add --no-cache gettext
               envsubst < /tmp/template/livekit.yaml > /tmp/rendered/livekit.yaml
+          env:
+            # FIX 2 : injecte l'IP externe ici si tu ne veux pas la hardcoder
+            # dans le ConfigMap. Remplace la valeur par ton IP publique / LB.
+            - name: LIVEKIT_NODE_IP
+              valueFrom:
+                secretKeyRef:
+                  name: rtc-creds
+                  key: LIVEKIT_NODE_IP
+                  optional: true
           envFrom:
             - secretRef:
                 name: rtc-creds
@@ -47,6 +56,9 @@ spec:
             - name: rtc-tcp
               containerPort: 7881
               protocol: TCP
+            - name: rtc-udp
+              containerPort: 7882
+              protocol: UDP
           resources:
             requests:
               memory: "256Mi"
@@ -100,7 +112,7 @@ spec:
           image: ghcr.io/element-hq/lk-jwt-service:latest
           env:
             - name: LIVEKIT_URL
-              value: "wss://rtc.julien-ivs.com/livekit/sfu"
+              value: "ws://lk:7880"
             - name: LIVEKIT_KEY
               valueFrom:
                 secretKeyRef:

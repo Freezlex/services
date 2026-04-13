@@ -32,3 +32,23 @@ spec:
   stripPrefix:
     prefixes:
       - "/livekit/jwt"
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: livekit-ws-headers
+  namespace: matrix
+spec:
+  headers:
+    customRequestHeaders:
+      X-Forwarded-Proto: "https"
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: strip-livekit-sfu
+  namespace: matrix
+spec:
+  stripPrefix:
+    prefixes:
+      - "/livekit/sfu"

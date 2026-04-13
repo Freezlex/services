@@ -10,11 +10,15 @@ spec:
     - match: Host(`rtc.julien-ivs.com`) && PathPrefix(`/livekit/sfu`)
       kind: Rule
       priority: 20
+      middlewares:
+        - name: strip-livekit-sfu
+          namespace: matrix
+        - name: livekit-ws-headers
+          namespace: matrix
       services:
         - name: lk
           port: 7880
-
-    - match: Host(`rtc.julien-ivs.com`)
+    - match: Host(`rtc.julien-ivs.com`) && PathPrefix(`/livekit/jwt`)
       kind: Rule
       priority: 10
       middlewares:

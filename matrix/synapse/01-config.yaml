@@ -45,6 +45,8 @@ data:
       msc4140_enabled: true
       msc4108_enabled: true
       msc4143_enabled: true
+    livekit:
+      service_url: "http://lk-jwt"
 
   log.config: |
     version: 1
