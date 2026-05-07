@@ -32,7 +32,12 @@ metadata:
   name: livekit-media
   namespace: matrix
   annotations:
+<<<<<<< HEAD
     service.beta.kubernetes.io/external-traffic: "OnlyLocal"
+=======
+    metallb.universe.tf/loadBalancerIPs: 192.168.1.200 # ← must match traefik
+    metallb.universe.tf/allow-shared-ip: homelab-vip
+>>>>>>> 1fa3842896edb2006660fb9f8228ff83ff51841e
 spec:
   type: LoadBalancer
   externalTrafficPolicy: Local
@@ -45,5 +50,9 @@ spec:
       protocol: TCP
     - name: rtc-udp
       port: 7882
+<<<<<<< HEAD
       targetPort: rtc-udp
+=======
+      targetPort: 7882
+>>>>>>> 1fa3842896edb2006660fb9f8228ff83ff51841e
       protocol: UDP
