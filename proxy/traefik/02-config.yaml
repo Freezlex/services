@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: traefik-dynamic-config
+  namespace: proxy
+data:
+  middlewares.yaml: |
+    http:
+      middlewares:
+        compress:
+          compress: {}
+        headers:
+          headers:
+            browserXssFilter: true
+            contentTypeNosniff: true
+            frameDeny: true
+            referrerPolicy: "strict-origin-when-cross-origin"
+            stsSeconds: 31536000
+            stsIncludeSubdomains: true
+            stsPreload: true
+            customResponseHeaders:
+              X-Robots-Tag: "noindex,nofollow,nosnippet,noarchive,notranslate,noimageindex"
+              Server: ""

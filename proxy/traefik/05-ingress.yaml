@@ -1,4 +1,14 @@
 apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: dashboard-auth
+  namespace: proxy
+spec:
+  basicAuth:
+    secret: traefik-dashboard-auth
+    removeHeader: true
+---
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: dashboard
@@ -9,6 +19,8 @@ spec:
   routes:
     - kind: Rule
       match: Host(`dashboard.julien-ivs.com`)
+      middlewares:
+        - name: dashboard-auth
       services:
         - kind: TraefikService
           name: api@internal

@@ -1,0 +1,38 @@
+# Persistent storage for Let's Encrypt certificate data (acme.json).
+# This MUST survive pod restarts — losing it means hitting LE rate limits.
+# The file is written by Traefik at startup; the directory must be pre-created
+# with mode 0600 or Traefik will refuse to write it on some versions.
+#
+# On your k3s node, run once:
+#   mkdir -p /data/k8s/proxy/traefik/letsencrypt
+#   chmod 700 /data/k8s/proxy/traefik/letsencrypt
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: traefik-acme-pv
+  labels:
+    app: traefik
+spec:
+  capacity:
+    storage: 64Mi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  hostPath:
+    path: /data/k8s/proxy/traefik/letsencrypt
+    type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: traefik-acme-pvc
+  namespace: proxy
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 64Mi
+  storageClassName: local-storage
