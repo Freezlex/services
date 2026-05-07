@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: metallb
+  labels:
+    name: metallb
+    team: personal
+    environment: homelab
+    app.kubernetes.io/managed-by: gitops
+    role: loadbalancing

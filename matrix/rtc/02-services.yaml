@@ -31,16 +31,20 @@ kind: Service
 metadata:
   name: livekit-media
   namespace: matrix
+  annotations:
+    metallb.universe.tf/loadBalancerIPs: 192.168.1.200 # ← must match traefik
+    metallb.universe.tf/allow-shared-ip: homelab-vip
 spec:
   type: LoadBalancer
+  externalTrafficPolicy: Local
   selector:
     app: livekit
   ports:
-    - name: rtc-udp
-      port: 7882
-      targetPort: 7882
-      protocol: UDP
     - name: rtc-tcp
       port: 7881
       targetPort: 7881
       protocol: TCP
+    - name: rtc-udp
+      port: 7882
+      targetPort: 7882
+      protocol: UDP
