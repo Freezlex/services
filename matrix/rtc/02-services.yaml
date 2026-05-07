@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: lk-jwt
+  name: livekit-jwt
   namespace: matrix
 spec:
   type: ClusterIP
   selector:
-    app: lk-jwt
+    app: livekit-jwt
   ports:
     - name: http
       port: 8080
@@ -15,7 +15,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: lk
+  name: livekit
   namespace: matrix
 spec:
   type: ClusterIP
@@ -31,16 +31,19 @@ kind: Service
 metadata:
   name: livekit-media
   namespace: matrix
+  annotations:
+    service.beta.kubernetes.io/external-traffic: "OnlyLocal"
 spec:
   type: LoadBalancer
+  externalTrafficPolicy: Local
   selector:
     app: livekit
   ports:
-    - name: rtc-udp
-      port: 7882
-      targetPort: 7882
-      protocol: UDP
     - name: rtc-tcp
       port: 7881
-      targetPort: 7881
+      targetPort: rtc-tcp
       protocol: TCP
+    - name: rtc-udp
+      port: 7882
+      targetPort: rtc-udp
+      protocol: UDP

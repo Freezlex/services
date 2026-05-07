@@ -13,10 +13,6 @@ spec:
       labels:
         app: livekit
     spec:
-      # Obligatoire — LiveKit bind les ports UDP directement sur le host
-      hostNetwork: true
-      dnsPolicy: ClusterFirstWithHostNet
-
       initContainers:
         - name: render-config
           image: alpine:3.21
@@ -26,15 +22,6 @@ spec:
             - |
               apk add --no-cache gettext
               envsubst < /tmp/template/livekit.yaml > /tmp/rendered/livekit.yaml
-          env:
-            # FIX 2 : injecte l'IP externe ici si tu ne veux pas la hardcoder
-            # dans le ConfigMap. Remplace la valeur par ton IP publique / LB.
-            - name: LIVEKIT_NODE_IP
-              valueFrom:
-                secretKeyRef:
-                  name: rtc-creds
-                  key: LIVEKIT_NODE_IP
-                  optional: true
           envFrom:
             - secretRef:
                 name: rtc-creds
@@ -95,24 +82,24 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: lk-jwt
+  name: livekit-jwt
   namespace: matrix
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: lk-jwt
+      app: livekit-jwt
   template:
     metadata:
       labels:
-        app: lk-jwt
+        app: livekit-jwt
     spec:
       containers:
-        - name: lk-jwt
+        - name: livekit-jwt
           image: ghcr.io/element-hq/lk-jwt-service:latest
           env:
             - name: LIVEKIT_URL
-              value: "ws://lk:7880"
+              value: "ws://livekit:7880"
             - name: LIVEKIT_KEY
               valueFrom:
                 secretKeyRef:

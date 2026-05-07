@@ -87,7 +87,6 @@ spec:
               mountPath: /etc/mas/secrets.yaml
               subPath: secrets.yaml
               readOnly: true
-
       volumes:
         - name: mas-raw-config
           configMap:

@@ -30,6 +30,11 @@ data:
         - 172.16.0.0/12
         - 10.0.0.0/8
         - 127.0.0.1/8
+    matrix:
+      kind: synapse
+      homeserver: "julien-ivs.com"
+      endpoint: "http://synapse:8008/"
+      secret: "${MX_MAS_EXCHANGE_TOKEN}"
     database:
       host: pg-svc
       port: 5432
@@ -40,17 +45,28 @@ data:
     account:
       password_registration_enabled: true
       registration_token_required: false
-      password_registration_email_required: false
+      password_registration_email_required: true
     passwords:
       enabled: true
       schemes:
         - version: 1
           algorithm: argon2id
+    email:
+      from: '"Polarys Accounts" <auth@freezlex.dev>'
+      reply_to: '"No reply" <no-reply@freezlex.dev>'
+      transport: smtp
+      mode: starttls
+      hostname: "${MAS_EMAIL_HOST}"
+      port: 587
+      username: "${MAS_EMAIL_LOGIN}"
+      password: "${MAS_EMAIL_TOKEN}"
+    rate_limiting:
+      login:
+        burst: 3
+        per_second: 0.05
+      registration:
+        burst: 15
+        per_second: 0.003
     experimental:
       access_token_ttl: 300
       msc4108_enabled: true
-    matrix:
-      kind: synapse
-      homeserver: "julien-ivs.com"
-      endpoint: "http://synapse:8008/"
-      secret: "${MX_MAS_EXCHANGE_TOKEN}"

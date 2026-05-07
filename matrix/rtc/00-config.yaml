@@ -18,6 +18,6 @@ data:
     room:
       auto_create: false
     keys:
-      606eacf165a89d3394b255be1e40df92: "${LIVEKIT_SECRET}"
+      default: "${LIVEKIT_SECRET}"
     logging:
       level: info

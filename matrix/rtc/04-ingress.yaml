@@ -16,7 +16,7 @@ spec:
         - name: livekit-ws-headers
           namespace: matrix
       services:
-        - name: lk
+        - name: livekit
           port: 7880
     - match: Host(`rtc.julien-ivs.com`) && PathPrefix(`/livekit/jwt`)
       kind: Rule
@@ -27,5 +27,5 @@ spec:
         - name: strip-livekit-jwt
           namespace: matrix
       services:
-        - name: lk-jwt
+        - name: livekit-jwt
           port: 8080
