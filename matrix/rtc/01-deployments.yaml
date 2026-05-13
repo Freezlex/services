@@ -3,16 +3,18 @@ kind: Deployment
 metadata:
   name: livekit
   namespace: matrix
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: livekit
-  template:
-    metadata:
-      labels:
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
         app: livekit
-    spec:
+    template:
+      metadata:
+        labels:
+          app: livekit
+      spec:
+        nodeSelector:
+          kubernetes.io/hostname: node/mako
       initContainers:
         - name: render-config
           image: alpine:3.21
@@ -34,7 +36,7 @@ spec:
 
       containers:
         - name: livekit
-          image: livekit/livekit-server:latest
+          image: livekit/livekit-server:1.11
           args: ["--config", "/etc/livekit/livekit.yaml"]
           ports:
             - name: http
@@ -96,7 +98,7 @@ spec:
     spec:
       containers:
         - name: livekit-jwt
-          image: ghcr.io/element-hq/lk-jwt-service:latest
+          image: ghcr.io/element-hq/lk-jwt-service:0.4.4
           env:
             - name: LIVEKIT_URL
               value: "ws://livekit:7880"
@@ -111,7 +113,7 @@ spec:
                   name: rtc-creds
                   key: LIVEKIT_SECRET
             - name: LIVEKIT_FULL_ACCESS_HOMESERVERS
-              value: "julien-ivs.com"
+              value: "polarys.im"
           ports:
             - name: http
               containerPort: 8080

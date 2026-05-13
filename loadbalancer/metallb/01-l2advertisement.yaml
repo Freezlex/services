@@ -6,7 +6,3 @@ metadata:
 spec:
   ipAddressPools:
     - homelab-pool
-  # If you have multiple NICs on your k3s node and want to restrict which
-  # interface answers ARP, uncomment and fill in:
-  # interfaces:
-  #   - eth0

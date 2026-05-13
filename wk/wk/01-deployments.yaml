@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: nginx
-          image: nginx@sha256:934b7662b745c4e9a66e12d25e0ab5385e71870d95460e31839c3742f4d3da50 # nginx:???-alpine
+          image: nginx:1.29.8 # nginx:???-alpine
           ports:
             - name: http
               containerPort: 80

@@ -8,7 +8,7 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`whoami.julien-ivs.com`)
+      match: Host(`whoami.polarys.im`)
       services:
         - kind: Service
           name: whoami

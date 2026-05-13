@@ -5,4 +5,3 @@ metadata:
 provisioner: kubernetes.io/no-provisioner
 reclaimPolicy: Retain
 volumeBindingMode: WaitForFirstConsumer
-allowVolumeExpansion: true

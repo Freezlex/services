@@ -17,9 +17,6 @@ spec:
     - name: websecure
       port: 443
       targetPort: websecure
-    - name: mx-federation
-      port: 8448
-      targetPort: mx-federation
 ---
 apiVersion: v1
 kind: Service

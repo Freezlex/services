@@ -18,28 +18,26 @@ spec:
       serviceAccountName: traefik-account
       containers:
         - name: traefik
-          image: traefik@sha256:5ae9c349154d5298a5d61a7b25e5f3a9f53314f1515e87632120b95051c7917c
+          image: traefik:3.7.1
           args:
             # ── Providers ────────────────────────────────────────────────────
             - --providers.kubernetescrd
             - --providers.file.directory=/dynamic_conf/
             - --providers.file.watch=true
 
-            # ── Entrypoints ───────────────────────────────────────────────────
+            # ── Entrypoints ──────────────────────────────────────────────────
             - --entrypoints.web.address=:80
             - --entrypoints.websecure.address=:443
-            - --entrypoints.matrix-federation.address=:8448
 
             # HTTP → HTTPS redirect
             - --entrypoints.web.http.redirections.entrypoint.to=websecure
             - --entrypoints.web.http.redirections.entrypoint.scheme=https
 
             - --entrypoints.websecure.http.middlewares=compress@file,headers@file
-            - --entrypoints.matrix-federation.forwardedHeaders.insecure=true
 
-            # ── Let's Encrypt (Cloudflare DNS challenge) ──────────────────────
+            # ── Let's Encrypt (OVH DNS challenge) ────────────────────────────
             - --certificatesresolvers.letsencryptresolver.acme.dnschallenge=true
-            - --certificatesresolvers.letsencryptresolver.acme.dnschallenge.provider=cloudflare
+            - --certificatesresolvers.letsencryptresolver.acme.dnschallenge.provider=ovh
             - --certificatesresolvers.letsencryptresolver.acme.email=$(ROOT_EMAIL)
             - --certificatesresolvers.letsencryptresolver.acme.storage=/letsencrypt/acme.json
             # Switch to the staging URL while testing to avoid LE rate limits:
@@ -47,7 +45,7 @@ spec:
             - --certificatesresolvers.letsencryptresolver.acme.caserver=https://acme-v02.api.letsencrypt.org/directory
             - --entrypoints.websecure.http.tls.certresolver=letsencryptresolver
 
-            # ── API / Dashboard ───────────────────────────────────────────────
+            # ── API / Dashboard ──────────────────────────────────────────────
             - --api
             - --api.dashboard=true
             - --ping
@@ -78,8 +76,6 @@ spec:
               containerPort: 80
             - name: websecure
               containerPort: 443
-            - name: mx-federation
-              containerPort: 8448
             - name: dashboard
               containerPort: 8080
 

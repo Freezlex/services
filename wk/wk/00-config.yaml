@@ -21,23 +21,23 @@ data:
   # /.well-known/matrix/client
   matrix-client: |
     {
-      "m.homeserver": { "base_url": "https://matrix.julien-ivs.com" },
+      "m.homeserver": { "base_url": "https://matrix.polarys.im" },
       "org.matrix.msc2965.authentication": {
-        "issuer": "https://auth.julien-ivs.com/",
-        "account": "https://auth.julien-ivs.com/account"
+        "issuer": "https://auth.polarys.im/",
+        "account": "https://auth.polarys.im/account"
       },
       "org.matrix.msc4143.rtc_foci": [
         {
           "type": "livekit",
-          "livekit_service_url": "https://rtc.julien-ivs.com/livekit/jwt"
+          "livekit_service_url": "https://rtc.polarys.im/livekit/jwt"
         }
       ]
     }
   # /.well-known/matrix/server
   matrix-server: |
-    { "m.server": "matrix.julien-ivs.com:443" }
+    { "m.server": "matrix.polarys.im:443" }
   # /.well-known/security.txt
   security: |
-    Contact: mailto:incidents@julien-ivs.com
+    Contact: mailto:incidents@polarys.im
     Expires: 2027-12-31T23:59:59.000Z
     Preferred-Languages: fr, en, de

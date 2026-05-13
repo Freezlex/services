@@ -15,7 +15,7 @@ spec:
     spec:
       initContainers:
         - name: render-config
-          image: alpine@sha256:25109184c71bdad752c8312a8623239686a9a2071e8825f20acb8f2198c3f659
+          image: alpine:3.21
           command:
             - sh
             - -c
@@ -37,7 +37,7 @@ spec:
 
       containers:
         - name: mas
-          image: ghcr.io/element-hq/matrix-authentication-service@sha256:6e1408ebd143184a1d5dac0cf587448d58ee35f66524ba1523ed671671276d7e
+          image: ghcr.io/element-hq/matrix-authentication-service:1.16.0
           args:
             - "server"
             - "--config"

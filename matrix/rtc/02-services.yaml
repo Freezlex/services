@@ -32,11 +32,10 @@ metadata:
   name: livekit-media
   namespace: matrix
   annotations:
-    metallb.universe.tf/loadBalancerIPs: 192.168.1.200 # ← must match traefik
+    metallb.universe.tf/loadBalancerIPs: 192.168.1.200
     metallb.universe.tf/allow-shared-ip: homelab-vip
 spec:
   type: LoadBalancer
-  externalTrafficPolicy: Local
   selector:
     app: livekit
   ports:
