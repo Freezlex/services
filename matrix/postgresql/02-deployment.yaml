@@ -93,8 +93,7 @@ spec:
             failureThreshold: 3
           volumeMounts:
             - name: postgres-data
-              mountPath: /var/lib/postgresql/data
-              subPath: pgdata
+              mountPath: /var/lib/postgresql
             - name: postgres-rendered-config
               mountPath: /docker-entrypoint-initdb.d/init.sql
               subPath: init.sql
