@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: whoami
-          image: traefik/whoami:1.11
+          image: traefik/whoami:latest
           ports:
             - name: http
               containerPort: 80
