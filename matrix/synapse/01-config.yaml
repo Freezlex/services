@@ -25,12 +25,12 @@ data:
         port: 5432
         cp_min: 5
         cp_max: 10
-    log_config: "/data/polarys.im.log.config"
+    log_config: "/logs/polarys.im.log.config"
     media_store_path: /data/media_store
     registration_shared_secret: "${MX_REGISTRATION_SECRET}"
     macaroon_secret_key: "${MX_MACAROON_SECRET}"
     form_secret: "${MX_FORM_SECRET}"
-    signing_key_path: "/data/polarys.im.signing.key"
+    signing_key_path: "/keys/polarys.im.signing.key"
     trusted_key_servers:
       - server_name: "matrix.org"
     password_config:
