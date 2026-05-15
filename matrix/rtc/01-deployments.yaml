@@ -3,138 +3,138 @@ kind: Deployment
 metadata:
   name: livekit
   namespace: matrix
-  spec:
-    replicas: 1
-    selector:
-      matchLabels:
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: livekit
+  template:
+    metadata:
+      labels:
         app: livekit
-    template:
-      metadata:
-        labels:
-          app: livekit
-      spec:
-        nodeSelector:
-          kubernetes.io/hostname: node/mako
-      initContainers:
-        - name: render-config
-          image: alpine:3.21
-          command:
-            - sh
-            - -c
-            - |
-              apk add --no-cache gettext
-              envsubst < /tmp/template/livekit.yaml > /tmp/rendered/livekit.yaml
-          envFrom:
-            - secretRef:
-                name: rtc-creds
-          volumeMounts:
-            - name: livekit-raw-config
-              mountPath: /tmp/template
-              readOnly: true
-            - name: livekit-rendered-config
-              mountPath: /tmp/rendered
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: node/mako
+    initContainers:
+      - name: render-config
+        image: alpine:3.21
+        command:
+          - sh
+          - -c
+          - |
+            apk add --no-cache gettext
+            envsubst < /tmp/template/livekit.yaml > /tmp/rendered/livekit.yaml
+        envFrom:
+          - secretRef:
+              name: rtc-creds
+        volumeMounts:
+          - name: livekit-raw-config
+            mountPath: /tmp/template
+            readOnly: true
+          - name: livekit-rendered-config
+            mountPath: /tmp/rendered
 
-      containers:
-        - name: livekit
-          image: livekit/livekit-server:1.11
-          args: ["--config", "/etc/livekit/livekit.yaml"]
-          ports:
-            - name: http
-              containerPort: 7880
-              protocol: TCP
-            - name: rtc-tcp
-              containerPort: 7881
-              protocol: TCP
-            - name: rtc-udp
-              containerPort: 7882
-              protocol: UDP
-          resources:
-            requests:
-              memory: "256Mi"
-              cpu: "100m"
-            limits:
-              memory: "1Gi"
-              cpu: "1000m"
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
-            initialDelaySeconds: 5
-            periodSeconds: 10
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-            initialDelaySeconds: 10
-            periodSeconds: 15
-          securityContext:
-            allowPrivilegeEscalation: false
-          volumeMounts:
-            - name: livekit-rendered-config
-              mountPath: /etc/livekit/livekit.yaml
-              subPath: livekit.yaml
+    containers:
+      - name: livekit
+        image: livekit/livekit-server:1.11
+        args: ["--config", "/etc/livekit/livekit.yaml"]
+        ports:
+          - name: http
+            containerPort: 7880
+            protocol: TCP
+          - name: rtc-tcp
+            containerPort: 7881
+            protocol: TCP
+          - name: rtc-udp
+            containerPort: 7882
+            protocol: UDP
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 15
+        securityContext:
+          allowPrivilegeEscalation: false
+        volumeMounts:
+          - name: livekit-rendered-config
+            mountPath: /etc/livekit/livekit.yaml
+            subPath: livekit.yaml
 
-      volumes:
-        - name: livekit-raw-config
-          configMap:
-            name: livekit-config
-        - name: livekit-rendered-config
-          emptyDir: {}
+    volumes:
+      - name: livekit-raw-config
+        configMap:
+          name: livekit-config
+      - name: livekit-rendered-config
+        emptyDir: {}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: livekit-jwt
   namespace: matrix
-  spec:
-    replicas: 1
-    selector:
-      matchLabels:
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: livekit-jwt
+  template:
+    metadata:
+      labels:
         app: livekit-jwt
-    template:
-      metadata:
-        labels:
-          app: livekit-jwt
-      spec:
-        containers:
-          - name: livekit-jwt
-            image: ghcr.io/element-hq/lk-jwt-service:0.4.4
-            env:
-              - name: LIVEKIT_URL
-                value: "ws://livekit:7880"
-              - name: LIVEKIT_KEY
-                valueFrom:
-                  secretKeyRef:
-                    name: rtc-creds
-                    key: LIVEKIT_KEY
-              - name: LIVEKIT_SECRET
-                valueFrom:
-                  secretKeyRef:
-                    name: rtc-creds
-                    key: LIVEKIT_SECRET
-              - name: LIVEKIT_FULL_ACCESS_HOMESERVERS
-                value: "polarys.im"
-            ports:
-              - name: http
-                containerPort: 8080
-            resources:
-              requests:
-                memory: "32Mi"
-                cpu: "10m"
-              limits:
-                memory: "64Mi"
-                cpu: "100m"
-            readinessProbe:
-              httpGet:
-                path: /healthz
-                port: http
-              initialDelaySeconds: 5
-              periodSeconds: 10
-            livenessProbe:
-              httpGet:
-                path: /healthz
-                port: http
-              initialDelaySeconds: 10
-              periodSeconds: 15
-            securityContext:
-              allowPrivilegeEscalation: false
+    spec:
+      containers:
+        - name: livekit-jwt
+          image: ghcr.io/element-hq/lk-jwt-service:0.4.4
+          env:
+            - name: LIVEKIT_URL
+              value: "ws://livekit:7880"
+            - name: LIVEKIT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: rtc-creds
+                  key: LIVEKIT_KEY
+            - name: LIVEKIT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: rtc-creds
+                  key: LIVEKIT_SECRET
+            - name: LIVEKIT_FULL_ACCESS_HOMESERVERS
+              value: "polarys.im"
+          ports:
+            - name: http
+              containerPort: 8080
+          resources:
+            requests:
+              memory: "32Mi"
+              cpu: "10m"
+            limits:
+              memory: "64Mi"
+              cpu: "100m"
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          securityContext:
+            allowPrivilegeEscalation: false
