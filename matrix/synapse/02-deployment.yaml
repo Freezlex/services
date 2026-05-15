@@ -41,7 +41,7 @@ spec:
 
       containers:
         - name: synapse
-          image: matrixdotorg/synapse:1.98.0
+          image: matrixdotorg/synapse:latest
           securityContext:
             runAsUser: 991
             runAsGroup: 991
