@@ -99,7 +99,7 @@ spec:
           image: ghcr.io/element-hq/lk-jwt-service:0.4.4
           env:
             - name: LIVEKIT_URL
-              value: "ws://livekit.matrix.svc.cluster.local:7880"
+              value: "ws://lk.matrix.svc.cluster.local:7880"
             - name: LIVEKIT_KEY
               valueFrom:
                 secretKeyRef:

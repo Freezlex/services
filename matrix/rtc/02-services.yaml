@@ -15,10 +15,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: livekit
+  name: lk
   namespace: matrix
 spec:
-  type: ClusterIP
   selector:
     app: livekit
   ports:
