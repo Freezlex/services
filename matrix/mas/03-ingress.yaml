@@ -29,3 +29,21 @@ spec:
       services:
         - name: mas
           port: 80
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: mas-adminapi
+  namespace: matrix
+spec:
+  entryPoints:
+    - websecure
+  tls:
+    certResolver: ovh
+  routes:
+    - match: Host(`auth.polarys.im`) && PathPrefix(`/_mas/admin`)
+      kind: Rule
+      priority: 120
+      services:
+        - name: mas
+          port: 80

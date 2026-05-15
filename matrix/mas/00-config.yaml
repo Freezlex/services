@@ -17,6 +17,7 @@ data:
             - name: compat
             - name: graphql
             - name: assets
+            - name: adminapi
           binds:
             - address: "0.0.0.0:8080"
           proxy_protocol: false
