@@ -83,11 +83,11 @@ spec:
             - name: synapse-data
               mountPath: /data
             - name: synapse-signing-key
-              mountPath: /data/polarys.im.signing.key
+              mountPath: /keys/polarys.im.signing.key
               subPath: polarys.im.signing.key
               readOnly: true
             - name: synapse-config
-              mountPath: /data/polarys.im.log.config
+              mountPath: /config/polarys.im.log.config
               subPath: log.config
 
       volumes:

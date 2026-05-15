@@ -25,7 +25,7 @@ data:
         port: 5432
         cp_min: 5
         cp_max: 10
-    log_config: "/data/polarys.im.log.config"
+    log_config: "/config/polarys.im.log.config"
     media_store_path: /data/media_store
     registration_shared_secret: "${MX_REGISTRATION_SECRET}"
     macaroon_secret_key: "${MX_MACAROON_SECRET}"
