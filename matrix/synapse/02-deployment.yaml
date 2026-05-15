@@ -27,6 +27,10 @@ spec:
             - |
               apk add --no-cache gettext
               envsubst < /tmp/homeserver.yaml > /data/homeserver.yaml
+              mkdir -p /data/media_store
+              mkdir -p /data/uploads
+              mkdir -p /data/cache
+              chown -R 991:991 /data
               chown 991:991 /data/homeserver.yaml
               echo "homeserver.yaml rendered."
           envFrom:
