@@ -18,6 +18,8 @@ spec:
       services:
         - name: lk
           port: 7880
+          passHostHeader: true
+          scheme: http
     - match: Host(`rtc.polarys.im`) && PathPrefix(`/livekit/jwt`)
       kind: Rule
       priority: 10
