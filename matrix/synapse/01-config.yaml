@@ -46,7 +46,7 @@ data:
       msc4108_enabled: true
       msc4143_enabled: true
     livekit:
-      service_url: "http://livekit-jwt:8080"
+      service_url: "http://lk-jwt:8080"
     server_notices:
         system_mxid_localpart: server
         system_mxid_display_name: "Polarys"
