@@ -17,6 +17,9 @@ spec:
     - name: websecure
       port: 443
       targetPort: websecure
+    - name: factorio
+      port: 34197
+      targetPort: factorio
 ---
 apiVersion: v1
 kind: Service

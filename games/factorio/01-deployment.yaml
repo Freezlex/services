@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: factorio
+  namespace: games
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: factorio
+  template:
+    metadata:
+      labels:
+        app: factorio
+    spec:
+      securityContext:
+        fsGroup: 845
+      initContainers:
+        - name: fix-perms
+          image: alpine:3.21
+          securityContext:
+            runAsUser: 0
+          command:
+            - sh
+            - -c
+            - |
+              chown -R 845:845 /factorio
+              echo "Permissions fixed."
+          volumeMounts:
+            - name: factorio-data
+              mountPath: /factorio
+      containers:
+        - name: factorio
+          image: factoriotools/factorio:stable
+          env:
+            - name: LOAD_LATEST_SAVE
+              value: "true"
+          ports:
+            - name: factorio
+              containerPort: 34197
+              protocol: UDP
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+            limits:
+              memory: "4Gi"
+              cpu: "4000m"
+          volumeMounts:
+            - name: factorio-data
+              mountPath: /factorio
+      volumes:
+        - name: factorio-data
+          persistentVolumeClaim:
+            claimName: factorio-pvc

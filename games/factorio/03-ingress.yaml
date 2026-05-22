@@ -1,0 +1,12 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRouteUDP
+metadata:
+  name: factorio
+  namespace: games
+spec:
+  entryPoints:
+    - factorio
+  routes:
+    - services:
+        - name: factorio
+          port: 34197
