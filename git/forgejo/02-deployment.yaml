@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: forgejo
+  namespace: forgejo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: forgejo
+  template:
+    metadata:
+      labels:
+        app: forgejo
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: mako
+      securityContext:
+        fsGroup: 1000
+      initContainers:
+        - name: render-config
+          image: alpine:3.21
+          securityContext:
+            runAsUser: 0
+          command:
+            - sh
+            - -c
+            - |
+              apk add --no-cache gettext
+              mkdir -p /data/gitea/conf
+              envsubst < /tmp/app.ini > /etc/forgejo/app.ini
+              chown -R 1000:1000 /data
+              echo "app.ini rendered."
+          envFrom:
+            - secretRef:
+                name: forgejo-creds
+          volumeMounts:
+            - name: forgejo-data
+              mountPath: /data
+            - name: forgejo-config
+              mountPath: /tmp/app.ini
+              subPath: app.ini
+              readOnly: true
+
+      containers:
+        - name: forgejo
+          image: codeberg.org/forgejo/forgejo:11
+          ports:
+            - name: http
+              containerPort: 3000
+            - name: ssh
+              containerPort: 2222
+          envFrom:
+            - secretRef:
+                name: forgejo-creds
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"
+          readinessProbe:
+            httpGet:
+              path: /api/healthz
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 5
+          livenessProbe:
+            httpGet:
+              path: /api/healthz
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 15
+            failureThreshold: 5
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsUser: 1000
+            runAsGroup: 1000
+          volumeMounts:
+            - name: forgejo-data
+              mountPath: /data
+
+      volumes:
+        - name: forgejo-data
+          persistentVolumeClaim:
+            claimName: forgejo-pvc
+        - name: forgejo-config
+          configMap:
+            name: forgejo-config

@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: forgejo-pg
+  namespace: forgejo
+spec:
+  serviceName: forgejo-pg-svc
+  replicas: 1
+  selector:
+    matchLabels:
+      app: forgejo-pg
+  template:
+    metadata:
+      labels:
+        app: forgejo-pg
+    spec:
+      securityContext:
+        fsGroup: 999
+      containers:
+        - name: postgres
+          image: postgres:18.3
+          ports:
+            - name: postgres
+              containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: forgejo-pg-creds
+                  key: DB_ROOT_USERNAME
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: forgejo-pg-creds
+                  key: DB_ROOT_PASSWORD
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "50m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          readinessProbe:
+            exec:
+              command: ["pg_isready", "-U", "forgejo"]
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            failureThreshold: 3
+          livenessProbe:
+            exec:
+              command: ["pg_isready", "-U", "forgejo"]
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 5
+          securityContext:
+            allowPrivilegeEscalation: false
+          volumeMounts:
+            - name: forgejo-pg-data
+              mountPath: /var/lib/postgresql
+              subPath: pgdata
+      volumes:
+        - name: forgejo-pg-data
+          persistentVolumeClaim:
+            claimName: forgejo-pg-pvc

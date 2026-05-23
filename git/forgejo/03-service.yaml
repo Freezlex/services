@@ -1,0 +1,28 @@
+# HTTP — Traefik proxies HTTPS to this
+apiVersion: v1
+kind: Service
+metadata:
+  name: forgejo-http
+  namespace: git
+spec:
+  type: ClusterIP
+  selector:
+    app: forgejo
+  ports:
+    - name: http
+      port: 3000
+      targetPort: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: forgejo-ssh
+  namespace: git
+spec:
+  type: ClusterIP
+  selector:
+    app: forgejo
+  ports:
+    - name: ssh
+      port: 2222
+      targetPort: ssh
