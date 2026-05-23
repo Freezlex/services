@@ -8,7 +8,7 @@ spec:
   selector:
     app: factorio
   ports:
-    - name: game
+    - name: factorio
       protocol: UDP
       port: 34197
       targetPort: 34197
