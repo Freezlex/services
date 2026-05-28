@@ -37,6 +37,10 @@ spec:
           env:
             - name: LOAD_LATEST_SAVE
               value: "true"
+            - name: DLC_SPACE_AGE
+              value: "false"
+            - name: GENERATE_NEW_SAVE
+              value: "true"
           ports:
             - name: factorio
               containerPort: 34197
