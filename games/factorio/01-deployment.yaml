@@ -41,6 +41,8 @@ spec:
               value: "false"
             - name: GENERATE_NEW_SAVE
               value: "true"
+            - name: SAVE_NAME
+              value: "world_save_polarys"
           ports:
             - name: factorio
               containerPort: 34197
