@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: forgejo-pg
-  namespace: forgejo
+  namespace: git
 spec:
   serviceName: forgejo-pg-svc
   replicas: 1

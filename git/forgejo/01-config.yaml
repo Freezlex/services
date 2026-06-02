@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: forgejo-config
-  namespace: forgejo
+  namespace: git
 data:
   app.ini: |
     APP_NAME = Polarys Forge
