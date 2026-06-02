@@ -20,7 +20,7 @@ metadata:
   namespace: git
 spec:
   entryPoints:
-    - git-ssh
+    - ssh
   routes:
     - match: HostSNI(`*`)
       services:

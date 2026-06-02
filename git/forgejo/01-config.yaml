@@ -1,143 +1,246 @@
 apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: forgejo-pv
-spec:
-  capacity:
-    storage: 20Gi
-  accessModes:
-    - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Retain
-  storageClassName: local-storage
-  nodeAffinity:
-    required:
-      nodeSelectorTerms:
-        - matchExpressions:
-            - key: kubernetes.io/hostname
-              operator: In
-              values:
-                - mako
-  hostPath:
-    path: /data/k8s/forgejo/data
-    type: DirectoryOrCreate
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: forgejo-pvc
-  namespace: forgejo
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 20Gi
-  storageClassName: local-storage
----
-apiVersion: v1
 kind: ConfigMap
 metadata:
   name: forgejo-config
   namespace: forgejo
 data:
   app.ini: |
-    APP_NAME = Forgejo
-    RUN_MODE = prod
+    APP_NAME = Polarys Forge
     RUN_USER = git
+    RUN_MODE = prod
 
     [server]
+    PROTOCOL         = http
     DOMAIN           = git.polarys.im
-    ROOT_URL         = https://git.polarys.im
+    ROOT_URL         = https://git.polarys.im/
+    HTTP_ADDR        = 0.0.0.0
     HTTP_PORT        = 3000
-    SSH_DOMAIN       = git.polarys.im
-    SSH_PORT         = 22
-    # Internal SSH port the container listens on — different from the
-    # external port 22 exposed via Traefik TCP entrypoint.
-    SSH_LISTEN_PORT  = 2222
-    START_SSH_SERVER = true
-    DISABLE_SSH      = false
-    LFS_START_SERVER = true
+    APP_DATA_PATH    = /data
+    DISABLE_SSH           = false
+    START_SSH_SERVER      = true
+    SSH_DOMAIN            = git.polarys.im
+    SSH_PORT              = 22
+    SSH_LISTEN_HOST       = 0.0.0.0
+    SSH_LISTEN_PORT       = 2222
+    SSH_SERVER_CIPHERS    = chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+    SSH_SERVER_KEY_EXCHANGES = curve25519-sha256, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, diffie-hellman-group14-sha256
+    SSH_SERVER_MACS       = hmac-sha2-256-etm@openssh.com, hmac-sha2-256
+    SSH_AUTHORIZED_KEYS_BACKUP = false
+    USE_COMPAT_SSH_URI    = true
+    LFS_START_SERVER      = true
+    LFS_JWT_SECRET        = ${LFS_JWT_SECRET}
+    REVERSE_PROXY_LIMIT           = 1
+    REVERSE_PROXY_TRUSTED_PROXIES = 10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
+    LANDING_PAGE          = home
+    ENABLE_PPROF          = false
+    OFFLINE_MODE          = true
 
     [database]
-    DB_TYPE  = postgres
-    HOST     = forgejo-pg-svc:5432
-    NAME     = forgejo
-    USER     = forgejo
-    # Password is injected via environment variable DB_PASSWORD below.
-    PASSWD   = ${DB_PASSWORD}
-    SSL_MODE = disable
-
-    [repository]
-    ROOT = /data/gitea/repositories
+    DB_TYPE           = postgres
+    HOST              = ${DB_HOST}
+    NAME              = ${DB_DATABASE}
+    USER              = ${DB_USER}
+    PASSWD            = ${DB_PASSWORD}
+    SSL_MODE          = disable
+    MAX_IDLE_CONNS    = 2
+    MAX_OPEN_CONNS    = 10
+    CONN_MAX_LIFETIME = 3s
+    LOG_SQL           = false
 
     [security]
-    INSTALL_LOCK        = true
-    # SECRET_KEY and INTERNAL_TOKEN injected via environment variables.
-    SECRET_KEY          = ${SECRET_KEY}
-    INTERNAL_TOKEN      = ${INTERNAL_TOKEN}
-    MIN_PASSWORD_LENGTH = 12
+    INSTALL_LOCK                             = true
+    SECRET_KEY                               = ${SECRET_KEY}
+    INTERNAL_TOKEN                           = ${INTERNAL_TOKEN}
+    LOGIN_REMEMBER_DAYS                      = 7
+    MIN_PASSWORD_LENGTH                      = 12
+    PASSWORD_COMPLEXITY                      = lower,upper,digit,spec
+    PASSWORD_HASH_ALGO                       = argon2
+    ; Git hooks could execute arbitrary code on the server — disable for safety
+    DISABLE_GIT_HOOKS                        = true
+    ONLY_ALLOW_PUSH_IF_GITEA_ENVIRONMENT_SET = true
 
     [service]
-    DISABLE_REGISTRATION              = true   # ← disable local registration
-    ALLOW_ONLY_EXTERNAL_REGISTRATION  = true   # ← force SSO registration
-    REQUIRE_SIGNIN_VIEW               = false
-    REGISTER_EMAIL_CONFIRM            = false
-    ENABLE_NOTIFY_MAIL                = false
-    ENABLE_CAPTCHA                    = false
-    DEFAULT_KEEP_EMAIL_PRIVATE        = true
+    DISABLE_REGISTRATION             = false
+    ALLOW_ONLY_EXTERNAL_REGISTRATION = true
+    ALLOW_ONLY_INTERNAL_REGISTRATION = false
+    REQUIRE_SIGNIN_VIEW              = false
+    REGISTER_EMAIL_CONFIRM           = false
+    REGISTER_MANUAL_CONFIRM          = false
+    ENABLE_NOTIFY_MAIL               = false
+    ENABLE_CAPTCHA                   = false
+    ; Keep email private by default — MAS exposes it, no need to show it
+    DEFAULT_KEEP_EMAIL_PRIVATE       = true
     DEFAULT_ALLOW_CREATE_ORGANIZATION = true
-    # Allow auto-creation of accounts on first SSO login
-    ALLOW_ONLY_INTERNAL_REGISTRATION  = false
+    DEFAULT_USER_VISIBILITY          = public
+    DEFAULT_ORG_VISIBILITY           = public
+    ; Hide the local sign-up button — SSO button is the only path
+    SHOW_REGISTRATION_BUTTON         = false
+    ; Basic auth still needed for git CLI token-based HTTPS operations
+    ENABLE_BASIC_AUTHENTICATION      = true
+    NO_REPLY_ADDRESS                 = noreply.git.polarys.im
 
+    [openid]
+    ENABLE_OPENID_SIGNIN = false
+    ENABLE_OPENID_SIGNUP = false
     [oauth2]
-    ENABLE = true
-    # JWT secret for Forgejo's internal OAuth2 provider (not MAS).
-    # Generate with: openssl rand -hex 32
-    JWT_SECRET = ${OAUTH2_JWT_SECRET}
+    ENABLED                       = true
+    JWT_SIGNING_ALGORITHM         = RS256
+    ACCESS_TOKEN_EXPIRATION_TIME  = 3600
+    REFRESH_TOKEN_EXPIRATION_TIME = 730
+    DEFAULT_APPLICATIONS          = git-credential-oauth, git-credential-manager
 
-    [oauth2.mas]
-    NAME                  = polarys
-    PROVIDER              = openidConnect
-    KEY                   = forgejo
-    SECRET                = ${MAS_CLIENT_SECRET}
-    AUTO_DISCOVER_URL     = https://auth.polarys.im/.well-known/openid-configuration
-    SCOPES                = openid email
-    # Map OIDC claims to Forgejo user fields.
-    # MAS only exposes openid+email (no profile scope), so:
-    # - Username comes from `sub` (stable unique identifier from MAS)
-    # - Email comes from `email` claim
-    ATTRIBUTE_USERNAME    = sub
-    ATTRIBUTE_NAME        = sub
-    ATTRIBUTE_EMAIL       = email
-    # Auto-create account on first login
-    GROUP_CLAIM_NAME      =
-    ADMIN_GROUP           =
-    RESTRICTED_GROUP      =
-    SKIP_LOCAL_TWO_FA     = false
+    [oauth2_client]
+    ENABLE_AUTO_REGISTRATION  = true
+    USERNAME                  = email
+    UPDATE_AVATAR             = true
+    ACCOUNT_LINKING           = login
+    REGISTER_EMAIL_CONFIRM    = false
+    OPENID_CONNECT_SCOPES     = openid email
 
-    [security]
-    INSTALL_LOCK        = true
-    SECRET_KEY          = ${SECRET_KEY}
-    INTERNAL_TOKEN      = ${INTERNAL_TOKEN}
-    MIN_PASSWORD_LENGTH = 12
-    # Disable local password login — SSO only
-    PASSWORD_HASH_ALGO  = argon2
-    DISABLE_GIT_HOOKS   = false
+    [repository]
+    DEFAULT_BRANCH              = main
+    DEFAULT_PRIVATE             = private
+    FORCE_PRIVATE               = false
+    DEFAULT_PUSH_CREATE_PRIVATE = true
+    MAX_CREATION_LIMIT          = -1
+    PREFERRED_LICENSES          = MIT,Apache-2.0
+    DISABLE_HTTP_GIT            = false
+    ENABLE_PUSH_CREATE_USER     = true
+    ENABLE_PUSH_CREATE_ORG      = true
+    DEFAULT_REPO_UNITS          = repo.code,repo.releases,repo.issues,repo.pulls,repo.wiki,repo.projects,repo.packages,repo.actions
 
+    [repository.pull-request]
+    DEFAULT_MERGE_STYLE    = squash
+    DEFAULT_UPDATE_STYLE   = rebase
+
+    [repository.signing]
+    DEFAULT_TRUST_MODEL = collaborator
+    INITIAL_COMMIT      = always
+    CRUD_ACTIONS        = pubkey, twofa, parentsigned
+    MERGES              = pubkey, twofa, basesigned, commitssigned
+
+    [repository.upload]
+    ENABLED      = true
+    FILE_MAX_SIZE = 50
+    MAX_FILES    = 10
+
+    [ssh.minimum_key_sizes]
+    ED25519 = 256
+    ECDSA   = 256
+    RSA     = 3071
+    DSA     = -1
+
+    [indexer]
+    ISSUE_INDEXER_TYPE        = bleve
+    ISSUE_INDEXER_PATH        = indexers/issues.bleve
+    REPO_INDEXER_ENABLED      = true
+    REPO_INDEXER_TYPE         = bleve
+    REPO_INDEXER_PATH         = indexers/repos.bleve
+    REPO_INDEXER_EXCLUDE_VENDORED = true
+    MAX_FILE_SIZE             = 1048576
 
     [cache]
-    ADAPTER = memory
+    ADAPTER  = memory
+    INTERVAL = 60
+    ITEM_TTL = 16h
 
     [session]
-    PROVIDER = memory
+    PROVIDER          = memory
+    COOKIE_SECURE     = true
+    SAME_SITE         = lax
+    SESSION_LIFE_TIME = 86400
 
-    [log]
-    MODE      = console
-    LEVEL     = info
-    ROOT_PATH = /data/log
+    [git]
+    HOME_PATH             = /data/home
+    ENABLE_AUTO_GIT_WIRE_PROTOCOL = true
+
+    [git.timeout]
+    DEFAULT = 360
+    MIGRATE = 600
+    MIRROR  = 300
+    CLONE   = 300
+    PULL    = 300
+    GC      = 60
+
+    [git.config]
+    diff.algorithm       = histogram
+    core.logAllRefUpdates = true
 
     [actions]
-    ENABLED = true
+    ENABLED                 = true
+    DEFAULT_ACTIONS_URL     = https://code.forgejo.org
+    LOG_RETENTION_DAYS      = 90
+    ARTIFACT_RETENTION_DAYS = 30
+    ZOMBIE_TASK_TIMEOUT     = 10m
+    ENDLESS_TASK_TIMEOUT    = 3h
+    ABANDONED_JOB_TIMEOUT   = 24h
+
+    [packages]
+    ENABLED      = true
+    STORAGE_TYPE = local
+
+    [webhook]
+    QUEUE_LENGTH      = 1000
+    DELIVER_TIMEOUT   = 10
+    ALLOWED_HOST_LIST = external
 
     [mailer]
     ENABLED = false
+
+    [log]
+    MODE  = console
+    LEVEL = Info
+
+    [ui]
+    DEFAULT_THEME            = forgejo-auto
+    SHOW_USER_EMAIL          = false
+    EXPLORE_PAGING_NUM       = 20
+    ISSUE_PAGING_NUM         = 20
+    AMBIGUOUS_UNICODE_DETECTION = true
+
+    [ui.meta]
+    AUTHOR      = Polarys Forge
+    DESCRIPTION = Polarys self-hosted git forge
+    KEYWORDS    = git,forge,polarys
+
+    [cron]
+    ENABLED      = true
+    RUN_AT_START = false
+
+    [cron.archive_cleanup]
+    ENABLED      = true
+    RUN_AT_START = true
+    SCHEDULE     = @midnight
+    OLDER_THAN   = 24h
+
+    [cron.repo_health_check]
+    ENABLED   = true
+    SCHEDULE  = @midnight
+
+    [cron.check_repo_stats]
+    ENABLED      = true
+    RUN_AT_START = true
+    SCHEDULE     = @midnight
+
+    [cron.cleanup_actions]
+    ENABLED      = true
+    RUN_AT_START = true
+    SCHEDULE     = @midnight
+
+    [cron.cleanup_packages]
+    ENABLED      = true
+    RUN_AT_START = true
+    SCHEDULE     = @midnight
+    OLDER_THAN   = 24h
+
+    [cron.git_gc_repos]
+    ENABLED      = true
+    RUN_AT_START = false
+    SCHEDULE     = @every 72h
+
+    [other]
+    SHOW_FOOTER_VERSION            = true
+    SHOW_FOOTER_TEMPLATE_LOAD_TIME = true
+    SHOW_FOOTER_POWERED_BY         = true
+    ENABLE_SITEMAP                 = true
+    ENABLE_FEED                    = true

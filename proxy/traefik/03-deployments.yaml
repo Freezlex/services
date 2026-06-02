@@ -29,6 +29,7 @@ spec:
             - --entrypoints.web.address=:80
             - --entrypoints.websecure.address=:443
             - --entrypoints.factorio.address=:34197/udp
+            - --entrypoints.ssh.address=:22
 
             # HTTP → HTTPS redirect
             - --entrypoints.web.http.redirections.entrypoint.to=websecure
@@ -81,6 +82,8 @@ spec:
               containerPort: 8080
             - name: factorio
               containerPort: 34197
+            - name: ssh
+              containerPort: 22
 
           volumeMounts:
             - name: acme-data

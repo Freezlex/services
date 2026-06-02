@@ -16,6 +16,29 @@ spec:
     spec:
       securityContext:
         fsGroup: 999
+      initContainers:
+        - name: render-init-sql
+          image: alpine:3.21
+          command:
+            - sh
+            - -c
+            - |
+              apk add --no-cache gettext
+              envsubst < /tmp/template/init.sql > /tmp/rendered/init.sql
+              echo "init.sql rendered successfully"
+          envFrom:
+            - secretRef:
+                name: forgejo-creds
+          volumeMounts:
+            - name: postgres-raw-config
+              mountPath: /tmp/template
+              readOnly: true
+            - name: postgres-rendered-config
+              mountPath: /tmp/rendered
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: false
+
       containers:
         - name: postgres
           image: postgres:18.3
@@ -26,12 +49,12 @@ spec:
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: forgejo-pg-creds
+                  name: pg-creds
                   key: DB_ROOT_USERNAME
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: forgejo-pg-creds
+                  name: pg-creds
                   key: DB_ROOT_PASSWORD
           resources:
             requests:
