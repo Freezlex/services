@@ -85,3 +85,8 @@ spec:
         - name: forgejo-pg-data
           persistentVolumeClaim:
             claimName: forgejo-pg-pvc
+        - name: postgres-raw-config
+          configMap:
+            name: pg-cfm
+        - name: postgres-rendered-config
+          emptyDir: {}
