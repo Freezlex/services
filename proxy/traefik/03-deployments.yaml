@@ -18,7 +18,7 @@ spec:
       serviceAccountName: traefik-account
       containers:
         - name: traefik
-          image: traefik:3.7.1
+          image: traefik:3.7.4
           args:
             # ── Providers ────────────────────────────────────────────────────
             - --providers.kubernetescrd

@@ -19,7 +19,7 @@ spec:
         fsGroup: 845
       initContainers:
         - name: fix-perms
-          image: alpine:3.21
+          image: alpine:latest
           securityContext:
             runAsUser: 0
           command:
