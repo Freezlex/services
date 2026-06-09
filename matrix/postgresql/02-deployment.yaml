@@ -1,9 +1,10 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: pg
   namespace: matrix
 spec:
+  serviceName: pg-svc
   replicas: 1
   selector:
     matchLabels:
@@ -15,10 +16,10 @@ spec:
     spec:
       securityContext:
         fsGroup: 999
-
+      terminationGracePeriodSeconds: 90
       initContainers:
         - name: render-init-sql
-          image: alpine:latest
+          image: alpine:3.21
           command:
             - sh
             - -c
@@ -38,7 +39,6 @@ spec:
           securityContext:
             allowPrivilegeEscalation: false
             runAsNonRoot: false
-
       containers:
         - name: postgres
           image: postgres:18.3
@@ -58,6 +58,15 @@ spec:
                   key: DB_ROOT_PASSWORD
             - name: POSTGRES_INITDB_ARGS
               value: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  - /bin/sh
+                  - -c
+                  - pg_ctl -D /var/lib/postgresql/data/pgdata -w -t 60 -m fast stop
           resources:
             requests:
               memory: "256Mi"
@@ -91,20 +100,20 @@ spec:
             initialDelaySeconds: 5
             periodSeconds: 5
             failureThreshold: 3
+          securityContext:
+            allowPrivilegeEscalation: false
           volumeMounts:
             - name: postgres-data
               mountPath: /var/lib/postgresql
             - name: postgres-rendered-config
               mountPath: /docker-entrypoint-initdb.d/init.sql
               subPath: init.sql
-          securityContext:
-            allowPrivilegeEscalation: false
       volumes:
         - name: postgres-raw-config
           configMap:
             name: pg-cfm
+        - name: postgres-rendered-config
+          emptyDir: {}
         - name: postgres-data
           persistentVolumeClaim:
             claimName: pg-pvc
-        - name: postgres-rendered-config
-          emptyDir: {}
