@@ -53,10 +53,10 @@ data:
         room_name: "Polarys | Server Notice"
         room_topic: "Room used by your server admin to notice you of important information"
         auto_join: true
-    roomDirectory:
-      visibility_rules:
-        - user_id: "@*:polarys.im"
-          action: allow
+    room_list_publication_rules:
+      - action: deny
+      - user_id: '@freezlex:polarys.im'
+        action: allow
 
   log.config: |
     version: 1
