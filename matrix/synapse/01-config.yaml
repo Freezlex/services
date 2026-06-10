@@ -54,9 +54,9 @@ data:
         room_topic: "Room used by your server admin to notice you of important information"
         auto_join: true
     room_list_publication_rules:
-      - action: deny
       - user_id: '@freezlex:polarys.im'
         action: allow
+      - action: deny
 
   log.config: |
     version: 1
