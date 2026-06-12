@@ -45,8 +45,9 @@ data:
       max_connections: 10
     account:
       password_registration_enabled: true
-      registration_token_required: true
+      registration_token_required: false
       password_registration_email_required: true
+      login_with_email_allowed: true
     passwords:
       enabled: true
       schemes:

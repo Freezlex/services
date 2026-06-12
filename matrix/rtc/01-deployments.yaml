@@ -17,7 +17,7 @@ spec:
         kubernetes.io/hostname: mako # ← removed "node/" prefix, just the hostname
       initContainers:
         - name: render-config
-          image: alpine:3.21
+          image: alpine:latest
           command:
             - sh
             - -c
@@ -35,7 +35,7 @@ spec:
               mountPath: /tmp/rendered
       containers:
         - name: livekit
-          image: livekit/livekit-server:v1.11.0
+          image: livekit/livekit-server:v1.13.1
           args: ["--config", "/etc/livekit/livekit.yaml"]
           ports:
             - name: http
@@ -96,7 +96,7 @@ spec:
     spec:
       containers:
         - name: livekit-jwt
-          image: ghcr.io/element-hq/lk-jwt-service:0.4.4
+          image: ghcr.io/element-hq/lk-jwt-service:0.5.0
           env:
             - name: LIVEKIT_URL
               value: "wss://rtc.polarys.im/livekit/sfu"
