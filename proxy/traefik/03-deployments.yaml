@@ -7,6 +7,10 @@ metadata:
     app: traefik
 spec:
   replicas: 1
+  # Two Traefik pods writing acme.json concurrently can corrupt the ACME store
+  # and lose every issued certificate.
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: traefik
@@ -37,9 +41,9 @@ spec:
 
             - --entrypoints.websecure.http.middlewares=compress@file,headers@file
 
-            # ── Let's Encrypt (OVH DNS challenge) ────────────────────────────
+            # ── Let's Encrypt (Scaleway DNS challenge) ───────────────────────
             - --certificatesresolvers.letsencryptresolver.acme.dnschallenge=true
-            - --certificatesresolvers.letsencryptresolver.acme.dnschallenge.provider=ovh
+            - --certificatesresolvers.letsencryptresolver.acme.dnschallenge.provider=scaleway
             - --certificatesresolvers.letsencryptresolver.acme.email=$(ROOT_EMAIL)
             - --certificatesresolvers.letsencryptresolver.acme.storage=/letsencrypt/acme.json
             # Switch to the staging URL while testing to avoid LE rate limits:
@@ -71,7 +75,7 @@ spec:
               value: Europe/Paris
           envFrom:
             - secretRef:
-                name: traefik-cf-creds
+                name: traefik-dns-creds
 
           ports:
             - name: web

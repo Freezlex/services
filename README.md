@@ -5,5 +5,6 @@ Internet
         │                    └── everything else ──────────────────────────► Synapse
         ├── auth.polarys.im    ──────────────────────────────────────────────► MAS
         ├── polarys.im/.well-known/ ────────────────────────────────────────► nginx (wk ns)
-        └── dashboard.polarys.im ──────────────────────────────────────────► Traefik dashboard
+        ├── dashboard.polarys.im ──────────────────────────────────────────► Traefik dashboard
+        └── k8s.polarys.im ────────────────────────────────────────────────► Headlamp (headlamp ns)
 ```

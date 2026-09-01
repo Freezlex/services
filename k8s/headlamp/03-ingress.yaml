@@ -1,0 +1,20 @@
+# TLS is intentionally omitted: the websecure entrypoint already carries
+# `--entrypoints.websecure.http.tls.certresolver=letsencryptresolver`, so every
+# IngressRoute in this repo inherits the OVH DNS-01 certificate resolver.
+#
+# Traefik sets X-Forwarded-Proto on the way through, which Headlamp needs to
+# build the https://k8s.polarys.im/oidc-callback redirect instead of an http one.
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: headlamp
+  namespace: headlamp
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`k8s.polarys.im`)
+      services:
+        - name: headlamp
+          port: 80

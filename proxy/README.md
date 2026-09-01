@@ -4,9 +4,9 @@ To use traefik as a reverse proxy for k8s you should install Resource Definiton 
 
 # Install Traefik Resource Definitions:
 
-`kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v3.3/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml`
+`kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v3.7/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml`
 
 # Install RBAC for Traefik:
-`kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v3.3/docs/content/reference/dynamic-configuration/kubernetes-crd-rbac.yml`
+`kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v3.7/docs/content/reference/dynamic-configuration/kubernetes-crd-rbac.yml`
 
 You can then apply all ressources with the kubectl apply -f <file>.yaml command.

@@ -1,0 +1,28 @@
+# See matrix/postgresql/05-networkpolicy.yaml for the rationale and the CNI
+# enforcement caveat.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: forgejo-pg-allow-app-clients
+  namespace: git
+spec:
+  podSelector:
+    matchLabels:
+      app: forgejo-pg
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: forgejo
+        - podSelector:
+            matchLabels:
+              app: forgejo-pg-backup
+        # forgejo/05-sso.yaml writes the MAS login source straight to the DB.
+        - podSelector:
+            matchLabels:
+              app: forgejo-sso
+      ports:
+        - protocol: TCP
+          port: 5432

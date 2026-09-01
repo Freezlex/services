@@ -1,0 +1,15 @@
+# Headlamp runs in OIDC mode, so it does NOT act on behalf of its own
+# ServiceAccount: after login it forwards the user's `id_token` to the
+# Kubernetes API as a bearer token, and the API server applies that user's RBAC.
+#
+# The ServiceAccount below is therefore deliberately left with NO cluster
+# permissions. Do not bind cluster-admin to it — anyone reaching
+# https://k8s.polarys.im would inherit those rights if OIDC ever misbehaves.
+#
+# Per-user authorization is granted by the ClusterRoleBinding in the gitignored
+# k8s/01-secrets.yaml, since its subject is a personal account address.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: headlamp
+  namespace: headlamp

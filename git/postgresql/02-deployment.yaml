@@ -16,6 +16,8 @@ spec:
     spec:
       securityContext:
         fsGroup: 999
+      # Give Postgres time to finish a clean shutdown before SIGKILL.
+      terminationGracePeriodSeconds: 90
       initContainers:
         - name: render-init-sql
           image: alpine:3.21
@@ -56,6 +58,13 @@ spec:
                 secretKeyRef:
                   name: pg-creds
                   key: DB_ROOT_PASSWORD
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  - /bin/sh
+                  - -c
+                  - pg_ctl -D "$PGDATA" -w -t 60 -m fast stop
           resources:
             requests:
               memory: "128Mi"
@@ -63,24 +72,52 @@ spec:
             limits:
               memory: "512Mi"
               cpu: "500m"
+          startupProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - pg_isready -U "$POSTGRES_USER"
+            failureThreshold: 30
+            periodSeconds: 5
           readinessProbe:
             exec:
-              command: ["pg_isready", "-U", "forgejo"]
+              command:
+                - sh
+                - -c
+                - pg_isready -U "$POSTGRES_USER"
             initialDelaySeconds: 5
             periodSeconds: 5
             failureThreshold: 3
           livenessProbe:
             exec:
-              command: ["pg_isready", "-U", "forgejo"]
+              command:
+                - sh
+                - -c
+                - pg_isready -U "$POSTGRES_USER"
             initialDelaySeconds: 10
             periodSeconds: 10
             failureThreshold: 5
           securityContext:
             allowPrivilegeEscalation: false
           volumeMounts:
+            # NOTE: mountPath + subPath are deliberately left exactly as they
+            # were, and PGDATA is deliberately NOT set here even though the
+            # matrix Postgres sets it. Changing either on a cluster that
+            # already has data would point Postgres at an empty directory and
+            # silently initdb a blank database over a working Forgejo.
             - name: forgejo-pg-data
               mountPath: /var/lib/postgresql
               subPath: pgdata
+            # This mount was missing entirely: the init container rendered
+            # init.sql into an emptyDir that nothing ever read, so the Forgejo
+            # database, user and schema were never created from it.
+            # Entrypoint scripts run only when the data directory is empty, so
+            # adding this is a no-op for the existing database and fixes
+            # provisioning from scratch.
+            - name: postgres-rendered-config
+              mountPath: /docker-entrypoint-initdb.d/init.sql
+              subPath: init.sql
       volumes:
         - name: forgejo-pg-data
           persistentVolumeClaim:

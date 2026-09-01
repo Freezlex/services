@@ -47,6 +47,26 @@ spec:
             - name: factorio
               containerPort: 34197
               protocol: UDP
+          # Factorio speaks UDP only, so there is no HTTP endpoint to probe.
+          # A TCP check would also be wrong (nothing listens on TCP). Checking
+          # that the server process is alive is the meaningful signal here.
+          startupProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - pgrep -f factorio > /dev/null
+            failureThreshold: 30
+            periodSeconds: 10
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - pgrep -f factorio > /dev/null
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            failureThreshold: 3
           resources:
             requests:
               memory: "512Mi"
