@@ -1,8 +1,3 @@
-# Nightly logical backup of the matrix Postgres instance.
-#
-# `persistentVolumeReclaimPolicy: Retain` on the data PV protects against an
-# accidental PVC delete — it is NOT a backup. It does not survive disk failure,
-# a bad migration, or a DROP. This does.
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -49,8 +44,6 @@ spec:
       backoffLimit: 2
       template:
         metadata:
-          # Labelled so the NetworkPolicy in 05-networkpolicy.yaml can permit
-          # this job to reach Postgres.
           labels:
             app: pg-backup
         spec:
@@ -59,8 +52,6 @@ spec:
             fsGroup: 999
           containers:
             - name: pg-dump
-              # Same image as the server: pg_dumpall must not be older than
-              # the server it dumps.
               image: postgres:18.3
               command:
                 - /bin/sh

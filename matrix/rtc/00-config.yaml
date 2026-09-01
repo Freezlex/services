@@ -10,9 +10,6 @@ data:
       - "0.0.0.0"
     rtc:
       tcp_port: 7881
-      # Single-port UDP mux. This is what lk-media actually exposes, so no
-      # port_range_start/end here: that range was never published by the
-      # LoadBalancer and is unused while udp_port is set.
       udp_port: 7882
       node_ip: "${LIVEKIT_NODE_IP}"
       use_external_ip: false

@@ -38,11 +38,6 @@ metadata:
 spec:
   entryPoints:
     - websecure
-  # No tls block: the websecure entrypoint already sets
-  # --entrypoints.websecure.http.tls.certresolver=letsencryptresolver, which
-  # every other IngressRoute in this repo inherits. The previous
-  # `certResolver: ovh` named a DNS provider, not a resolver — no such resolver
-  # exists, so this route had no working resolver of its own.
   routes:
     - match: Host(`auth.polarys.im`) && PathPrefix(`/_mas/admin`)
       kind: Rule

@@ -1,17 +1,3 @@
-# Registers MAS as an OAuth2 login source in Forgejo.
-#
-# Forgejo has no app.ini syntax for authentication sources — they live in the
-# database — so this is the one part of the stack that cannot be expressed
-# declaratively. The Job makes it reproducible instead: it is idempotent and
-# safe to re-run, so `kubectl apply` after a rebuild restores SSO.
-#
-# It renders the SAME app.ini as the Deployment (same ConfigMap, same Secret)
-# into a private emptyDir and points GITEA_CUSTOM at it. That gives the CLI the
-# real database credentials and SECRET_KEY — which Forgejo uses to encrypt the
-# stored client secret — without touching the server's own config file.
-#
-# Re-running after changing the client secret: delete the source first, or use
-#   kubectl exec -n git deploy/forgejo -- forgejo admin auth update-oauth --id <id> --secret <new>
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -27,15 +13,6 @@ spec:
       restartPolicy: OnFailure
       securityContext:
         fsGroup: 1000
-      # The discovery URL below must be the public https://auth.polarys.im/ —
-      # MAS declares that as its issuer, and the OIDC client rejects a discovery
-      # document whose issuer does not match the URL it was fetched from, so
-      # the in-cluster http://mas/ cannot be substituted.
-      #
-      # Reaching it from a pod goes out to the router and back. That is already
-      # how lk-jwt-service validates OpenID tokens against the homeserver, so
-      # the path is known good on this network and needs no hostAliases
-      # override to the MetalLB VIP.
       initContainers:
         - name: render-config
           image: alpine:3.21
@@ -64,8 +41,6 @@ spec:
         - name: add-oauth
           image: codeberg.org/forgejo/forgejo:11
           env:
-            # Point the CLI at the private rendered config rather than the
-            # server's /data/gitea, so the two never contend for app.ini.
             - name: GITEA_CUSTOM
               value: /custom
             - name: MAS_CLIENT_SECRET
@@ -82,11 +57,6 @@ spec:
               NAME="mas"
               CLIENT_ID="01M1E9G4JQQ8MMJGT9ZEC33KJ9"
               DISCOVERY="https://auth.polarys.im/.well-known/openid-configuration"
-
-              # MAS advertises scopes_supported: ["openid","email"] and does NOT
-              # support "profile". Requesting profile here fails with
-              # invalid_scope, which is the usual reason copied-from-Keycloak
-              # guides do not work against MAS.
               SCOPES="openid email"
 
               if forgejo admin auth list | awk '{print $2}' | grep -qx "$NAME"; then
@@ -120,9 +90,6 @@ spec:
           volumeMounts:
             - name: cli-custom
               mountPath: /custom
-            # APP_DATA_PATH in app.ini is /data; mounted so the CLI resolves
-            # paths the same way the server does. The command only writes to
-            # the database, so sharing this with the running pod is safe.
             - name: forgejo-data
               mountPath: /data
 

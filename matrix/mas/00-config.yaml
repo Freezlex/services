@@ -73,18 +73,11 @@ data:
       access_token_ttl: 300
       msc4108_enabled: true
     clients:
-      # Headlamp — Kubernetes dashboard at https://k8s.polarys.im
-      # client_id must be a valid ULID (26 chars, Crockford base32, first char
-      # 0-7 so the 48-bit timestamp fits in 128 bits); MAS rejects anything else.
       - client_id: '01M1E6MVMEYHAZ9898V8Q2K74A'
         client_auth_method: client_secret_basic
         client_secret: ${MAS_HEADLAMP_CLIENT_SECRET}
         redirect_uris:
           - "https://k8s.polarys.im/oidc-callback"
-      # Forgejo — git forge at https://git.polarys.im
-      # The callback path embeds the Forgejo auth source name ("mas"), set by
-      # --name in git/forgejo/05-sso.yaml. Renaming the source there requires
-      # changing this URI to match.
       - client_id: '01M1E9G4JQQ8MMJGT9ZEC33KJ9'
         client_auth_method: client_secret_basic
         client_secret: ${MAS_FORGEJO_CLIENT_SECRET}

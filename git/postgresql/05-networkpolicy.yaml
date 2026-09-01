@@ -1,5 +1,3 @@
-# See matrix/postgresql/05-networkpolicy.yaml for the rationale and the CNI
-# enforcement caveat.
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -19,7 +17,6 @@ spec:
         - podSelector:
             matchLabels:
               app: forgejo-pg-backup
-        # forgejo/05-sso.yaml writes the MAS login source straight to the DB.
         - podSelector:
             matchLabels:
               app: forgejo-sso

@@ -40,11 +40,11 @@ data:
       secret: "${MX_MAS_EXCHANGE_TOKEN}"
     report_stats: true
     experimental_features:
-      msc3266_enabled: true   # room summary API — required by Element Call
-      msc4140_enabled: true   # delayed events (see max_event_delay_duration)
+      msc3266_enabled: true
+      msc4140_enabled: true
       msc4108_enabled: true
-      msc4143_enabled: true   # MatrixRTC transports endpoint (MSC4519)
-      msc4222_enabled: true   # sync v2 state_after — required by Element Call
+      msc4143_enabled: true
+      msc4222_enabled: true
     max_event_delay_duration: 24h
     rc_message:
       per_second: 0.5

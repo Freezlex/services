@@ -1,5 +1,3 @@
-# Nightly logical backup of the Forgejo Postgres instance.
-# See matrix/postgresql/04-backup.yaml for the rationale — Retain is not a backup.
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -47,8 +45,6 @@ spec:
       backoffLimit: 2
       template:
         metadata:
-          # Labelled so the NetworkPolicy in 05-networkpolicy.yaml can permit
-          # this job to reach Postgres.
           labels:
             app: forgejo-pg-backup
         spec:

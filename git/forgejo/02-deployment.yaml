@@ -31,11 +31,6 @@ spec:
             - |
               apk add --no-cache gettext
               mkdir -p /data/gitea/conf
-              # The image sets GITEA_CUSTOM=/data/gitea, so Forgejo reads
-              # $GITEA_CUSTOM/conf/app.ini. This previously rendered to
-              # /etc/forgejo/app.ini — a path on the init container's own
-              # filesystem that is discarded when it exits, so this config was
-              # never loaded and Forgejo fell back to an auto-generated one.
               envsubst < /tmp/app.ini > /data/gitea/conf/app.ini
               chown -R 1000:1000 /data
               echo "app.ini rendered to /data/gitea/conf/app.ini"

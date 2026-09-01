@@ -101,20 +101,9 @@ spec:
           securityContext:
             allowPrivilegeEscalation: false
           volumeMounts:
-            # NOTE: mountPath + subPath are deliberately left exactly as they
-            # were, and PGDATA is deliberately NOT set here even though the
-            # matrix Postgres sets it. Changing either on a cluster that
-            # already has data would point Postgres at an empty directory and
-            # silently initdb a blank database over a working Forgejo.
             - name: forgejo-pg-data
               mountPath: /var/lib/postgresql
               subPath: pgdata
-            # This mount was missing entirely: the init container rendered
-            # init.sql into an emptyDir that nothing ever read, so the Forgejo
-            # database, user and schema were never created from it.
-            # Entrypoint scripts run only when the data directory is empty, so
-            # adding this is a no-op for the existing database and fixes
-            # provisioning from scratch.
             - name: postgres-rendered-config
               mountPath: /docker-entrypoint-initdb.d/init.sql
               subPath: init.sql

@@ -1,10 +1,3 @@
-# The matrix and git stacks run separate Postgres instances specifically to
-# isolate them from each other, but nothing enforced that at the network layer:
-# any pod in the cluster could dial pg-svc:5432. This closes the gap.
-#
-# REQUIRES a CNI that enforces NetworkPolicy (Calico, Cilium, Antrea...).
-# Under Flannel these objects apply cleanly and are silently ignored, so verify
-# enforcement with the check in the repo notes rather than assuming.
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
