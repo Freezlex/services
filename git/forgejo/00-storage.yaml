@@ -12,6 +12,9 @@ spec:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   storageClassName: local-storage
+  claimRef:
+    name: forgejo-pvc
+    namespace: git
   hostPath:
     path: /data/k8s/forgejo/data
     type: DirectoryOrCreate
@@ -28,3 +31,4 @@ spec:
     requests:
       storage: 20Gi
   storageClassName: local-storage
+  volumeName: forgejo-pv

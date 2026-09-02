@@ -12,6 +12,9 @@ spec:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   storageClassName: local-storage
+  claimRef:
+    name: synapse-pvc
+    namespace: matrix
   hostPath:
     path: /data/k8s/matrix/synapse
     type: DirectoryOrCreate
@@ -29,3 +32,4 @@ spec:
     requests:
       storage: 20Gi
   storageClassName: local-storage
+  volumeName: synapse-pv

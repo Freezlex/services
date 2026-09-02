@@ -12,6 +12,9 @@ spec:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   storageClassName: local-storage
+  claimRef:
+    name: matrix-pg-backup-pvc
+    namespace: matrix
   hostPath:
     path: /data/k8s/backups/matrix/postgresql
     type: DirectoryOrCreate
@@ -28,6 +31,7 @@ spec:
     requests:
       storage: 10Gi
   storageClassName: local-storage
+  volumeName: matrix-pg-backup-pv
 ---
 apiVersion: batch/v1
 kind: CronJob

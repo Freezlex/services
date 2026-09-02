@@ -12,6 +12,9 @@ spec:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   storageClassName: local-storage
+  claimRef:
+    name: pg-pvc
+    namespace: matrix
   hostPath:
     path: /data/k8s/matrix/postgresql
     type: DirectoryOrCreate
@@ -28,3 +31,4 @@ spec:
     requests:
       storage: 5Gi
   storageClassName: local-storage
+  volumeName: pg-pv

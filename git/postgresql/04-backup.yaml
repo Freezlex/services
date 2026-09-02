@@ -12,6 +12,9 @@ spec:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   storageClassName: local-storage
+  claimRef:
+    name: forgejo-pg-backup-pvc
+    namespace: git
   hostPath:
     path: /data/k8s/backups/forgejo/postgresql
     type: DirectoryOrCreate
@@ -28,6 +31,7 @@ spec:
     requests:
       storage: 10Gi
   storageClassName: local-storage
+  volumeName: forgejo-pg-backup-pv
 ---
 apiVersion: batch/v1
 kind: CronJob
