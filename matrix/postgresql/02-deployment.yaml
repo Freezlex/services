@@ -116,4 +116,4 @@ spec:
           emptyDir: {}
         - name: postgres-data
           persistentVolumeClaim:
-            claimName: pg-pvc
+            claimName: matrix-pg-pvc
