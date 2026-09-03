@@ -45,6 +45,60 @@ spec:
               subPath: app.ini
               readOnly: true
 
+        - name: register-mas-sso
+          image: codeberg.org/forgejo/forgejo:16.0.3
+          env:
+            - name: GITEA_CUSTOM
+              value: /data/gitea
+            - name: MAS_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: forgejo-creds
+                  key: MAS_CLIENT_SECRET
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -u
+
+              NAME="mas"
+              CLIENT_ID="01M1E9G4JQQ8MMJGT9ZEC33KJ9"
+              DISCOVERY="https://auth.polarys.im/.well-known/openid-configuration"
+              SCOPES="openid email"
+
+              if forgejo admin auth list 2>/dev/null | awk '{print $2}' | grep -qx "$NAME"; then
+                echo "Auth source '$NAME' already exists — nothing to do."
+                exit 0
+              fi
+
+              echo "Registering MAS as OAuth2 source '$NAME'..."
+              if forgejo admin auth add-oauth \
+                --name "$NAME" \
+                --provider openidConnect \
+                --key "$CLIENT_ID" \
+                --secret "$MAS_CLIENT_SECRET" \
+                --auto-discover-url "$DISCOVERY" \
+                --scopes "$SCOPES"; then
+                echo "Done."
+              else
+                echo "WARNING: failed to register MAS auth source — will retry on next pod start."
+              fi
+              exit 0
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "256Mi"
+              cpu: "250m"
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsUser: 1000
+            runAsGroup: 1000
+          volumeMounts:
+            - name: forgejo-data
+              mountPath: /data
+
       containers:
         - name: forgejo
           image: codeberg.org/forgejo/forgejo:16.0.3
