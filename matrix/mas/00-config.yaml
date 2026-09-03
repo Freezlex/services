@@ -74,11 +74,15 @@ data:
       msc4108_enabled: true
     clients:
       - client_id: '01M1E6MVMEYHAZ9898V8Q2K74A'
+        client_name: "Headlamp"
+        client_uri: "https://k8s.polarys.im/"
         client_auth_method: client_secret_basic
         client_secret: ${MAS_HEADLAMP_CLIENT_SECRET}
         redirect_uris:
           - "https://k8s.polarys.im/oidc-callback"
       - client_id: '01M1E9G4JQQ8MMJGT9ZEC33KJ9'
+        client_name: "Polarys Forge"
+        client_uri: "https://git.polarys.im/"
         client_auth_method: client_secret_basic
         client_secret: ${MAS_FORGEJO_CLIENT_SECRET}
         redirect_uris:

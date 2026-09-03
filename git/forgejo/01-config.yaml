@@ -68,7 +68,6 @@ data:
     REGISTER_MANUAL_CONFIRM          = false
     ENABLE_NOTIFY_MAIL               = false
     ENABLE_CAPTCHA                   = false
-    ; Keep email private by default — MAS exposes it, no need to show it
     DEFAULT_KEEP_EMAIL_PRIVATE       = true
     DEFAULT_ALLOW_CREATE_ORGANIZATION = true
     DEFAULT_USER_VISIBILITY          = public
@@ -91,7 +90,7 @@ data:
 
     [oauth2_client]
     ENABLE_AUTO_REGISTRATION  = true
-    USERNAME                  = email
+    USERNAME                  = userid
     UPDATE_AVATAR             = true
     ACCOUNT_LINKING           = login
     REGISTER_EMAIL_CONFIRM    = false
