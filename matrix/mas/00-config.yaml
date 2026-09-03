@@ -87,3 +87,10 @@ data:
         client_secret: ${MAS_FORGEJO_CLIENT_SECRET}
         redirect_uris:
           - "https://git.polarys.im/user/oauth2/mas/callback"
+      - client_id: '01JZQK7XN2VW8HTS5MYD3CFRGB'
+        client_name: "Traefik Dashboard"
+        client_uri: "https://dashboard.polarys.im/"
+        client_auth_method: client_secret_basic
+        client_secret: ${MAS_OAUTH2PROXY_CLIENT_SECRET}
+        redirect_uris:
+          - "https://dashboard.polarys.im/oauth2/callback"
