@@ -41,6 +41,7 @@ data:
     NAME              = ${DB_DATABASE}
     USER              = ${DB_USER}
     PASSWD            = ${DB_PASSWORD}
+    SCHEMA            = ${DB_USER}
     SSL_MODE          = disable
     MAX_IDLE_CONNS    = 2
     MAX_OPEN_CONNS    = 10
