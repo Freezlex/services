@@ -35,7 +35,7 @@ spec:
               mountPath: /tmp/rendered
       containers:
         - name: livekit
-          image: livekit/livekit-server:v1.13.1
+          image: livekit/livekit-server:v1.13.6
           args: ["--config", "/etc/livekit/livekit.yaml"]
           ports:
             - name: http
@@ -96,7 +96,7 @@ spec:
     spec:
       containers:
         - name: livekit-jwt
-          image: ghcr.io/element-hq/lk-jwt-service:0.5.0
+          image: ghcr.io/element-hq/lk-jwt-service:0.6.0
           env:
             - name: LIVEKIT_URL
               value: "wss://rtc.polarys.im/livekit/sfu"
