@@ -27,7 +27,6 @@ data:
         cp_max: 10
     log_config: "/config/polarys.im.log.config"
     media_store_path: /data/media_store
-    registration_shared_secret: "${MX_REGISTRATION_SECRET}"
     macaroon_secret_key: "${MX_MACAROON_SECRET}"
     form_secret: "${MX_FORM_SECRET}"
     signing_key_path: "/keys/polarys.im.signing.key"
@@ -45,8 +44,18 @@ data:
       msc4140_enabled: true
       msc4108_enabled: true
       msc4143_enabled: true
-    livekit:
-      service_url: "http://lk-jwt:8080"
+      msc4222_enabled: true
+    max_event_delay_duration: 24h
+    rc_message:
+      per_second: 0.5
+      burst_count: 30
+    rc_delayed_event_mgmt:
+      per_second: 1
+      burst_count: 20
+    matrix_rtc:
+      transports:
+        - type: livekit
+          livekit_service_url: "https://rtc.polarys.im/livekit/jwt"
     server_notices:
         system_mxid_localpart: server
         system_mxid_display_name: "Polarys"

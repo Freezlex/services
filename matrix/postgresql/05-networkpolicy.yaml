@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: pg-allow-app-clients
+  namespace: matrix
+spec:
+  podSelector:
+    matchLabels:
+      app: postgres
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: synapse
+        - podSelector:
+            matchLabels:
+              app: mas
+        - podSelector:
+            matchLabels:
+              app: pg-backup
+      ports:
+        - protocol: TCP
+          port: 5432

@@ -21,6 +21,9 @@ spec:
       port: 34197
       targetPort: 34197
       protocol: UDP
+    - name: ssh
+      port: 22
+      targetPort: ssh
 ---
 apiVersion: v1
 kind: Service

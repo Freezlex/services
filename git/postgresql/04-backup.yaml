@@ -1,0 +1,100 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: forgejo-pg-backup-pv
+  labels:
+    app: postgres-backup
+    namespace: git
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  claimRef:
+    name: forgejo-pg-backup-pvc
+    namespace: git
+  hostPath:
+    path: /data/k8s/backups/forgejo/postgresql
+    type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: forgejo-pg-backup-pvc
+  namespace: git
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: local-storage
+  volumeName: forgejo-pg-backup-pv
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: forgejo-pg-backup
+  namespace: git
+spec:
+  # Offset from the matrix dump so the two do not contend for disk.
+  schedule: "45 3 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        metadata:
+          labels:
+            app: forgejo-pg-backup
+        spec:
+          restartPolicy: OnFailure
+          securityContext:
+            fsGroup: 999
+          containers:
+            - name: pg-dump
+              image: postgres:18.3
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  set -eu
+                  TS=$(date +%Y%m%d-%H%M%S)
+                  OUT="/backup/forgejo-${TS}.sql.gz"
+                  echo "Dumping to ${OUT}"
+                  pg_dumpall -h forgejo-pg-svc -U "$POSTGRES_USER" | gzip > "$OUT"
+                  gzip -t "$OUT"
+                  echo "Backup OK: $(du -h "$OUT" | cut -f1)"
+                  find /backup -name 'forgejo-*.sql.gz' -mtime +14 -delete
+                  echo "Retained:"; ls -1 /backup
+              env:
+                - name: POSTGRES_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: pg-creds
+                      key: DB_ROOT_USERNAME
+                - name: PGPASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: pg-creds
+                      key: DB_ROOT_PASSWORD
+              resources:
+                requests:
+                  memory: "64Mi"
+                  cpu: "50m"
+                limits:
+                  memory: "256Mi"
+                  cpu: "500m"
+              securityContext:
+                allowPrivilegeEscalation: false
+              volumeMounts:
+                - name: backup
+                  mountPath: /backup
+          volumes:
+            - name: backup
+              persistentVolumeClaim:
+                claimName: forgejo-pg-backup-pvc

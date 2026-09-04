@@ -38,8 +38,6 @@ metadata:
 spec:
   entryPoints:
     - websecure
-  tls:
-    certResolver: ovh
   routes:
     - match: Host(`auth.polarys.im`) && PathPrefix(`/_mas/admin`)
       kind: Rule

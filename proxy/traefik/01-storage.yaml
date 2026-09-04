@@ -11,6 +11,9 @@ spec:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   storageClassName: local-storage
+  claimRef:
+    name: traefik-acme-pvc
+    namespace: proxy
   hostPath:
     path: /data/k8s/proxy/traefik/letsencrypt
     type: DirectoryOrCreate
@@ -27,3 +30,4 @@ spec:
     requests:
       storage: 64Mi
   storageClassName: local-storage
+  volumeName: traefik-acme-pv

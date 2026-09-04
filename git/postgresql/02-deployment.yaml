@@ -1,21 +1,22 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: pg
-  namespace: matrix
+  name: forgejo-pg
+  namespace: git
 spec:
-  serviceName: pg-svc
+  serviceName: forgejo-pg-svc
   replicas: 1
   selector:
     matchLabels:
-      app: postgres
+      app: forgejo-pg
   template:
     metadata:
       labels:
-        app: postgres
+        app: forgejo-pg
     spec:
       securityContext:
         fsGroup: 999
+      # Give Postgres time to finish a clean shutdown before SIGKILL.
       terminationGracePeriodSeconds: 90
       initContainers:
         - name: render-init-sql
@@ -29,7 +30,7 @@ spec:
               echo "init.sql rendered successfully"
           envFrom:
             - secretRef:
-                name: matrix-creds
+                name: forgejo-creds
           volumeMounts:
             - name: postgres-raw-config
               mountPath: /tmp/template
@@ -39,6 +40,7 @@ spec:
           securityContext:
             allowPrivilegeEscalation: false
             runAsNonRoot: false
+
       containers:
         - name: postgres
           image: postgres:18.3
@@ -56,21 +58,17 @@ spec:
                 secretKeyRef:
                   name: pg-creds
                   key: DB_ROOT_PASSWORD
-            - name: POSTGRES_INITDB_ARGS
-              value: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
-            - name: PGDATA
-              value: /var/lib/postgresql/data/pgdata
           lifecycle:
             preStop:
               exec:
                 command:
                   - /bin/sh
                   - -c
-                  - pg_ctl -D /var/lib/postgresql/data/pgdata -w -t 60 -m fast stop
+                  - pg_ctl -D "$PGDATA" -w -t 60 -m fast stop
           resources:
             requests:
-              memory: "256Mi"
-              cpu: "100m"
+              memory: "128Mi"
+              cpu: "50m"
             limits:
               memory: "512Mi"
               cpu: "500m"
@@ -82,15 +80,6 @@ spec:
                 - pg_isready -U "$POSTGRES_USER"
             failureThreshold: 30
             periodSeconds: 5
-          livenessProbe:
-            exec:
-              command:
-                - sh
-                - -c
-                - pg_isready -U "$POSTGRES_USER"
-            initialDelaySeconds: 10
-            periodSeconds: 10
-            failureThreshold: 5
           readinessProbe:
             exec:
               command:
@@ -100,20 +89,30 @@ spec:
             initialDelaySeconds: 5
             periodSeconds: 5
             failureThreshold: 3
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - pg_isready -U "$POSTGRES_USER"
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 5
           securityContext:
             allowPrivilegeEscalation: false
           volumeMounts:
-            - name: postgres-data
+            - name: forgejo-pg-data
               mountPath: /var/lib/postgresql
+              subPath: pgdata
             - name: postgres-rendered-config
               mountPath: /docker-entrypoint-initdb.d/init.sql
               subPath: init.sql
       volumes:
+        - name: forgejo-pg-data
+          persistentVolumeClaim:
+            claimName: forgejo-pg-pvc
         - name: postgres-raw-config
           configMap:
             name: pg-cfm
         - name: postgres-rendered-config
           emptyDir: {}
-        - name: postgres-data
-          persistentVolumeClaim:
-            claimName: matrix-pg-pvc

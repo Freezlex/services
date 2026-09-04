@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pg-cfm
+  namespace: git
+data:
+  init.sql: |
+    -- Synapse database & user
+    CREATE DATABASE ${DB_DATABASE}
+      WITH ENCODING='UTF8'
+           LC_COLLATE='C'
+           LC_CTYPE='C'
+           TEMPLATE=template0;
+    CREATE USER ${DB_USER} WITH PASSWORD '${DB_PASSWORD}';
+    GRANT ALL PRIVILEGES ON DATABASE ${DB_DATABASE} TO ${DB_USER};
+    \c ${DB_DATABASE}
+    CREATE SCHEMA ${DB_USER} AUTHORIZATION ${DB_USER};
+    ALTER USER ${DB_USER} SET search_path TO ${DB_USER}, public;

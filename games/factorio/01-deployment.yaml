@@ -47,6 +47,23 @@ spec:
             - name: factorio
               containerPort: 34197
               protocol: UDP
+          startupProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - pgrep -f factorio > /dev/null
+            failureThreshold: 30
+            periodSeconds: 10
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - pgrep -f factorio > /dev/null
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            failureThreshold: 3
           resources:
             requests:
               memory: "512Mi"

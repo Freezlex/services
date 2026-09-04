@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: pg-pv
+  name: matrix-pg-pv
   labels:
     app: postgres
     namespace: matrix
@@ -12,6 +12,9 @@ spec:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   storageClassName: local-storage
+  claimRef:
+    name: matrix-pg-pvc
+    namespace: matrix
   hostPath:
     path: /data/k8s/matrix/postgresql
     type: DirectoryOrCreate
@@ -19,7 +22,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: pg-pvc
+  name: matrix-pg-pvc
   namespace: matrix
 spec:
   accessModes:
@@ -28,3 +31,4 @@ spec:
     requests:
       storage: 5Gi
   storageClassName: local-storage
+  volumeName: matrix-pg-pv

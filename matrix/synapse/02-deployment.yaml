@@ -5,6 +5,8 @@ metadata:
   namespace: matrix
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: synapse
@@ -45,7 +47,7 @@ spec:
 
       containers:
         - name: synapse
-          image: matrixdotorg/synapse:latest
+          image: ghcr.io/element-hq/synapse:v1.160.0
           securityContext:
             runAsUser: 991
             runAsGroup: 991

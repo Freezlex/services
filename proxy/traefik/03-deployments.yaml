@@ -7,6 +7,10 @@ metadata:
     app: traefik
 spec:
   replicas: 1
+  # Two Traefik pods writing acme.json concurrently can corrupt the ACME store
+  # and lose every issued certificate.
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: traefik
@@ -18,7 +22,7 @@ spec:
       serviceAccountName: traefik-account
       containers:
         - name: traefik
-          image: traefik:3.7.4
+          image: traefik:3.7.12
           args:
             # ── Providers ────────────────────────────────────────────────────
             - --providers.kubernetescrd
@@ -29,6 +33,7 @@ spec:
             - --entrypoints.web.address=:80
             - --entrypoints.websecure.address=:443
             - --entrypoints.factorio.address=:34197/udp
+            - --entrypoints.ssh.address=:22
 
             # HTTP → HTTPS redirect
             - --entrypoints.web.http.redirections.entrypoint.to=websecure
@@ -36,9 +41,9 @@ spec:
 
             - --entrypoints.websecure.http.middlewares=compress@file,headers@file
 
-            # ── Let's Encrypt (OVH DNS challenge) ────────────────────────────
+            # ── Let's Encrypt (Scaleway DNS challenge) ───────────────────────
             - --certificatesresolvers.letsencryptresolver.acme.dnschallenge=true
-            - --certificatesresolvers.letsencryptresolver.acme.dnschallenge.provider=ovh
+            - --certificatesresolvers.letsencryptresolver.acme.dnschallenge.provider=scaleway
             - --certificatesresolvers.letsencryptresolver.acme.email=$(ROOT_EMAIL)
             - --certificatesresolvers.letsencryptresolver.acme.storage=/letsencrypt/acme.json
             # Switch to the staging URL while testing to avoid LE rate limits:
@@ -70,7 +75,7 @@ spec:
               value: Europe/Paris
           envFrom:
             - secretRef:
-                name: traefik-cf-creds
+                name: traefik-dns-creds
 
           ports:
             - name: web
@@ -81,6 +86,8 @@ spec:
               containerPort: 8080
             - name: factorio
               containerPort: 34197
+            - name: ssh
+              containerPort: 22
 
           volumeMounts:
             - name: acme-data
