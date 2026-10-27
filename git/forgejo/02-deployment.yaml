@@ -46,7 +46,7 @@ spec:
               readOnly: true
 
         - name: register-mas-sso
-          image: codeberg.org/forgejo/forgejo:16.0.3
+          image: codeberg.org/forgejo/forgejo:17.0.1
           env:
             - name: GITEA_CUSTOM
               value: /data/gitea
