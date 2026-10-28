@@ -8,3 +8,6 @@ Internet
         ├── dashboard.polarys.im ──────────────────────────────────────────► Traefik dashboard
         └── k8s.polarys.im ────────────────────────────────────────────────► Headlamp (headlamp ns)
 ```
+
+Redeploy all at once :
+`kubectl get deployments --all-namespaces | tail +2 | awk '{ cmd=sprintf("kubectl rollout restart deployment -n %s %s", $1, $2) ; system(cmd) }'`

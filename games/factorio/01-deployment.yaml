@@ -34,6 +34,7 @@ spec:
       containers:
         - name: factorio
           image: factoriotools/factorio:stable
+          imagePullPolicy: Always
           env:
             - name: LOAD_LATEST_SAVE
               value: "true"
