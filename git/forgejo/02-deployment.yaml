@@ -22,7 +22,7 @@ spec:
         fsGroup: 1000
       initContainers:
         - name: render-config
-          image: alpine:3.21
+          image: alpine:3.24
           securityContext:
             runAsUser: 0
           command:

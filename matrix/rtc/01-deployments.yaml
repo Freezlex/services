@@ -14,7 +14,7 @@ spec:
         app: livekit
     spec:
       nodeSelector:
-        kubernetes.io/hostname: mako # ← removed "node/" prefix, just the hostname
+        kubernetes.io/hostname: mako
       initContainers:
         - name: render-config
           image: alpine:latest
@@ -96,7 +96,7 @@ spec:
     spec:
       containers:
         - name: livekit-jwt
-          image: ghcr.io/element-hq/lk-jwt-service:0.6.0
+          image: ghcr.io/element-hq/lk-jwt-service:0.9.0
           env:
             - name: LIVEKIT_URL
               value: "wss://rtc.polarys.im/livekit/sfu"

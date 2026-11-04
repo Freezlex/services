@@ -1,0 +1,108 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: forgejo-runner
+  namespace: git
+spec:
+  replicas: 1
+  # ReadWriteOnce hostPath PVC — never run two runner pods over one /data.
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: forgejo-runner
+  template:
+    metadata:
+      labels:
+        app: forgejo-runner
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: mako
+      securityContext:
+        fsGroup: 1000
+      initContainers:
+        - name: render-env
+          image: alpine:3.24
+          securityContext:
+            runAsUser: 0
+          command:
+            - sh
+            - -c
+            - |
+              apk add --no-cache gettext
+              envsubst < /tmp/env.template > /data/.env
+              chown 1000:1000 /data/.env
+              echo ".env rendered to /data/.env"
+          envFrom:
+            - secretRef:
+                name: forgejo-runner-creds
+          volumeMounts:
+            - name: runner-data
+              mountPath: /data
+            - name: runner-config
+              mountPath: /tmp/env.template
+              subPath: .env.template
+              readOnly: true
+
+      containers:
+        - name: runner
+          # pin to the latest release from codeberg.org/forgejo/runner/releases
+          image: codeberg.org/forgejo/runner:12.0.0
+          command:
+            - forgejo-runner
+            - daemon
+            - --config
+            - /data/config.yaml
+          workingDir: /data
+          env:
+            - name: DOCKER_HOST
+              value: tcp://127.0.0.1:2375
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsUser: 1000
+            runAsGroup: 1000
+          volumeMounts:
+            - name: runner-data
+              mountPath: /data
+            - name: runner-config
+              mountPath: /data/config.yaml
+              subPath: config.yaml
+              readOnly: true
+
+        - name: dind
+          image: docker:28-dind
+          env:
+            # plain TCP on 2375, loopback only — the runner reaches it via DOCKER_HOST
+            - name: DOCKER_TLS_CERTDIR
+              value: ""
+          ports:
+            - name: docker
+              containerPort: 2375
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "4Gi"
+              cpu: "2000m"
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: runner-data
+              mountPath: /var/lib/docker
+              subPath: dind
+
+      volumes:
+        - name: runner-data
+          persistentVolumeClaim:
+            claimName: forgejo-runner-pvc
+        - name: runner-config
+          configMap:
+            name: forgejo-runner-config
