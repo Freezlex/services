@@ -4,20 +4,20 @@ metadata:
   name: forgejo-runner-config
   namespace: git
 data:
-  # Rendered by the init container with envsubst so the one-time runner
-  # token never lives in a ConfigMap — only in the forgejo-runner-creds secret.
-  config.yaml.template: |
+  runner-config.yml.template: |
     log:
       level: info
     runner:
-      capacity: 2
+      capacity: 1
       timeout: 1h
       labels:
-        # jobs with `runs-on: docker` get this image when no `container:` is set
         - "docker:docker://docker:28"
+      envs:
+        DOCKER_HOST: tcp://host.docker.internal:2375
     container:
-      network: bridge
-      # the runner talks to the dind sidecar over TCP, so it does NOT need to be privileged
+      docker_host: tcp://127.0.0.1:2375
+      network: ""
+      options: "--add-host=host.docker.internal:host-gateway --memory=2g --cpus=2"
       privileged: false
       valid_volumes: []
     cache:
