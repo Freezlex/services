@@ -4,11 +4,12 @@ metadata:
   name: forgejo-runner-config
   namespace: git
 data:
-  config.yaml: |
+  # Rendered by the init container with envsubst so the one-time runner
+  # token never lives in a ConfigMap — only in the forgejo-runner-creds secret.
+  config.yaml.template: |
     log:
       level: info
     runner:
-      file: .runner
       capacity: 2
       timeout: 1h
       labels:
@@ -21,6 +22,9 @@ data:
       valid_volumes: []
     cache:
       enabled: true
-  .env.template: |
-    FORGEJO_INSTANCE_URL=https://git.polarys.im
-    REGISTRATION_TOKEN=${REGISTRATION_TOKEN}
+    server:
+      connections:
+        forgejo:
+          url: https://git.polarys.im/
+          uuid: ${RUNNER_UUID}
+          token: ${RUNNER_TOKEN}
