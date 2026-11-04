@@ -19,6 +19,7 @@ spec:
         kubernetes.io/hostname: mako
       securityContext:
         fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
       initContainers:
         - name: render-config
           image: alpine:3.21
@@ -28,10 +29,12 @@ spec:
             - sh
             - -c
             - |
+              set -e
               apk add --no-cache gettext
               envsubst < /tmp/template/runner-config.yml.template > /data/runner-config.yml
               chown 1000:1000 /data/runner-config.yml
               mkdir -p /data/.cache
+              chown 1000:1000 /data/.cache
               chmod 775 /data/.cache
               chmod g+s /data/.cache
               echo "runner-config.yml rendered to /data/runner-config.yml"
@@ -44,21 +47,44 @@ spec:
             - name: runner-raw-config
               mountPath: /tmp/template
               readOnly: true
-        - name: wait-for-dind
-          image: alpine:3.21
+
+        - name: dind
+          image: docker:28-dind
+          restartPolicy: Always
+          env:
+            - name: DOCKER_TLS_CERTDIR
+              value: ""
+          args:
+            - dockerd
+            - -H
+            - tcp://127.0.0.1:2375
+            - -H
+            - unix:///var/run/docker.sock
+            - --tls=false
+          startupProbe:
+            exec:
+              command: ["docker", "-H", "tcp://127.0.0.1:2375", "info"]
+            periodSeconds: 2
+            failureThreshold: 60
+          livenessProbe:
+            exec:
+              command: ["docker", "-H", "tcp://127.0.0.1:2375", "info"]
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 3
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "4Gi"
+              cpu: "2000m"
           securityContext:
-            allowPrivilegeEscalation: false
-            runAsNonRoot: true
-            runAsUser: 1000
-          command:
-            - sh
-            - -c
-            - |
-              until nc -z 127.0.0.1 2375; do
-                echo "waiting for dind on 127.0.0.1:2375..."
-                sleep 2
-              done
-              echo "dind is up"
+            privileged: true
+          volumeMounts:
+            - name: runner-data
+              mountPath: /var/lib/docker
+              subPath: dind
 
       containers:
         - name: runner
@@ -86,39 +112,6 @@ spec:
           volumeMounts:
             - name: runner-data
               mountPath: /data
-
-        - name: dind
-          image: docker:28-dind
-          env:
-            - name: DOCKER_TLS_CERTDIR
-              value: ""
-          args:
-            - dockerd
-            - -H
-            - tcp://0.0.0.0:2375
-            - --tls=false
-          ports:
-            - name: docker
-              containerPort: 2375
-          readinessProbe:
-            tcpSocket:
-              port: docker
-            initialDelaySeconds: 5
-            periodSeconds: 5
-            failureThreshold: 12
-          resources:
-            requests:
-              memory: "256Mi"
-              cpu: "100m"
-            limits:
-              memory: "4Gi"
-              cpu: "2000m"
-          securityContext:
-            privileged: true
-          volumeMounts:
-            - name: runner-data
-              mountPath: /var/lib/docker
-              subPath: dind
 
       volumes:
         - name: runner-data
