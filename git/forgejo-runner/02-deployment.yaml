@@ -44,6 +44,21 @@ spec:
             - name: runner-raw-config
               mountPath: /tmp/template
               readOnly: true
+        - name: wait-for-dind
+          image: alpine:3.21
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 1000
+          command:
+            - sh
+            - -c
+            - |
+              until nc -z 127.0.0.1 2375; do
+                echo "waiting for dind on 127.0.0.1:2375..."
+                sleep 2
+              done
+              echo "dind is up"
 
       containers:
         - name: runner
@@ -74,6 +89,9 @@ spec:
 
         - name: dind
           image: docker:28-dind
+          env:
+            - name: DOCKER_TLS_CERTDIR
+              value: ""
           args:
             - dockerd
             - -H
@@ -82,6 +100,12 @@ spec:
           ports:
             - name: docker
               containerPort: 2375
+          readinessProbe:
+            tcpSocket:
+              port: docker
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            failureThreshold: 12
           resources:
             requests:
               memory: "256Mi"
