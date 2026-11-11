@@ -13,11 +13,14 @@ data:
       labels:
         - "docker:docker://docker:28"
       envs:
-        DOCKER_HOST: tcp://host.docker.internal:2375
+        # injected into every job container; ${POD_IP} is substituted by the
+        # init container — job containers run inside dind and reach the sidecar
+        # through the pod IP (containers in a pod share its network namespace)
+        DOCKER_HOST: tcp://${POD_IP}:2375
     container:
       docker_host: tcp://127.0.0.1:2375
       network: ""
-      options: "--add-host=host.docker.internal:host-gateway --memory=2g --cpus=2"
+      options: "--memory=2g --cpus=2"
       privileged: false
       valid_volumes: []
     cache:
