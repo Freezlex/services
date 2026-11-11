@@ -41,6 +41,11 @@ spec:
           envFrom:
             - secretRef:
                 name: forgejo-runner-creds
+          env:
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
           volumeMounts:
             - name: runner-data
               mountPath: /data
@@ -56,8 +61,11 @@ spec:
               value: ""
           args:
             - dockerd
+            # 0.0.0.0 so job containers (created inside dind, own netns) can
+            # reach the daemon via the pod IP; pod-local only — the runner
+            # pod's NetworkPolicy blocks anything leaving the cluster
             - -H
-            - tcp://127.0.0.1:2375
+            - tcp://0.0.0.0:2375
             - -H
             - unix:///var/run/docker.sock
             - --tls=false
