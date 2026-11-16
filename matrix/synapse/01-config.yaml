@@ -45,6 +45,7 @@ data:
       msc4108_enabled: true
       msc4143_enabled: true
       msc4222_enabled: true
+      msc4354_enabled: true
     max_event_delay_duration: 24h
     rc_message:
       per_second: 0.5
@@ -55,6 +56,7 @@ data:
     matrix_rtc:
       transports:
         - type: livekit
+          url: "wss://rtc.polarys.im/livekit/sfu"
           livekit_service_url: "https://rtc.polarys.im/livekit/jwt"
     server_notices:
         system_mxid_localpart: server

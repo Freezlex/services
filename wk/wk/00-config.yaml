@@ -29,6 +29,7 @@ data:
       "org.matrix.msc4143.rtc_foci": [
         {
           "type": "livekit",
+          "url": "wss://rtc.polarys.im/livekit/sfu",
           "livekit_service_url": "https://rtc.polarys.im/livekit/jwt"
         }
       ]
