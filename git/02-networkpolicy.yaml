@@ -1,0 +1,23 @@
+# Default-deny ingress for the whole namespace (the git Postgres already has
+# its own tighter policy; policies are additive). Ingress arrives from
+# Traefik (proxy ns) or from same-namespace pods (Forgejo <-> Postgres,
+# runner <-> Forgejo).
+# NOTE: this namespace is deliberately NOT under a PSA enforce label — the
+# forgejo-runner needs a privileged dind sidecar. That makes the runner
+# root-equivalent for anyone who can create a repo + workflow, which is why
+# MAS registration is closed (matrix/mas/00-config.yaml).
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-ingress
+  namespace: git
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector: {}
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: proxy

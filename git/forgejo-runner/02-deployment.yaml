@@ -12,17 +12,24 @@ spec:
       app: forgejo-runner
   template:
     metadata:
+      annotations:
+        # Regenerate after editing 01-config.yaml: sha256sum git/forgejo-runner/01-config.yaml
+        checksum/config: "999eab926ec1ad70"
       labels:
         app: forgejo-runner
     spec:
+      automountServiceAccountToken: false
       nodeSelector:
         kubernetes.io/hostname: mako
+      priorityClassName: homelab-standard
       securityContext:
         fsGroup: 1000
         fsGroupChangePolicy: OnRootMismatch
+        seccompProfile:
+          type: RuntimeDefault
       initContainers:
         - name: render-config
-          image: alpine:3.21
+          image: alpine:3.24
           securityContext:
             runAsUser: 0
           command:

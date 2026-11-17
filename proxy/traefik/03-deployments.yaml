@@ -20,6 +20,13 @@ spec:
         app: traefik
     spec:
       serviceAccountName: traefik-account
+      nodeSelector:
+        kubernetes.io/hostname: mako
+      priorityClassName: homelab-critical
+      terminationGracePeriodSeconds: 60
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: traefik
           image: traefik:3.7

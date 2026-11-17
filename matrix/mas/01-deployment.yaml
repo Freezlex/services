@@ -10,12 +10,22 @@ spec:
       app: mas
   template:
     metadata:
+      annotations:
+        # Regenerate after editing 00-config.yaml: sha256sum matrix/mas/00-config.yaml
+        checksum/config: "ed3dfc6d64e5411e"
       labels:
         app: mas
     spec:
+      automountServiceAccountToken: false
+      nodeSelector:
+        kubernetes.io/hostname: mako
+      priorityClassName: homelab-critical
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       initContainers:
         - name: render-config
-          image: alpine:latest
+          image: alpine:3.24
           command:
             - sh
             - -c

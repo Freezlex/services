@@ -1,0 +1,30 @@
+# The secrets-export CronJob dumps all Secrets (they live only in etcd, and the
+# repo must be able to rebuild the cluster). This is the one workload allowed
+# to read every Secret — keep it in the `backups` namespace, nothing else uses it.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: backup-secrets-reader
+  namespace: backups
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: secrets-reader
+rules:
+  - apiGroups: [""]
+    resources: [secrets]
+    verbs: [get, list]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: backup-secrets-reader
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: secrets-reader
+subjects:
+  - kind: ServiceAccount
+    name: backup-secrets-reader
+    namespace: backups

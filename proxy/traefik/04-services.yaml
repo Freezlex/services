@@ -4,10 +4,14 @@ metadata:
   name: traefik
   namespace: proxy
   annotations:
-    metallb.universe.tf/loadBalancerIPs: 192.168.1.200
-    metallb.universe.tf/allow-shared-ip: homelab-vip
+    metallb.io/loadBalancerIPs: 192.168.1.200
+    metallb.io/allow-shared-ip: homelab-vip
 spec:
   type: LoadBalancer
+  # Single node: Traefik is pinned to mako (the node that advertises the
+  # MetalLB IP), so Local is safe and preserves real client IPs in
+  # X-Forwarded-For for Forgejo/MAS rate limiting and audit logs.
+  externalTrafficPolicy: Local
   selector:
     app: traefik
   ports:

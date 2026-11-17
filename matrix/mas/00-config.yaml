@@ -44,7 +44,11 @@ data:
       database: ${MAS_DB_NAME}
       max_connections: 10
     account:
-      password_registration_enabled: true
+      # Closed: the node sits in a DMZ and Forgejo auto-provisions accounts for
+      # any MAS account, so open registration + the CI runner = root on the node.
+      # Existing accounts keep working; re-enable temporarily (or set a
+      # registration token) only to invite someone.
+      password_registration_enabled: false
       registration_token_required: false
       password_registration_email_required: true
       login_with_email_allowed: true

@@ -53,8 +53,14 @@ spec:
             app: forgejo-pg-backup
         spec:
           restartPolicy: OnFailure
+          automountServiceAccountToken: false
+          nodeSelector:
+            kubernetes.io/hostname: mako
+          priorityClassName: homelab-standard
           securityContext:
             fsGroup: 999
+            seccompProfile:
+              type: RuntimeDefault
           containers:
             - name: pg-dump
               image: postgres:18.6

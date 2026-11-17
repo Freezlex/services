@@ -239,7 +239,7 @@ data:
     SCHEDULE     = @every 72h
 
     [other]
-    SHOW_FOOTER_VERSION            = true
+    SHOW_FOOTER_VERSION            = false
     SHOW_FOOTER_TEMPLATE_LOAD_TIME = true
     SHOW_FOOTER_POWERED_BY         = true
     ENABLE_SITEMAP                 = true

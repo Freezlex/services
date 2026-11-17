@@ -8,3 +8,5 @@ metadata:
     environment: homelab
     app.kubernetes.io/managed-by: gitops
     role: matrix-server
+    pod-security.kubernetes.io/enforce: baseline
+    pod-security.kubernetes.io/warn: restricted

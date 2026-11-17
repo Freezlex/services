@@ -15,6 +15,17 @@ spec:
           port: 8008
 ---
 apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: admin-rate-limit
+  namespace: matrix
+spec:
+  rateLimit:
+    average: 20
+    burst: 10
+    period: 1m
+---
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: synapse-overflow
@@ -26,6 +37,10 @@ spec:
     - kind: Rule
       match: Host(`polarys.im`) && PathPrefix(`/_synapse/`)
       priority: 110
+      middlewares:
+        # Admin API — still requires a token, rate-limited on top.
+        - name: admin-rate-limit
+          namespace: matrix
       services:
         - name: synapse
           port: 8008

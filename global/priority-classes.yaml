@@ -1,0 +1,26 @@
+# Eviction order under node pressure: low < standard < critical.
+# preemptionPolicy: Never so a low pod never preempts a critical one,
+# and critical pods are only evicted after everything else.
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: homelab-critical
+value: 100000
+description: "Ingress, databases, auth — must survive memory pressure on the node"
+preemptionPolicy: Never
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: homelab-standard
+value: 10000
+description: "Regular workloads"
+preemptionPolicy: Never
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: homelab-low
+value: 100
+description: "Games and test workloads — evicted first"
+preemptionPolicy: Never

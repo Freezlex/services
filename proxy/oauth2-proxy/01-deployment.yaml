@@ -13,6 +13,11 @@ spec:
       labels:
         app: oauth2-proxy
     spec:
+      automountServiceAccountToken: false
+      priorityClassName: homelab-standard
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: oauth2-proxy
           image: quay.io/oauth2-proxy/oauth2-proxy:v7.15.5
@@ -24,7 +29,7 @@ spec:
             - --redirect-url=https://dashboard.polarys.im/oauth2/callback
             - --scope=openid
             # MAS never puts email/username in its tokens (see
-            # proxy/oauth2-proxy/00-secrets.template.yaml comment) — sub is
+            # proxy/01-secrets.template.yaml comment) — sub is
             # the only usable claim, so it's remapped to fill the "email"
             # slot oauth2-proxy's authorization logic runs on.
             - --oidc-email-claim=sub

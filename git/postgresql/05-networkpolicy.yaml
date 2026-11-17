@@ -17,9 +17,6 @@ spec:
         - podSelector:
             matchLabels:
               app: forgejo-pg-backup
-        - podSelector:
-            matchLabels:
-              app: forgejo-sso
       ports:
         - protocol: TCP
           port: 5432

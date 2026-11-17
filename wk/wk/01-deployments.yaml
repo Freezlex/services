@@ -10,12 +10,21 @@ spec:
       app: nginx
   template:
     metadata:
+      annotations:
+        # Regenerate after editing 00-config.yaml: sha256sum wk/wk/00-config.yaml
+        checksum/config: "91d3f510c4ded70b"
       labels:
         app: nginx
     spec:
+      automountServiceAccountToken: false
+      priorityClassName: homelab-low
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: nginx
-          image: nginx:latest # nginx:???-alpine
+          image: nginx:1.28-alpine
+          imagePullPolicy: IfNotPresent
           ports:
             - name: http
               containerPort: 80

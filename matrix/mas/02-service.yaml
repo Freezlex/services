@@ -11,6 +11,5 @@ spec:
     - name: http
       port: 80
       targetPort: http
-    - name: internal
-      port: 8081
-      targetPort: internal
+    # The internal 8081 health listener is only used by the pod's own probes;
+    # it is deliberately not exposed on the Service.

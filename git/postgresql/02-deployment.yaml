@@ -11,11 +11,21 @@ spec:
       app: forgejo-pg
   template:
     metadata:
+      annotations:
+        # Regenerate after editing 01-config.yaml: sha256sum git/postgresql/01-config.yaml
+        checksum/config: "b08950177b0119fa"
       labels:
         app: forgejo-pg
     spec:
+      automountServiceAccountToken: false
+      nodeSelector:
+        kubernetes.io/hostname: mako
+      priorityClassName: homelab-critical
       securityContext:
         fsGroup: 999
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile:
+          type: RuntimeDefault
       # Give Postgres time to finish a clean shutdown before SIGKILL.
       terminationGracePeriodSeconds: 90
       initContainers:
@@ -48,6 +58,12 @@ spec:
             - name: postgres
               containerPort: 5432
           env:
+            # NOTE: PGDATA layout differs from the matrix Postgres on purpose
+            # (this one uses the postgres:18 image default under the mounted
+            # subPath). Do NOT change PGDATA here — pointing it at a new path
+            # would initialize an EMPTY database over the existing PV.
+            # Major version upgrades need dump/restore or pg_upgrade, never
+            # an in-place tag bump.
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:

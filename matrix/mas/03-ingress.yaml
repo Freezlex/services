@@ -1,4 +1,17 @@
 apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: auth-rate-limit
+  namespace: matrix
+spec:
+  rateLimit:
+    # Generous enough for normal UI use, tight enough to blunt brute force.
+    # Works best with externalTrafficPolicy: Local (real client IPs).
+    average: 100
+    burst: 50
+    period: 1m
+---
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: mas-matrix-proxy-ing
@@ -10,10 +23,12 @@ spec:
     - match: Host(`matrix.polarys.im`) && (PathPrefix(`/_matrix/client/v3/login`) || PathPrefix(`/_matrix/client/v3/logout`) || PathPrefix(`/_matrix/client/v3/refresh`))
       kind: Rule
       priority: 100
+      middlewares:
+        - name: auth-rate-limit
+          namespace: matrix
       services:
         - name: mas
           port: 80
-
 ---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
@@ -26,22 +41,12 @@ spec:
   routes:
     - match: Host(`auth.polarys.im`)
       kind: Rule
+      middlewares:
+        - name: auth-rate-limit
+          namespace: matrix
       services:
         - name: mas
           port: 80
----
-apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
-metadata:
-  name: mas-adminapi
-  namespace: matrix
-spec:
-  entryPoints:
-    - websecure
-  routes:
-    - match: Host(`auth.polarys.im`) && PathPrefix(`/_mas/admin`)
-      kind: Rule
-      priority: 120
-      services:
-        - name: mas
-          port: 80
+# The old `mas-adminapi` route (Host(`auth.polarys.im`) && PathPrefix(`/_mas/admin`))
+# was removed: it was fully covered by the catch-all `mas` route above and added
+# no protection. The admin API still requires its own token.

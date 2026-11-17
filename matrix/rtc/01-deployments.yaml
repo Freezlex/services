@@ -10,14 +10,22 @@ spec:
       app: livekit
   template:
     metadata:
+      annotations:
+        # Regenerate after editing 00-config.yaml: sha256sum matrix/rtc/00-config.yaml
+        checksum/config: "96530debc014beb7"
       labels:
         app: livekit
     spec:
+      automountServiceAccountToken: false
       nodeSelector:
         kubernetes.io/hostname: mako
+      priorityClassName: homelab-standard
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       initContainers:
         - name: render-config
-          image: alpine:latest
+          image: alpine:3.24
           command:
             - sh
             - -c
@@ -94,6 +102,13 @@ spec:
       labels:
         app: livekit-jwt
     spec:
+      automountServiceAccountToken: false
+      nodeSelector:
+        kubernetes.io/hostname: mako
+      priorityClassName: homelab-standard
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: livekit-jwt
           image: ghcr.io/element-hq/lk-jwt-service:0.9.0

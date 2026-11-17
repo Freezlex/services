@@ -1,0 +1,153 @@
+# Offsite backup to pCloud (encrypted with rclone crypt before upload).
+#
+# Runs AFTER the local pg_dumpall CronJobs (03:15 matrix, 03:45 git) so the
+# consistent SQL dumps are included in the sync.
+#
+#   04:00  secrets-export  -> /data/k8s/backups/k8s/secrets-<ts>.yaml
+#   04:30  offsite-sync    -> rclone sync /data/k8s + /etc/rancher/k3s to pcloud-crypt:
+#
+# /data/k8s contains everything app-level: Forgejo data, Synapse data + media,
+# both Postgres data dirs, Traefik acme.json, both backup dirs, the runner.
+# The raw Postgres dirs are NOT a consistent snapshot on their own — the
+# pg_dumpall dumps under /data/k8s/backups are; both are shipped.
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: secrets-export
+  namespace: backups
+spec:
+  schedule: "0 4 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        metadata:
+          labels:
+            app: secrets-export
+        spec:
+          serviceAccountName: backup-secrets-reader
+          nodeSelector:
+            kubernetes.io/hostname: mako
+          priorityClassName: homelab-standard
+          restartPolicy: OnFailure
+          securityContext:
+            seccompProfile:
+              type: RuntimeDefault
+          containers:
+            - name: export
+              image: bitnami/kubectl:1.32.0
+              imagePullPolicy: IfNotPresent
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  set -eu
+                  mkdir -p /backup/k8s
+                  TS=$(date +%Y%m%d-%H%M%S)
+                  OUT="/backup/k8s/secrets-${TS}.yaml"
+                  kubectl get secrets -A -o yaml > "$OUT"
+                  # keep 14 days of secret exports locally
+                  find /backup/k8s -name 'secrets-*.yaml' -mtime +14 -delete
+                  echo "Exported secrets to ${OUT}: $(du -h "$OUT" | cut -f1)"
+              resources:
+                requests:
+                  memory: "64Mi"
+                  cpu: "50m"
+                limits:
+                  memory: "256Mi"
+                  cpu: "250m"
+              securityContext:
+                allowPrivilegeEscalation: false
+              volumeMounts:
+                - name: data
+                  mountPath: /backup
+          volumes:
+            - name: data
+              hostPath:
+                path: /data/k8s/backups
+                type: Directory
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: offsite-sync
+  namespace: backups
+spec:
+  schedule: "30 4 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        metadata:
+          labels:
+            app: offsite-sync
+        spec:
+          # No Kubernetes API needed for the sync itself.
+          automountServiceAccountToken: false
+          nodeSelector:
+            kubernetes.io/hostname: mako
+          priorityClassName: homelab-standard
+          restartPolicy: OnFailure
+          securityContext:
+            seccompProfile:
+              type: RuntimeDefault
+          containers:
+            - name: rclone
+              image: rclone/rclone:1.69.1
+              imagePullPolicy: IfNotPresent
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  set -eu
+                  echo "Syncing /data/k8s to pcloud (encrypted)..."
+                  rclone sync /data/k8s pcloud-crypt:k8s \
+                    --transfers 4 --checkers 8 --create-empty-src-dirs
+                  echo "Syncing /etc/rancher/k3s to pcloud (encrypted)..."
+                  rclone sync /etc/rancher/k3s pcloud-crypt:etc-rancher-k3s \
+                    --transfers 4 --checkers 8 --create-empty-src-dirs
+                  # Retention: drop offsite copies older than 30 days.
+                  rclone delete pcloud-crypt:k8s --min-age 30d --recursive || true
+                  rclone delete pcloud-crypt:etc-rancher-k3s --min-age 30d --recursive || true
+                  echo "Offsite backup OK"
+              env:
+                - name: RCLONE_CONFIG
+                  value: /config/rclone.conf
+              resources:
+                requests:
+                  memory: "128Mi"
+                  cpu: "50m"
+                limits:
+                  memory: "512Mi"
+                  cpu: "500m"
+              securityContext:
+                allowPrivilegeEscalation: false
+              volumeMounts:
+                - name: rclone-config
+                  mountPath: /config/rclone.conf
+                  subPath: rclone.conf
+                  readOnly: true
+                - name: data
+                  mountPath: /data/k8s
+                  readOnly: true
+                - name: k3s-config
+                  mountPath: /etc/rancher/k3s
+                  readOnly: true
+          volumes:
+            - name: rclone-config
+              secret:
+                secretName: pcloud-rclone-config
+            - name: data
+              hostPath:
+                path: /data/k8s
+                type: Directory
+            - name: k3s-config
+              hostPath:
+                path: /etc/rancher/k3s
+                type: Directory
